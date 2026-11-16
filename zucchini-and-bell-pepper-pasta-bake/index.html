@@ -95,7 +95,7 @@ ul.ing li{padding:5px 0}
 <div class="alarm" id="alarm" role="alert" hidden><span id="alarmTxt"></span><button id="alarmOk">OK</button></div>
 
 <script>
-const R = {"title": "Zucchini and Bell Pepper Pasta Bake", "category": "Dinner", "description": "Roasted zucchini, peppers and onion tossed with pasta and arugula in a creamy cottage cheese marinara, topped with mozzarella", "serves": 4, "prep": 15, "cook": 25, "video": "https://www.tiktok.com/@bayleennicole/video/7525158459336101134", "ingredients": ["1 medium zucchini, chopped", "1 bell pepper, chopped", "1/2 medium red onion, chopped", "1 tbsp olive oil", "1/2 tsp salt", "1/4 tsp black pepper", "8 oz pasta", "1 can (24 oz) of marinara", "1-2 cups of cottage cheese", "1/4 cup Parmesan", "2 cups fresh arugula", "1 cup mozzarella, shredded"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["1 medium zucchini, chopped", "1 bell pepper, chopped", "1/2 medium red onion, chopped", "1 tbsp olive oil", "1/2 tsp salt", "1/4 tsp black pepper", "8 oz pasta", "1 can (24 oz) of marinara", "1-2 cups of cottage cheese", "1/4 cup Parmesan", "2 cups fresh arugula", "1 cup mozzarella, shredded"]}, {"title": "Roast the Vegetables", "text": "Preheat oven to 425°F. Chop the zucchini, bell pepper, and red onion, then season with olive oil, salt, and black pepper, and roast in the oven for 15-20 minutes.", "timer": 900, "uses": ["1 medium zucchini, chopped", "1 bell pepper, chopped", "1/2 medium red onion, chopped", "1 tbsp olive oil", "1/2 tsp salt", "1/4 tsp black pepper"], "while": "While the veggies roast, cook the pasta and blend the sauce (next two steps)."}, {"title": "Cook the Pasta", "text": "While the veggies are roasting, cook the pasta on the stove according to package directions and drain.", "uses": ["8 oz pasta"]}, {"title": "Blend the Sauce", "text": "Blend the marinara, cottage cheese, and Parmesan cheese until smooth.", "uses": ["1 can (24 oz) of marinara", "1-2 cups of cottage cheese", "1/4 cup Parmesan"]}, {"title": "Combine", "text": "Remove the veggies from the oven and add them to the bowl of cooked noodles along with fresh arugula, then pour the sauce over top and mix well.", "uses": ["2 cups fresh arugula"]}, {"title": "Cheese & Bake", "text": "Place back on the baking sheet, top with shredded mozzarella, and return to the oven at 425°F for 2-5 minutes until the cheese is melted.", "timer": 120, "uses": ["1 cup mozzarella, shredded"]}]};
+let R = {"title": "Zucchini and Bell Pepper Pasta Bake", "category": "Dinner", "description": "Roasted zucchini, peppers and onion tossed with pasta and arugula in a creamy cottage cheese marinara, topped with mozzarella", "serves": 4, "prep": 15, "cook": 25, "video": "https://www.tiktok.com/@bayleennicole/video/7525158459336101134", "slug": "zucchini-and-bell-pepper-pasta-bake", "ingredients": ["1 medium zucchini, chopped", "1 bell pepper, chopped", "1/2 medium red onion, chopped", "1 tbsp olive oil", "1/2 tsp salt", "1/4 tsp black pepper", "8 oz pasta", "1 can (24 oz) of marinara", "1-2 cups of cottage cheese", "1/4 cup Parmesan", "2 cups fresh arugula", "1 cup mozzarella, shredded"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["1 medium zucchini, chopped", "1 bell pepper, chopped", "1/2 medium red onion, chopped", "1 tbsp olive oil", "1/2 tsp salt", "1/4 tsp black pepper", "8 oz pasta", "1 can (24 oz) of marinara", "1-2 cups of cottage cheese", "1/4 cup Parmesan", "2 cups fresh arugula", "1 cup mozzarella, shredded"]}, {"title": "Roast the Vegetables", "text": "Preheat oven to 425°F. Chop the zucchini, bell pepper, and red onion, then season with olive oil, salt, and black pepper, and roast in the oven for 15-20 minutes.", "timer": 900, "uses": ["1 medium zucchini, chopped", "1 bell pepper, chopped", "1/2 medium red onion, chopped", "1 tbsp olive oil", "1/2 tsp salt", "1/4 tsp black pepper"], "while": "While the veggies roast, cook the pasta and blend the sauce (next two steps)."}, {"title": "Cook the Pasta", "text": "While the veggies are roasting, cook the pasta on the stove according to package directions and drain.", "uses": ["8 oz pasta"]}, {"title": "Blend the Sauce", "text": "Blend the marinara, cottage cheese, and Parmesan cheese until smooth.", "uses": ["1 can (24 oz) of marinara", "1-2 cups of cottage cheese", "1/4 cup Parmesan"]}, {"title": "Combine", "text": "Remove the veggies from the oven and add them to the bowl of cooked noodles along with fresh arugula, then pour the sauce over top and mix well.", "uses": ["2 cups fresh arugula"]}, {"title": "Cheese & Bake", "text": "Place back on the baking sheet, top with shredded mozzarella, and return to the oven at 425°F for 2-5 minutes until the cheese is melted.", "timer": 120, "uses": ["1 cup mozzarella, shredded"]}]};
 const $ = id => document.getElementById(id);
 // card text: no Celsius conversions, no period at the very end
 const tidy = t => (t||"").replace(/\s*\(\s*-?\d+\s*°?\s*C\s*\)/g,"").replace(/\s*\/\s*-?\d+\s*°\s*C\b/g,"").replace(/\.\s*$/,"");
@@ -139,7 +139,7 @@ if(R.video){$("watch").href=R.video;$("watch").hidden=false}
 $("desc").textContent=tidy(R.description); $("desc").hidden=!R.description;
 
 /* ---- steps ---- */
-const N=R.slides.length;
+let N=R.slides.length;
 function show(i){
   cur=Math.max(0,Math.min(N,i));
   $("intro").hidden=true; $("cook").hidden=false;
@@ -229,6 +229,17 @@ async function keepAwake(){if(!("wakeLock" in navigator)||lock||asking||document
 document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"){if(cur>=0)keepAwake();paintTimers()}});
 
 renderIntro();
+
+/* ---- edits published from the recipe planner (data/edits.json) ----
+   If this recipe was edited there, use the edited title, ingredients and the
+   cards the planner rebuilt from the new steps. Only before cooking starts. */
+fetch("../data/edits.json?t="+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.json():null).then(d=>{
+  const o=d&&d.recipes&&d.recipes[R.slug], c=o&&o.cook;
+  if(!c||cur!==-1) return;
+  if(c.title){ R.title=c.title; $("ttl").textContent=c.title; document.title=c.title; }
+  if(c.ingredients) R.ingredients=c.ingredients;
+  if(c.slides&&c.slides.length){ R.slides=c.slides; N=R.slides.length; }
+}).catch(()=>{});
 </script>
 
 </body></html>

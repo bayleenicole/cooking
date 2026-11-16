@@ -95,7 +95,7 @@ ul.ing li{padding:5px 0}
 <div class="alarm" id="alarm" role="alert" hidden><span id="alarmTxt"></span><button id="alarmOk">OK</button></div>
 
 <script>
-const R = {"title": "Red Velvet Cheesecake Brownies", "category": "Dessert", "description": "Cake-mix red velvet brownies with white chocolate chips and a swirled cheesecake layer", "serves": 6, "prep": 15, "cook": 35, "video": "https://www.tiktok.com/@bayleennicole/video/7329630739077614891", "ingredients": ["1 box red velvet cake mix", "1/2 cup vegetable oil", "2 eggs", "1/2 cup white chocolate chips", "8 oz cream cheese, softened", "1/4 cup granulated sugar", "1 egg (for cheesecake layer)", "1 tsp vanilla extract"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["1 box red velvet cake mix", "1/2 cup vegetable oil", "2 eggs", "1/2 cup white chocolate chips", "8 oz cream cheese, softened", "1/4 cup granulated sugar", "1 egg (for cheesecake layer)", "1 tsp vanilla extract"]}, {"title": "Preheat", "text": "Preheat oven to 350°F and line an 8x8-inch pan with parchment paper."}, {"title": "Brownie Batter", "text": "Mix red velvet cake mix, oil, and 2 eggs until a thick brownie batter forms, then fold in white chocolate chips.", "uses": ["1 box red velvet cake mix", "1/2 cup vegetable oil", "2 eggs", "1/2 cup white chocolate chips"]}, {"title": "Cheesecake Layer", "text": "In a separate bowl, beat cream cheese, sugar, 1 egg, and vanilla until smooth.", "uses": ["8 oz cream cheese, softened", "1/4 cup granulated sugar", "1 egg (for cheesecake layer)", "1 tsp vanilla extract"]}, {"title": "Layer & Swirl", "text": "Pour half the brownie batter into the pan, spread the cheesecake mixture on top, then dollop the remaining brownie batter over the cheesecake layer and swirl with a knife."}, {"title": "Bake", "text": "Bake for 30-35 minutes, or until a toothpick comes out mostly clean.", "timer": 1800}, {"title": "Cool", "text": "Let cool completely for about 1 hour before slicing.", "timer": 3600}]};
+let R = {"title": "Red Velvet Cheesecake Brownies", "category": "Dessert", "description": "Cake-mix red velvet brownies with white chocolate chips and a swirled cheesecake layer", "serves": 6, "prep": 15, "cook": 35, "video": "https://www.tiktok.com/@bayleennicole/video/7329630739077614891", "slug": "red-velvet-cheesecake-brownies", "ingredients": ["1 box red velvet cake mix", "1/2 cup vegetable oil", "2 eggs", "1/2 cup white chocolate chips", "8 oz cream cheese, softened", "1/4 cup granulated sugar", "1 egg (for cheesecake layer)", "1 tsp vanilla extract"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["1 box red velvet cake mix", "1/2 cup vegetable oil", "2 eggs", "1/2 cup white chocolate chips", "8 oz cream cheese, softened", "1/4 cup granulated sugar", "1 egg (for cheesecake layer)", "1 tsp vanilla extract"]}, {"title": "Preheat", "text": "Preheat oven to 350°F and line an 8x8-inch pan with parchment paper."}, {"title": "Brownie Batter", "text": "Mix red velvet cake mix, oil, and 2 eggs until a thick brownie batter forms, then fold in white chocolate chips.", "uses": ["1 box red velvet cake mix", "1/2 cup vegetable oil", "2 eggs", "1/2 cup white chocolate chips"]}, {"title": "Cheesecake Layer", "text": "In a separate bowl, beat cream cheese, sugar, 1 egg, and vanilla until smooth.", "uses": ["8 oz cream cheese, softened", "1/4 cup granulated sugar", "1 egg (for cheesecake layer)", "1 tsp vanilla extract"]}, {"title": "Layer & Swirl", "text": "Pour half the brownie batter into the pan, spread the cheesecake mixture on top, then dollop the remaining brownie batter over the cheesecake layer and swirl with a knife."}, {"title": "Bake", "text": "Bake for 30-35 minutes, or until a toothpick comes out mostly clean.", "timer": 1800}, {"title": "Cool", "text": "Let cool completely for about 1 hour before slicing.", "timer": 3600}]};
 const $ = id => document.getElementById(id);
 // card text: no Celsius conversions, no period at the very end
 const tidy = t => (t||"").replace(/\s*\(\s*-?\d+\s*°?\s*C\s*\)/g,"").replace(/\s*\/\s*-?\d+\s*°\s*C\b/g,"").replace(/\.\s*$/,"");
@@ -139,7 +139,7 @@ if(R.video){$("watch").href=R.video;$("watch").hidden=false}
 $("desc").textContent=tidy(R.description); $("desc").hidden=!R.description;
 
 /* ---- steps ---- */
-const N=R.slides.length;
+let N=R.slides.length;
 function show(i){
   cur=Math.max(0,Math.min(N,i));
   $("intro").hidden=true; $("cook").hidden=false;
@@ -229,6 +229,17 @@ async function keepAwake(){if(!("wakeLock" in navigator)||lock||asking||document
 document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"){if(cur>=0)keepAwake();paintTimers()}});
 
 renderIntro();
+
+/* ---- edits published from the recipe planner (data/edits.json) ----
+   If this recipe was edited there, use the edited title, ingredients and the
+   cards the planner rebuilt from the new steps. Only before cooking starts. */
+fetch("../data/edits.json?t="+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.json():null).then(d=>{
+  const o=d&&d.recipes&&d.recipes[R.slug], c=o&&o.cook;
+  if(!c||cur!==-1) return;
+  if(c.title){ R.title=c.title; $("ttl").textContent=c.title; document.title=c.title; }
+  if(c.ingredients) R.ingredients=c.ingredients;
+  if(c.slides&&c.slides.length){ R.slides=c.slides; N=R.slides.length; }
+}).catch(()=>{});
 </script>
 
 </body></html>

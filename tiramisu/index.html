@@ -95,7 +95,7 @@ ul.ing li{padding:5px 0}
 <div class="alarm" id="alarm" role="alert" hidden><span id="alarmTxt"></span><button id="alarmOk">OK</button></div>
 
 <script>
-const R = {"title": "Tiramisu", "category": "Dessert", "description": "Classic layered tiramisu with coffee-dipped ladyfingers, airy mascarpone cream and cocoa", "serves": 4, "prep": 20, "cook": 240, "video": "https://www.tiktok.com/@bayleennicole/video/7340329458030759214", "ingredients": ["3 eggs, separated", "1/2 cup granulated sugar, divided", "1 cup mascarpone cheese", "1 (7 oz) package ladyfingers", "1 cup brewed coffee, cooled", "1 tbsp cocoa powder, for dusting"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["3 eggs, separated", "1/2 cup granulated sugar, divided", "1 cup mascarpone cheese", "1 (7 oz) package ladyfingers", "1 cup brewed coffee, cooled", "1 tbsp cocoa powder, for dusting"]}, {"title": "Mascarpone Cream", "text": "Whip the egg whites with half the sugar (1/4 cup) until stiff peaks form, about 3-5 minutes. In a separate bowl, mix the egg yolks with the remaining sugar (1/4 cup) and the mascarpone, then gently fold the egg whites into the mascarpone mixture.", "timer": 180, "uses": ["3 eggs, separated", "1/2 cup granulated sugar, divided", "1 cup mascarpone cheese"]}, {"title": "Layer", "text": "Dip the ladyfingers in the cooled coffee and layer them in a dish, then top with half of the mascarpone mixture and repeat with another layer of dipped ladyfingers and mascarpone.", "uses": ["1 cup brewed coffee, cooled", "1 (7 oz) package ladyfingers"]}, {"title": "Dust & Chill", "text": "Dust with cocoa powder on top and refrigerate for at least 4 hours or until ready to serve.", "timer": 14400, "uses": ["1 tbsp cocoa powder, for dusting"]}]};
+let R = {"title": "Tiramisu", "category": "Dessert", "description": "Classic layered tiramisu with coffee-dipped ladyfingers, airy mascarpone cream and cocoa", "serves": 4, "prep": 20, "cook": 240, "video": "https://www.tiktok.com/@bayleennicole/video/7340329458030759214", "slug": "tiramisu", "ingredients": ["3 eggs, separated", "1/2 cup granulated sugar, divided", "1 cup mascarpone cheese", "1 (7 oz) package ladyfingers", "1 cup brewed coffee, cooled", "1 tbsp cocoa powder, for dusting"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["3 eggs, separated", "1/2 cup granulated sugar, divided", "1 cup mascarpone cheese", "1 (7 oz) package ladyfingers", "1 cup brewed coffee, cooled", "1 tbsp cocoa powder, for dusting"]}, {"title": "Mascarpone Cream", "text": "Whip the egg whites with half the sugar (1/4 cup) until stiff peaks form, about 3-5 minutes. In a separate bowl, mix the egg yolks with the remaining sugar (1/4 cup) and the mascarpone, then gently fold the egg whites into the mascarpone mixture.", "timer": 180, "uses": ["3 eggs, separated", "1/2 cup granulated sugar, divided", "1 cup mascarpone cheese"]}, {"title": "Layer", "text": "Dip the ladyfingers in the cooled coffee and layer them in a dish, then top with half of the mascarpone mixture and repeat with another layer of dipped ladyfingers and mascarpone.", "uses": ["1 cup brewed coffee, cooled", "1 (7 oz) package ladyfingers"]}, {"title": "Dust & Chill", "text": "Dust with cocoa powder on top and refrigerate for at least 4 hours or until ready to serve.", "timer": 14400, "uses": ["1 tbsp cocoa powder, for dusting"]}]};
 const $ = id => document.getElementById(id);
 // card text: no Celsius conversions, no period at the very end
 const tidy = t => (t||"").replace(/\s*\(\s*-?\d+\s*°?\s*C\s*\)/g,"").replace(/\s*\/\s*-?\d+\s*°\s*C\b/g,"").replace(/\.\s*$/,"");
@@ -139,7 +139,7 @@ if(R.video){$("watch").href=R.video;$("watch").hidden=false}
 $("desc").textContent=tidy(R.description); $("desc").hidden=!R.description;
 
 /* ---- steps ---- */
-const N=R.slides.length;
+let N=R.slides.length;
 function show(i){
   cur=Math.max(0,Math.min(N,i));
   $("intro").hidden=true; $("cook").hidden=false;
@@ -229,6 +229,17 @@ async function keepAwake(){if(!("wakeLock" in navigator)||lock||asking||document
 document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"){if(cur>=0)keepAwake();paintTimers()}});
 
 renderIntro();
+
+/* ---- edits published from the recipe planner (data/edits.json) ----
+   If this recipe was edited there, use the edited title, ingredients and the
+   cards the planner rebuilt from the new steps. Only before cooking starts. */
+fetch("../data/edits.json?t="+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.json():null).then(d=>{
+  const o=d&&d.recipes&&d.recipes[R.slug], c=o&&o.cook;
+  if(!c||cur!==-1) return;
+  if(c.title){ R.title=c.title; $("ttl").textContent=c.title; document.title=c.title; }
+  if(c.ingredients) R.ingredients=c.ingredients;
+  if(c.slides&&c.slides.length){ R.slides=c.slides; N=R.slides.length; }
+}).catch(()=>{});
 </script>
 
 </body></html>

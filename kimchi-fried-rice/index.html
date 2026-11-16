@@ -95,7 +95,7 @@ ul.ing li{padding:5px 0}
 <div class="alarm" id="alarm" role="alert" hidden><span id="alarmTxt"></span><button id="alarmOk">OK</button></div>
 
 <script>
-const R = {"title": "Kimchi Fried Rice", "category": "Lunch", "description": "Crispy kimchi fried rice with chicken, edamame and vegetables in a sriracha soy sauce", "serves": 2, "prep": 15, "cook": 15, "video": "https://www.tiktok.com/@bayleennicole/video/7397228479697276191", "ingredients": ["1 chicken breast, cut into bite-sized pieces", "Salt, pepper, and garlic salt, to taste", "1 tbsp sesame oil", "1/2 white onion, chopped", "1/2 cup kimchi, chopped", "2 cloves garlic, minced", "1 tbsp minced ginger", "2 cups cooked rice", "1/4 cup chicken broth", "1 tbsp sriracha", "2 tbsp soy sauce", "1/2 cup edamame", "1/2 cup frozen mixed vegetables"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["1 chicken breast, cut into bite-sized pieces", "Salt, pepper, and garlic salt, to taste", "1 tbsp sesame oil", "1/2 white onion, chopped", "1/2 cup kimchi, chopped", "2 cloves garlic, minced", "1 tbsp minced ginger", "2 cups cooked rice", "1/4 cup chicken broth", "1 tbsp sriracha", "2 tbsp soy sauce", "1/2 cup edamame", "1/2 cup frozen mixed vegetables"]}, {"title": "Cook the Chicken", "text": "Season the chicken with salt, pepper, and garlic salt, and cook until done, then set aside.", "uses": ["1 chicken breast, cut into bite-sized pieces", "Salt, pepper, and garlic salt, to taste"]}, {"title": "Aromatics", "text": "Heat the sesame oil in a pan and add the onion, then add the kimchi, garlic, and ginger, and cook until fragrant.", "uses": ["1 tbsp sesame oil", "1/2 white onion, chopped", "1/2 cup kimchi, chopped", "2 cloves garlic, minced", "1 tbsp minced ginger"]}, {"title": "Fry the Rice", "text": "Add the chicken back to the pan along with the rice, then let the rice sit undisturbed for a few minutes and flip; repeat a few times to fry the rice.", "uses": ["2 cups cooked rice"]}, {"title": "Sauce & Serve", "text": "Mix the chicken broth, sriracha, and soy sauce, add to the pan, and stir in the edamame and frozen vegetables, then mix everything together and serve.", "uses": ["1/4 cup chicken broth", "1 tbsp sriracha", "2 tbsp soy sauce", "1/2 cup edamame", "1/2 cup frozen mixed vegetables"]}]};
+let R = {"title": "Kimchi Fried Rice", "category": "Lunch", "description": "Crispy kimchi fried rice with chicken, edamame and vegetables in a sriracha soy sauce", "serves": 2, "prep": 15, "cook": 15, "video": "https://www.tiktok.com/@bayleennicole/video/7397228479697276191", "slug": "kimchi-fried-rice", "ingredients": ["1 chicken breast, cut into bite-sized pieces", "Salt, pepper, and garlic salt, to taste", "1 tbsp sesame oil", "1/2 white onion, chopped", "1/2 cup kimchi, chopped", "2 cloves garlic, minced", "1 tbsp minced ginger", "2 cups cooked rice", "1/4 cup chicken broth", "1 tbsp sriracha", "2 tbsp soy sauce", "1/2 cup edamame", "1/2 cup frozen mixed vegetables"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["1 chicken breast, cut into bite-sized pieces", "Salt, pepper, and garlic salt, to taste", "1 tbsp sesame oil", "1/2 white onion, chopped", "1/2 cup kimchi, chopped", "2 cloves garlic, minced", "1 tbsp minced ginger", "2 cups cooked rice", "1/4 cup chicken broth", "1 tbsp sriracha", "2 tbsp soy sauce", "1/2 cup edamame", "1/2 cup frozen mixed vegetables"]}, {"title": "Cook the Chicken", "text": "Season the chicken with salt, pepper, and garlic salt, and cook until done, then set aside.", "uses": ["1 chicken breast, cut into bite-sized pieces", "Salt, pepper, and garlic salt, to taste"]}, {"title": "Aromatics", "text": "Heat the sesame oil in a pan and add the onion, then add the kimchi, garlic, and ginger, and cook until fragrant.", "uses": ["1 tbsp sesame oil", "1/2 white onion, chopped", "1/2 cup kimchi, chopped", "2 cloves garlic, minced", "1 tbsp minced ginger"]}, {"title": "Fry the Rice", "text": "Add the chicken back to the pan along with the rice, then let the rice sit undisturbed for a few minutes and flip; repeat a few times to fry the rice.", "uses": ["2 cups cooked rice"]}, {"title": "Sauce & Serve", "text": "Mix the chicken broth, sriracha, and soy sauce, add to the pan, and stir in the edamame and frozen vegetables, then mix everything together and serve.", "uses": ["1/4 cup chicken broth", "1 tbsp sriracha", "2 tbsp soy sauce", "1/2 cup edamame", "1/2 cup frozen mixed vegetables"]}]};
 const $ = id => document.getElementById(id);
 // card text: no Celsius conversions, no period at the very end
 const tidy = t => (t||"").replace(/\s*\(\s*-?\d+\s*°?\s*C\s*\)/g,"").replace(/\s*\/\s*-?\d+\s*°\s*C\b/g,"").replace(/\.\s*$/,"");
@@ -139,7 +139,7 @@ if(R.video){$("watch").href=R.video;$("watch").hidden=false}
 $("desc").textContent=tidy(R.description); $("desc").hidden=!R.description;
 
 /* ---- steps ---- */
-const N=R.slides.length;
+let N=R.slides.length;
 function show(i){
   cur=Math.max(0,Math.min(N,i));
   $("intro").hidden=true; $("cook").hidden=false;
@@ -229,6 +229,17 @@ async function keepAwake(){if(!("wakeLock" in navigator)||lock||asking||document
 document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"){if(cur>=0)keepAwake();paintTimers()}});
 
 renderIntro();
+
+/* ---- edits published from the recipe planner (data/edits.json) ----
+   If this recipe was edited there, use the edited title, ingredients and the
+   cards the planner rebuilt from the new steps. Only before cooking starts. */
+fetch("../data/edits.json?t="+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.json():null).then(d=>{
+  const o=d&&d.recipes&&d.recipes[R.slug], c=o&&o.cook;
+  if(!c||cur!==-1) return;
+  if(c.title){ R.title=c.title; $("ttl").textContent=c.title; document.title=c.title; }
+  if(c.ingredients) R.ingredients=c.ingredients;
+  if(c.slides&&c.slides.length){ R.slides=c.slides; N=R.slides.length; }
+}).catch(()=>{});
 </script>
 
 </body></html>

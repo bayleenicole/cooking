@@ -95,7 +95,7 @@ ul.ing li{padding:5px 0}
 <div class="alarm" id="alarm" role="alert" hidden><span id="alarmTxt"></span><button id="alarmOk">OK</button></div>
 
 <script>
-const R = {"title": "Copycat DQ Blizzard", "category": "Dessert", "description": "A homemade Blizzard with vanilla ice cream, Oreos and Reese's Minis", "serves": 2, "prep": 5, "cook": 0, "video": "https://www.tiktok.com/@bayleennicole/video/7455881880534093099", "ingredients": ["4 scoops vanilla ice cream", "6 double-stuffed Oreos, chopped", "1/4 cup Reese’s Minis, chopped"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["4 scoops vanilla ice cream", "6 double-stuffed Oreos, chopped", "1/4 cup Reese’s Minis, chopped"]}, {"title": "Mix", "text": "Add the vanilla ice cream, chopped Oreos, and Reese’s Minis to a stand mixer bowl and mix on low speed until just combined and creamy, similar to a soft-serve blizzard.", "uses": ["4 scoops vanilla ice cream", "6 double-stuffed Oreos, chopped", "1/4 cup Reese’s Minis, chopped"]}, {"title": "Serve", "text": "Scoop into a cup and serve immediately."}]};
+let R = {"title": "Copycat DQ Blizzard", "category": "Dessert", "description": "A homemade Blizzard with vanilla ice cream, Oreos and Reese's Minis", "serves": 2, "prep": 5, "cook": 0, "video": "https://www.tiktok.com/@bayleennicole/video/7455881880534093099", "slug": "copycat-dq-blizzard", "ingredients": ["4 scoops vanilla ice cream", "6 double-stuffed Oreos, chopped", "1/4 cup Reese’s Minis, chopped"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["4 scoops vanilla ice cream", "6 double-stuffed Oreos, chopped", "1/4 cup Reese’s Minis, chopped"]}, {"title": "Mix", "text": "Add the vanilla ice cream, chopped Oreos, and Reese’s Minis to a stand mixer bowl and mix on low speed until just combined and creamy, similar to a soft-serve blizzard.", "uses": ["4 scoops vanilla ice cream", "6 double-stuffed Oreos, chopped", "1/4 cup Reese’s Minis, chopped"]}, {"title": "Serve", "text": "Scoop into a cup and serve immediately."}]};
 const $ = id => document.getElementById(id);
 // card text: no Celsius conversions, no period at the very end
 const tidy = t => (t||"").replace(/\s*\(\s*-?\d+\s*°?\s*C\s*\)/g,"").replace(/\s*\/\s*-?\d+\s*°\s*C\b/g,"").replace(/\.\s*$/,"");
@@ -139,7 +139,7 @@ if(R.video){$("watch").href=R.video;$("watch").hidden=false}
 $("desc").textContent=tidy(R.description); $("desc").hidden=!R.description;
 
 /* ---- steps ---- */
-const N=R.slides.length;
+let N=R.slides.length;
 function show(i){
   cur=Math.max(0,Math.min(N,i));
   $("intro").hidden=true; $("cook").hidden=false;
@@ -229,6 +229,17 @@ async function keepAwake(){if(!("wakeLock" in navigator)||lock||asking||document
 document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"){if(cur>=0)keepAwake();paintTimers()}});
 
 renderIntro();
+
+/* ---- edits published from the recipe planner (data/edits.json) ----
+   If this recipe was edited there, use the edited title, ingredients and the
+   cards the planner rebuilt from the new steps. Only before cooking starts. */
+fetch("../data/edits.json?t="+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.json():null).then(d=>{
+  const o=d&&d.recipes&&d.recipes[R.slug], c=o&&o.cook;
+  if(!c||cur!==-1) return;
+  if(c.title){ R.title=c.title; $("ttl").textContent=c.title; document.title=c.title; }
+  if(c.ingredients) R.ingredients=c.ingredients;
+  if(c.slides&&c.slides.length){ R.slides=c.slides; N=R.slides.length; }
+}).catch(()=>{});
 </script>
 
 </body></html>

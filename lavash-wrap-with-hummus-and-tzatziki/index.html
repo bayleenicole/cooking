@@ -95,7 +95,7 @@ ul.ing li{padding:5px 0}
 <div class="alarm" id="alarm" role="alert" hidden><span id="alarmTxt"></span><button id="alarmOk">OK</button></div>
 
 <script>
-const R = {"title": "Lavash Wrap with Hummus and Tzatziki", "category": "Lunch", "description": "A toasted lavash wrap with hummus, tzatziki, your protein of choice, cucumber, red onion, arugula and feta", "serves": 2, "prep": 5, "cook": 5, "video": "https://www.tiktok.com/@bayleennicole/video/7600507874544045343", "ingredients": ["1 lavash wrap", "2 tbsp hummus", "2 tbsp tzatziki", "4 oz cooked protein of choice", "1/4 cup diced cucumber", "2 tbsp thinly sliced red onion", "1/2 cup fresh arugula", "2 tbsp crumbled feta"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["1 lavash wrap", "2 tbsp hummus", "2 tbsp tzatziki", "4 oz cooked protein of choice", "1/4 cup diced cucumber", "2 tbsp thinly sliced red onion", "1/2 cup fresh arugula", "2 tbsp crumbled feta"]}, {"title": "Spread", "text": "Lay the lavash wrap flat on a clean surface, then spread the 2 tbsp hummus and 2 tbsp tzatziki evenly over the center.", "uses": ["1 lavash wrap", "2 tbsp hummus", "2 tbsp tzatziki"]}, {"title": "Fill", "text": "Top with 4 oz cooked protein of choice, 1/4 cup diced cucumber, 2 tbsp thinly sliced red onion, 1/2 cup fresh arugula, and 2 tbsp crumbled feta.", "uses": ["4 oz cooked protein of choice", "1/4 cup diced cucumber", "2 tbsp thinly sliced red onion", "1/2 cup fresh arugula", "2 tbsp crumbled feta"]}, {"title": "Roll", "text": "Fold the sides of the wrap inward and roll it tightly."}, {"title": "Toast", "text": "Heat a skillet over medium heat on the stove, then place the wrap seam-side down and toast for 2 to 3 minutes per side, until golden brown and warm.", "timer": 120}]};
+let R = {"title": "Lavash Wrap with Hummus and Tzatziki", "category": "Lunch", "description": "A toasted lavash wrap with hummus, tzatziki, your protein of choice, cucumber, red onion, arugula and feta", "serves": 2, "prep": 5, "cook": 5, "video": "https://www.tiktok.com/@bayleennicole/video/7600507874544045343", "slug": "lavash-wrap-with-hummus-and-tzatziki", "ingredients": ["1 lavash wrap", "2 tbsp hummus", "2 tbsp tzatziki", "4 oz cooked protein of choice", "1/4 cup diced cucumber", "2 tbsp thinly sliced red onion", "1/2 cup fresh arugula", "2 tbsp crumbled feta"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["1 lavash wrap", "2 tbsp hummus", "2 tbsp tzatziki", "4 oz cooked protein of choice", "1/4 cup diced cucumber", "2 tbsp thinly sliced red onion", "1/2 cup fresh arugula", "2 tbsp crumbled feta"]}, {"title": "Spread", "text": "Lay the lavash wrap flat on a clean surface, then spread the 2 tbsp hummus and 2 tbsp tzatziki evenly over the center.", "uses": ["1 lavash wrap", "2 tbsp hummus", "2 tbsp tzatziki"]}, {"title": "Fill", "text": "Top with 4 oz cooked protein of choice, 1/4 cup diced cucumber, 2 tbsp thinly sliced red onion, 1/2 cup fresh arugula, and 2 tbsp crumbled feta.", "uses": ["4 oz cooked protein of choice", "1/4 cup diced cucumber", "2 tbsp thinly sliced red onion", "1/2 cup fresh arugula", "2 tbsp crumbled feta"]}, {"title": "Roll", "text": "Fold the sides of the wrap inward and roll it tightly."}, {"title": "Toast", "text": "Heat a skillet over medium heat on the stove, then place the wrap seam-side down and toast for 2 to 3 minutes per side, until golden brown and warm.", "timer": 120}]};
 const $ = id => document.getElementById(id);
 // card text: no Celsius conversions, no period at the very end
 const tidy = t => (t||"").replace(/\s*\(\s*-?\d+\s*°?\s*C\s*\)/g,"").replace(/\s*\/\s*-?\d+\s*°\s*C\b/g,"").replace(/\.\s*$/,"");
@@ -139,7 +139,7 @@ if(R.video){$("watch").href=R.video;$("watch").hidden=false}
 $("desc").textContent=tidy(R.description); $("desc").hidden=!R.description;
 
 /* ---- steps ---- */
-const N=R.slides.length;
+let N=R.slides.length;
 function show(i){
   cur=Math.max(0,Math.min(N,i));
   $("intro").hidden=true; $("cook").hidden=false;
@@ -229,6 +229,17 @@ async function keepAwake(){if(!("wakeLock" in navigator)||lock||asking||document
 document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"){if(cur>=0)keepAwake();paintTimers()}});
 
 renderIntro();
+
+/* ---- edits published from the recipe planner (data/edits.json) ----
+   If this recipe was edited there, use the edited title, ingredients and the
+   cards the planner rebuilt from the new steps. Only before cooking starts. */
+fetch("../data/edits.json?t="+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.json():null).then(d=>{
+  const o=d&&d.recipes&&d.recipes[R.slug], c=o&&o.cook;
+  if(!c||cur!==-1) return;
+  if(c.title){ R.title=c.title; $("ttl").textContent=c.title; document.title=c.title; }
+  if(c.ingredients) R.ingredients=c.ingredients;
+  if(c.slides&&c.slides.length){ R.slides=c.slides; N=R.slides.length; }
+}).catch(()=>{});
 </script>
 
 </body></html>

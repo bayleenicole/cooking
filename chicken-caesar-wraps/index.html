@@ -95,7 +95,7 @@ ul.ing li{padding:5px 0}
 <div class="alarm" id="alarm" role="alert" hidden><span id="alarmTxt"></span><button id="alarmOk">OK</button></div>
 
 <script>
-const R = {"title": "Chicken Caesar Wraps", "category": "Lunch", "description": "Rotisserie chicken Caesar salad with chickpeas, rolled in lavash and toasted, with orange wedges on the side", "serves": 4, "prep": 15, "cook": 5, "video": "https://www.tiktok.com/@bayleennicole/video/7310065007985691947", "ingredients": ["2 anchovy fillets", "1 tbsp avocado mayo", "1 tsp Dijon mustard", "1 clove garlic", "Salt, to taste", "Juice of 1/2 lemon", "6 cups chopped romaine lettuce", "1/4 cup grated Parmesan", "1 (15 oz) can garbanzo beans, drained", "2 cups shredded rotisserie chicken", "2-3 large lavash or flour wraps", "1 orange, for serving"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["2 anchovy fillets", "1 tbsp avocado mayo", "1 tsp Dijon mustard", "1 clove garlic", "Salt, to taste", "Juice of 1/2 lemon", "6 cups chopped romaine lettuce", "1/4 cup grated Parmesan", "1 (15 oz) can garbanzo beans, drained", "2 cups shredded rotisserie chicken", "2-3 large lavash or flour wraps", "1 orange, for serving"]}, {"title": "Blend the Dressing", "text": "In a blender, combine the anchovies, avocado mayo, Dijon mustard, garlic, salt, and lemon juice, and blend until smooth, then taste and adjust seasoning as needed.", "uses": ["2 anchovy fillets", "1 tbsp avocado mayo", "1 tsp Dijon mustard", "1 clove garlic", "Salt, to taste", "Juice of 1/2 lemon"]}, {"title": "Toss the Salad", "text": "In a large bowl, toss the chopped romaine lettuce with the dressing, add the Parmesan and garbanzo beans and mix well, then top with the shredded rotisserie chicken.", "uses": ["6 cups chopped romaine lettuce", "1/4 cup grated Parmesan", "1 (15 oz) can garbanzo beans, drained", "2 cups shredded rotisserie chicken"]}, {"title": "Fill & Roll", "text": "Lay out the wraps, fill with the salad and chicken mixture, and roll up tightly.", "uses": ["2-3 large lavash or flour wraps"]}, {"title": "Toast", "text": "Toast the wraps in a pan over medium heat, seam-side down, for 2-3 minutes per side until golden to help them hold together.", "timer": 120}, {"title": "Slice & Serve", "text": "Slice the orange into wedges, then slice the wraps in half and serve with the orange wedges on the side.", "uses": ["1 orange, for serving"]}]};
+let R = {"title": "Chicken Caesar Wraps", "category": "Lunch", "description": "Rotisserie chicken Caesar salad with chickpeas, rolled in lavash and toasted, with orange wedges on the side", "serves": 4, "prep": 15, "cook": 5, "video": "https://www.tiktok.com/@bayleennicole/video/7310065007985691947", "slug": "chicken-caesar-wraps", "ingredients": ["2 anchovy fillets", "1 tbsp avocado mayo", "1 tsp Dijon mustard", "1 clove garlic", "Salt, to taste", "Juice of 1/2 lemon", "6 cups chopped romaine lettuce", "1/4 cup grated Parmesan", "1 (15 oz) can garbanzo beans, drained", "2 cups shredded rotisserie chicken", "2-3 large lavash or flour wraps", "1 orange, for serving"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["2 anchovy fillets", "1 tbsp avocado mayo", "1 tsp Dijon mustard", "1 clove garlic", "Salt, to taste", "Juice of 1/2 lemon", "6 cups chopped romaine lettuce", "1/4 cup grated Parmesan", "1 (15 oz) can garbanzo beans, drained", "2 cups shredded rotisserie chicken", "2-3 large lavash or flour wraps", "1 orange, for serving"]}, {"title": "Blend the Dressing", "text": "In a blender, combine the anchovies, avocado mayo, Dijon mustard, garlic, salt, and lemon juice, and blend until smooth, then taste and adjust seasoning as needed.", "uses": ["2 anchovy fillets", "1 tbsp avocado mayo", "1 tsp Dijon mustard", "1 clove garlic", "Salt, to taste", "Juice of 1/2 lemon"]}, {"title": "Toss the Salad", "text": "In a large bowl, toss the chopped romaine lettuce with the dressing, add the Parmesan and garbanzo beans and mix well, then top with the shredded rotisserie chicken.", "uses": ["6 cups chopped romaine lettuce", "1/4 cup grated Parmesan", "1 (15 oz) can garbanzo beans, drained", "2 cups shredded rotisserie chicken"]}, {"title": "Fill & Roll", "text": "Lay out the wraps, fill with the salad and chicken mixture, and roll up tightly.", "uses": ["2-3 large lavash or flour wraps"]}, {"title": "Toast", "text": "Toast the wraps in a pan over medium heat, seam-side down, for 2-3 minutes per side until golden to help them hold together.", "timer": 120}, {"title": "Slice & Serve", "text": "Slice the orange into wedges, then slice the wraps in half and serve with the orange wedges on the side.", "uses": ["1 orange, for serving"]}]};
 const $ = id => document.getElementById(id);
 // card text: no Celsius conversions, no period at the very end
 const tidy = t => (t||"").replace(/\s*\(\s*-?\d+\s*°?\s*C\s*\)/g,"").replace(/\s*\/\s*-?\d+\s*°\s*C\b/g,"").replace(/\.\s*$/,"");
@@ -139,7 +139,7 @@ if(R.video){$("watch").href=R.video;$("watch").hidden=false}
 $("desc").textContent=tidy(R.description); $("desc").hidden=!R.description;
 
 /* ---- steps ---- */
-const N=R.slides.length;
+let N=R.slides.length;
 function show(i){
   cur=Math.max(0,Math.min(N,i));
   $("intro").hidden=true; $("cook").hidden=false;
@@ -229,6 +229,17 @@ async function keepAwake(){if(!("wakeLock" in navigator)||lock||asking||document
 document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"){if(cur>=0)keepAwake();paintTimers()}});
 
 renderIntro();
+
+/* ---- edits published from the recipe planner (data/edits.json) ----
+   If this recipe was edited there, use the edited title, ingredients and the
+   cards the planner rebuilt from the new steps. Only before cooking starts. */
+fetch("../data/edits.json?t="+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.json():null).then(d=>{
+  const o=d&&d.recipes&&d.recipes[R.slug], c=o&&o.cook;
+  if(!c||cur!==-1) return;
+  if(c.title){ R.title=c.title; $("ttl").textContent=c.title; document.title=c.title; }
+  if(c.ingredients) R.ingredients=c.ingredients;
+  if(c.slides&&c.slides.length){ R.slides=c.slides; N=R.slides.length; }
+}).catch(()=>{});
 </script>
 
 </body></html>

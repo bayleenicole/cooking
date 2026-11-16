@@ -95,7 +95,7 @@ ul.ing li{padding:5px 0}
 <div class="alarm" id="alarm" role="alert" hidden><span id="alarmTxt"></span><button id="alarmOk">OK</button></div>
 
 <script>
-const R = {"title": "Creamy Sun-Dried Tomato Chicken Noodles", "category": "Dinner", "description": "One-pot creamy chicken noodles with sun-dried tomatoes, spinach and Parmesan", "serves": 4, "prep": 10, "cook": 25, "video": "https://www.tiktok.com/@bayleennicole/video/7506720371278744878", "ingredients": ["1 lb chicken tenderloins", "1/2 onion, diced", "3 cloves garlic, minced", "1/2 cup sun dried tomatoes, chopped", "1/2 cup chicken broth, coconut milk, or cream", "3 cups chicken broth or water + chicken bouillon", "8 oz noodles (4 servings)", "1 (5 oz) bag spinach", "1/2 cup grated Parmesan"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["1 lb chicken tenderloins", "1/2 onion, diced", "3 cloves garlic, minced", "1/2 cup sun dried tomatoes, chopped", "1/2 cup chicken broth, coconut milk, or cream", "3 cups chicken broth or water + chicken bouillon", "8 oz noodles (4 servings)", "1 (5 oz) bag spinach", "1/2 cup grated Parmesan"]}, {"title": "Cook the Chicken", "text": "Cook chicken tenderloins in a Dutch oven for 3-5 minutes on each side until cooked through, then remove from the pan.", "timer": 180, "uses": ["1 lb chicken tenderloins"]}, {"title": "Onion & Garlic", "text": "Add diced onion and garlic to the pan and sauté until softened.", "uses": ["1/2 onion, diced", "3 cloves garlic, minced"]}, {"title": "Add the Noodles", "text": "Add sun-dried tomatoes, 1/2 cup chicken broth, coconut milk, or cream, 3 cups chicken broth (or water + chicken bouillon), and 4 servings of noodles. Bring the mixture to a boil, then reduce heat to a simmer and cover.", "uses": ["1/2 cup sun dried tomatoes, chopped", "1/2 cup chicken broth, coconut milk, or cream", "3 cups chicken broth or water + chicken bouillon", "8 oz noodles (4 servings)"]}, {"title": "Finish", "text": "Let the noodles cook through, then add the chicken back to the pan along with a bag of spinach and Parmesan, stirring until combined.", "uses": ["1 (5 oz) bag spinach", "1/2 cup grated Parmesan"]}]};
+let R = {"title": "Creamy Sun-Dried Tomato Chicken Noodles", "category": "Dinner", "description": "One-pot creamy chicken noodles with sun-dried tomatoes, spinach and Parmesan", "serves": 4, "prep": 10, "cook": 25, "video": "https://www.tiktok.com/@bayleennicole/video/7506720371278744878", "slug": "creamy-sun-dried-tomato-chicken-noodles", "ingredients": ["1 lb chicken tenderloins", "1/2 onion, diced", "3 cloves garlic, minced", "1/2 cup sun dried tomatoes, chopped", "1/2 cup chicken broth, coconut milk, or cream", "3 cups chicken broth or water + chicken bouillon", "8 oz noodles (4 servings)", "1 (5 oz) bag spinach", "1/2 cup grated Parmesan"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["1 lb chicken tenderloins", "1/2 onion, diced", "3 cloves garlic, minced", "1/2 cup sun dried tomatoes, chopped", "1/2 cup chicken broth, coconut milk, or cream", "3 cups chicken broth or water + chicken bouillon", "8 oz noodles (4 servings)", "1 (5 oz) bag spinach", "1/2 cup grated Parmesan"]}, {"title": "Cook the Chicken", "text": "Cook chicken tenderloins in a Dutch oven for 3-5 minutes on each side until cooked through, then remove from the pan.", "timer": 180, "uses": ["1 lb chicken tenderloins"]}, {"title": "Onion & Garlic", "text": "Add diced onion and garlic to the pan and sauté until softened.", "uses": ["1/2 onion, diced", "3 cloves garlic, minced"]}, {"title": "Add the Noodles", "text": "Add sun-dried tomatoes, 1/2 cup chicken broth, coconut milk, or cream, 3 cups chicken broth (or water + chicken bouillon), and 4 servings of noodles. Bring the mixture to a boil, then reduce heat to a simmer and cover.", "uses": ["1/2 cup sun dried tomatoes, chopped", "1/2 cup chicken broth, coconut milk, or cream", "3 cups chicken broth or water + chicken bouillon", "8 oz noodles (4 servings)"]}, {"title": "Finish", "text": "Let the noodles cook through, then add the chicken back to the pan along with a bag of spinach and Parmesan, stirring until combined.", "uses": ["1 (5 oz) bag spinach", "1/2 cup grated Parmesan"]}]};
 const $ = id => document.getElementById(id);
 // card text: no Celsius conversions, no period at the very end
 const tidy = t => (t||"").replace(/\s*\(\s*-?\d+\s*°?\s*C\s*\)/g,"").replace(/\s*\/\s*-?\d+\s*°\s*C\b/g,"").replace(/\.\s*$/,"");
@@ -139,7 +139,7 @@ if(R.video){$("watch").href=R.video;$("watch").hidden=false}
 $("desc").textContent=tidy(R.description); $("desc").hidden=!R.description;
 
 /* ---- steps ---- */
-const N=R.slides.length;
+let N=R.slides.length;
 function show(i){
   cur=Math.max(0,Math.min(N,i));
   $("intro").hidden=true; $("cook").hidden=false;
@@ -229,6 +229,17 @@ async function keepAwake(){if(!("wakeLock" in navigator)||lock||asking||document
 document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"){if(cur>=0)keepAwake();paintTimers()}});
 
 renderIntro();
+
+/* ---- edits published from the recipe planner (data/edits.json) ----
+   If this recipe was edited there, use the edited title, ingredients and the
+   cards the planner rebuilt from the new steps. Only before cooking starts. */
+fetch("../data/edits.json?t="+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.json():null).then(d=>{
+  const o=d&&d.recipes&&d.recipes[R.slug], c=o&&o.cook;
+  if(!c||cur!==-1) return;
+  if(c.title){ R.title=c.title; $("ttl").textContent=c.title; document.title=c.title; }
+  if(c.ingredients) R.ingredients=c.ingredients;
+  if(c.slides&&c.slides.length){ R.slides=c.slides; N=R.slides.length; }
+}).catch(()=>{});
 </script>
 
 </body></html>

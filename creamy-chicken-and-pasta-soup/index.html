@@ -95,7 +95,7 @@ ul.ing li{padding:5px 0}
 <div class="alarm" id="alarm" role="alert" hidden><span id="alarmTxt"></span><button id="alarmOk">OK</button></div>
 
 <script>
-const R = {"title": "Creamy Chicken & Pasta Soup", "category": "Dinner", "description": "A cozy chicken soup with vegetables, small pasta, coconut milk, Parmesan, spinach and a squeeze of lemon", "serves": 4, "prep": 15, "cook": 45, "video": "https://www.tiktok.com/@bayleennicole/video/7484434437040524590", "ingredients": ["2 chicken breasts", "2 celery stalks, chopped", "2 carrots, chopped", "3 cloves garlic, minced", "1 onion, chopped", "1 tbsp fresh thyme", "Salt and pepper, to taste", "1 tsp dried oregano", "1 tbsp flour", "2 (32 oz) boxes chicken broth", "1 cup small pasta", "1/2 cup coconut milk", "1/4 cup grated Parmesan", "1 (5 oz) bag spinach", "Juice of 1/2 lemon"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["2 chicken breasts", "2 celery stalks, chopped", "2 carrots, chopped", "3 cloves garlic, minced", "1 onion, chopped", "1 tbsp fresh thyme", "Salt and pepper, to taste", "1 tsp dried oregano", "1 tbsp flour", "2 (32 oz) boxes chicken broth", "1 cup small pasta", "1/2 cup coconut milk", "1/4 cup grated Parmesan", "1 (5 oz) bag spinach", "Juice of 1/2 lemon"]}, {"title": "Prep", "text": "Chop the celery, carrots, and onion, and mince the garlic."}, {"title": "Sear the Chicken", "text": "Sear the chicken breasts in a large pot until browned, then remove and set aside.", "uses": ["2 chicken breasts"]}, {"title": "Vegetables & Seasoning", "text": "Add the celery, carrots, garlic, and onion to the pot and sauté until softened, then add the thyme, salt, pepper, and oregano, sprinkle in the flour, and stir to coat the vegetables.", "uses": ["2 celery stalks, chopped", "2 carrots, chopped", "3 cloves garlic, minced", "1 onion, chopped", "1 tbsp fresh thyme", "Salt and pepper, to taste", "1 tsp dried oregano", "1 tbsp flour"]}, {"title": "Simmer the Chicken", "text": "Add the chicken broth and bring to a simmer, then return the chicken to the pot and cook until done before removing to shred and set aside.", "uses": ["2 (32 oz) boxes chicken broth"]}, {"title": "Cook the Pasta", "text": "Add the pasta to the pot and cook until tender.", "uses": ["1 cup small pasta"]}, {"title": "Finish & Serve", "text": "Stir in the coconut milk and Parmesan, then add the spinach and let it wilt. Return the shredded chicken to the pot, finish with a squeeze of lemon juice, and serve.", "uses": ["1/2 cup coconut milk", "1/4 cup grated Parmesan", "1 (5 oz) bag spinach", "Juice of 1/2 lemon"]}]};
+let R = {"title": "Creamy Chicken & Pasta Soup", "category": "Dinner", "description": "A cozy chicken soup with vegetables, small pasta, coconut milk, Parmesan, spinach and a squeeze of lemon", "serves": 4, "prep": 15, "cook": 45, "video": "https://www.tiktok.com/@bayleennicole/video/7484434437040524590", "slug": "creamy-chicken-and-pasta-soup", "ingredients": ["2 chicken breasts", "2 celery stalks, chopped", "2 carrots, chopped", "3 cloves garlic, minced", "1 onion, chopped", "1 tbsp fresh thyme", "Salt and pepper, to taste", "1 tsp dried oregano", "1 tbsp flour", "2 (32 oz) boxes chicken broth", "1 cup small pasta", "1/2 cup coconut milk", "1/4 cup grated Parmesan", "1 (5 oz) bag spinach", "Juice of 1/2 lemon"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["2 chicken breasts", "2 celery stalks, chopped", "2 carrots, chopped", "3 cloves garlic, minced", "1 onion, chopped", "1 tbsp fresh thyme", "Salt and pepper, to taste", "1 tsp dried oregano", "1 tbsp flour", "2 (32 oz) boxes chicken broth", "1 cup small pasta", "1/2 cup coconut milk", "1/4 cup grated Parmesan", "1 (5 oz) bag spinach", "Juice of 1/2 lemon"]}, {"title": "Prep", "text": "Chop the celery, carrots, and onion, and mince the garlic."}, {"title": "Sear the Chicken", "text": "Sear the chicken breasts in a large pot until browned, then remove and set aside.", "uses": ["2 chicken breasts"]}, {"title": "Vegetables & Seasoning", "text": "Add the celery, carrots, garlic, and onion to the pot and sauté until softened, then add the thyme, salt, pepper, and oregano, sprinkle in the flour, and stir to coat the vegetables.", "uses": ["2 celery stalks, chopped", "2 carrots, chopped", "3 cloves garlic, minced", "1 onion, chopped", "1 tbsp fresh thyme", "Salt and pepper, to taste", "1 tsp dried oregano", "1 tbsp flour"]}, {"title": "Simmer the Chicken", "text": "Add the chicken broth and bring to a simmer, then return the chicken to the pot and cook until done before removing to shred and set aside.", "uses": ["2 (32 oz) boxes chicken broth"]}, {"title": "Cook the Pasta", "text": "Add the pasta to the pot and cook until tender.", "uses": ["1 cup small pasta"]}, {"title": "Finish & Serve", "text": "Stir in the coconut milk and Parmesan, then add the spinach and let it wilt. Return the shredded chicken to the pot, finish with a squeeze of lemon juice, and serve.", "uses": ["1/2 cup coconut milk", "1/4 cup grated Parmesan", "1 (5 oz) bag spinach", "Juice of 1/2 lemon"]}]};
 const $ = id => document.getElementById(id);
 // card text: no Celsius conversions, no period at the very end
 const tidy = t => (t||"").replace(/\s*\(\s*-?\d+\s*°?\s*C\s*\)/g,"").replace(/\s*\/\s*-?\d+\s*°\s*C\b/g,"").replace(/\.\s*$/,"");
@@ -139,7 +139,7 @@ if(R.video){$("watch").href=R.video;$("watch").hidden=false}
 $("desc").textContent=tidy(R.description); $("desc").hidden=!R.description;
 
 /* ---- steps ---- */
-const N=R.slides.length;
+let N=R.slides.length;
 function show(i){
   cur=Math.max(0,Math.min(N,i));
   $("intro").hidden=true; $("cook").hidden=false;
@@ -229,6 +229,17 @@ async function keepAwake(){if(!("wakeLock" in navigator)||lock||asking||document
 document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"){if(cur>=0)keepAwake();paintTimers()}});
 
 renderIntro();
+
+/* ---- edits published from the recipe planner (data/edits.json) ----
+   If this recipe was edited there, use the edited title, ingredients and the
+   cards the planner rebuilt from the new steps. Only before cooking starts. */
+fetch("../data/edits.json?t="+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.json():null).then(d=>{
+  const o=d&&d.recipes&&d.recipes[R.slug], c=o&&o.cook;
+  if(!c||cur!==-1) return;
+  if(c.title){ R.title=c.title; $("ttl").textContent=c.title; document.title=c.title; }
+  if(c.ingredients) R.ingredients=c.ingredients;
+  if(c.slides&&c.slides.length){ R.slides=c.slides; N=R.slides.length; }
+}).catch(()=>{});
 </script>
 
 </body></html>

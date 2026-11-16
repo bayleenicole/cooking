@@ -95,7 +95,7 @@ ul.ing li{padding:5px 0}
 <div class="alarm" id="alarm" role="alert" hidden><span id="alarmTxt"></span><button id="alarmOk">OK</button></div>
 
 <script>
-const R = {"title": "Ground Turkey Skillet Lasagna", "category": "Dinner", "description": "One-skillet turkey lasagna with marinara, spinach, creamy blended cottage cheese and melted mozzarella", "serves": 4, "prep": 10, "cook": 20, "video": "https://www.tiktok.com/@bayleennicole/video/7623147127786458382", "ingredients": ["6 lasagna sheets, broken in pieces", "1/2 onion, diced", "1 lb ground turkey", "24 oz jar of marinara", "2 handfuls of spinach", "16 oz cottage cheese, blended", "1 cup shredded mozzarella"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["6 lasagna sheets, broken in pieces", "1/2 onion, diced", "1 lb ground turkey", "24 oz jar of marinara", "2 handfuls of spinach", "16 oz cottage cheese, blended", "1 cup shredded mozzarella"]}, {"title": "Boil the Noodles", "text": "Boil the broken lasagna noodles in a pot of water until done, then drain and set aside.", "uses": ["6 lasagna sheets, broken in pieces"]}, {"title": "Turkey", "text": "Sauté the diced onion in a large skillet, then add the ground turkey and cook until browned and cooked through.", "uses": ["1/2 onion, diced", "1 lb ground turkey"]}, {"title": "Sauce & Spinach", "text": "Add the cooked noodles and marinara sauce to the skillet, combine well, then stir in the spinach and let it wilt.", "uses": ["24 oz jar of marinara", "2 handfuls of spinach"]}, {"title": "Cheese & Melt", "text": "Add dollops of blended cottage cheese across the top, top with shredded mozzarella, cover until the cheese is melted, and enjoy!", "uses": ["16 oz cottage cheese, blended", "1 cup shredded mozzarella"]}]};
+let R = {"title": "Ground Turkey Skillet Lasagna", "category": "Dinner", "description": "One-skillet turkey lasagna with marinara, spinach, creamy blended cottage cheese and melted mozzarella", "serves": 4, "prep": 10, "cook": 20, "video": "https://www.tiktok.com/@bayleennicole/video/7623147127786458382", "slug": "ground-turkey-skillet-lasagna", "ingredients": ["6 lasagna sheets, broken in pieces", "1/2 onion, diced", "1 lb ground turkey", "24 oz jar of marinara", "2 handfuls of spinach", "16 oz cottage cheese, blended", "1 cup shredded mozzarella"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["6 lasagna sheets, broken in pieces", "1/2 onion, diced", "1 lb ground turkey", "24 oz jar of marinara", "2 handfuls of spinach", "16 oz cottage cheese, blended", "1 cup shredded mozzarella"]}, {"title": "Boil the Noodles", "text": "Boil the broken lasagna noodles in a pot of water until done, then drain and set aside.", "uses": ["6 lasagna sheets, broken in pieces"]}, {"title": "Turkey", "text": "Sauté the diced onion in a large skillet, then add the ground turkey and cook until browned and cooked through.", "uses": ["1/2 onion, diced", "1 lb ground turkey"]}, {"title": "Sauce & Spinach", "text": "Add the cooked noodles and marinara sauce to the skillet, combine well, then stir in the spinach and let it wilt.", "uses": ["24 oz jar of marinara", "2 handfuls of spinach"]}, {"title": "Cheese & Melt", "text": "Add dollops of blended cottage cheese across the top, top with shredded mozzarella, cover until the cheese is melted, and enjoy!", "uses": ["16 oz cottage cheese, blended", "1 cup shredded mozzarella"]}]};
 const $ = id => document.getElementById(id);
 // card text: no Celsius conversions, no period at the very end
 const tidy = t => (t||"").replace(/\s*\(\s*-?\d+\s*°?\s*C\s*\)/g,"").replace(/\s*\/\s*-?\d+\s*°\s*C\b/g,"").replace(/\.\s*$/,"");
@@ -139,7 +139,7 @@ if(R.video){$("watch").href=R.video;$("watch").hidden=false}
 $("desc").textContent=tidy(R.description); $("desc").hidden=!R.description;
 
 /* ---- steps ---- */
-const N=R.slides.length;
+let N=R.slides.length;
 function show(i){
   cur=Math.max(0,Math.min(N,i));
   $("intro").hidden=true; $("cook").hidden=false;
@@ -229,6 +229,17 @@ async function keepAwake(){if(!("wakeLock" in navigator)||lock||asking||document
 document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"){if(cur>=0)keepAwake();paintTimers()}});
 
 renderIntro();
+
+/* ---- edits published from the recipe planner (data/edits.json) ----
+   If this recipe was edited there, use the edited title, ingredients and the
+   cards the planner rebuilt from the new steps. Only before cooking starts. */
+fetch("../data/edits.json?t="+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.json():null).then(d=>{
+  const o=d&&d.recipes&&d.recipes[R.slug], c=o&&o.cook;
+  if(!c||cur!==-1) return;
+  if(c.title){ R.title=c.title; $("ttl").textContent=c.title; document.title=c.title; }
+  if(c.ingredients) R.ingredients=c.ingredients;
+  if(c.slides&&c.slides.length){ R.slides=c.slides; N=R.slides.length; }
+}).catch(()=>{});
 </script>
 
 </body></html>

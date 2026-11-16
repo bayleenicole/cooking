@@ -95,7 +95,7 @@ ul.ing li{padding:5px 0}
 <div class="alarm" id="alarm" role="alert" hidden><span id="alarmTxt"></span><button id="alarmOk">OK</button></div>
 
 <script>
-const R = {"title": "Turkey Meatball with Roasted Vegetables", "category": "Dinner", "description": "A single-serve plate of roasted vegetables with turmeric tahini, a turkey meatball, avocado and hummus", "serves": 1, "prep": 10, "cook": 20, "video": "https://www.tiktok.com/@bayleennicole/video/7571931755280649527", "ingredients": ["1 cup mixed vegetables, roasted", "1 turkey meatball", "1 tbsp tahini", "1/4 tsp turmeric", "1 tbsp warm water", "1/4 avocado", "2 tbsp homemade hummus"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["1 cup mixed vegetables, roasted", "1 turkey meatball", "1 tbsp tahini", "1/4 tsp turmeric", "1 tbsp warm water", "1/4 avocado", "2 tbsp homemade hummus"]}, {"title": "Roast the Vegetables", "text": "Preheat oven to 400°F. Roast the mixed vegetables until tender, about 20 minutes.", "timer": 1200, "uses": ["1 cup mixed vegetables, roasted"]}, {"title": "Warm the Meatball", "text": "Warm the turkey meatball through, about 5 minutes.", "timer": 300, "uses": ["1 turkey meatball"]}, {"title": "Turmeric Tahini", "text": "Whisk together the tahini and turmeric with the warm water to make the dressing, then drizzle it over the roasted vegetables.", "uses": ["1 tbsp tahini", "1/4 tsp turmeric", "1 tbsp warm water"]}, {"title": "Serve", "text": "Serve the roasted vegetables with the sliced avocado, turkey meatball, and homemade hummus on the side.", "uses": ["1/4 avocado", "2 tbsp homemade hummus"]}]};
+let R = {"title": "Turkey Meatball with Roasted Vegetables", "category": "Dinner", "description": "A single-serve plate of roasted vegetables with turmeric tahini, a turkey meatball, avocado and hummus", "serves": 1, "prep": 10, "cook": 20, "video": "https://www.tiktok.com/@bayleennicole/video/7571931755280649527", "slug": "turkey-meatball-with-roasted-vegetables", "ingredients": ["1 cup mixed vegetables, roasted", "1 turkey meatball", "1 tbsp tahini", "1/4 tsp turmeric", "1 tbsp warm water", "1/4 avocado", "2 tbsp homemade hummus"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["1 cup mixed vegetables, roasted", "1 turkey meatball", "1 tbsp tahini", "1/4 tsp turmeric", "1 tbsp warm water", "1/4 avocado", "2 tbsp homemade hummus"]}, {"title": "Roast the Vegetables", "text": "Preheat oven to 400°F. Roast the mixed vegetables until tender, about 20 minutes.", "timer": 1200, "uses": ["1 cup mixed vegetables, roasted"]}, {"title": "Warm the Meatball", "text": "Warm the turkey meatball through, about 5 minutes.", "timer": 300, "uses": ["1 turkey meatball"]}, {"title": "Turmeric Tahini", "text": "Whisk together the tahini and turmeric with the warm water to make the dressing, then drizzle it over the roasted vegetables.", "uses": ["1 tbsp tahini", "1/4 tsp turmeric", "1 tbsp warm water"]}, {"title": "Serve", "text": "Serve the roasted vegetables with the sliced avocado, turkey meatball, and homemade hummus on the side.", "uses": ["1/4 avocado", "2 tbsp homemade hummus"]}]};
 const $ = id => document.getElementById(id);
 // card text: no Celsius conversions, no period at the very end
 const tidy = t => (t||"").replace(/\s*\(\s*-?\d+\s*°?\s*C\s*\)/g,"").replace(/\s*\/\s*-?\d+\s*°\s*C\b/g,"").replace(/\.\s*$/,"");
@@ -139,7 +139,7 @@ if(R.video){$("watch").href=R.video;$("watch").hidden=false}
 $("desc").textContent=tidy(R.description); $("desc").hidden=!R.description;
 
 /* ---- steps ---- */
-const N=R.slides.length;
+let N=R.slides.length;
 function show(i){
   cur=Math.max(0,Math.min(N,i));
   $("intro").hidden=true; $("cook").hidden=false;
@@ -229,6 +229,17 @@ async function keepAwake(){if(!("wakeLock" in navigator)||lock||asking||document
 document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"){if(cur>=0)keepAwake();paintTimers()}});
 
 renderIntro();
+
+/* ---- edits published from the recipe planner (data/edits.json) ----
+   If this recipe was edited there, use the edited title, ingredients and the
+   cards the planner rebuilt from the new steps. Only before cooking starts. */
+fetch("../data/edits.json?t="+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.json():null).then(d=>{
+  const o=d&&d.recipes&&d.recipes[R.slug], c=o&&o.cook;
+  if(!c||cur!==-1) return;
+  if(c.title){ R.title=c.title; $("ttl").textContent=c.title; document.title=c.title; }
+  if(c.ingredients) R.ingredients=c.ingredients;
+  if(c.slides&&c.slides.length){ R.slides=c.slides; N=R.slides.length; }
+}).catch(()=>{});
 </script>
 
 </body></html>

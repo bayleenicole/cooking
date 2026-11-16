@@ -95,7 +95,7 @@ ul.ing li{padding:5px 0}
 <div class="alarm" id="alarm" role="alert" hidden><span id="alarmTxt"></span><button id="alarmOk">OK</button></div>
 
 <script>
-const R = {"title": "Afternoon Espresso Banana Date Smoothie", "category": "Drinks & Coffee", "description": "An iced espresso protein smoothie sweetened with banana and a date", "serves": 1, "prep": 5, "cook": 0, "video": "https://www.tiktok.com/@bayleennicole/video/7359663047276809518", "ingredients": ["1 cup ice", "1/4 banana", "1 double shot espresso", "1 scoop vanilla protein powder", "1 pitted date", "1/2 tsp cinnamon", "1/2 cup water", "2 tbsp half and half"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["1 cup ice", "1/4 banana", "1 double shot espresso", "1 scoop vanilla protein powder", "1 pitted date", "1/2 tsp cinnamon", "1/2 cup water", "2 tbsp half and half"]}, {"title": "Load the Blender", "text": "Add the ice, banana, espresso, protein powder, date, cinnamon, water, and half and half to a blender.", "uses": ["1 cup ice", "1/4 banana", "1 double shot espresso", "1 scoop vanilla protein powder", "1 pitted date", "1/2 tsp cinnamon", "1/2 cup water", "2 tbsp half and half"]}, {"title": "Blend & Serve", "text": "Blend until smooth, then pour into a glass and serve."}]};
+let R = {"title": "Afternoon Espresso Banana Date Smoothie", "category": "Drinks & Coffee", "description": "An iced espresso protein smoothie sweetened with banana and a date", "serves": 1, "prep": 5, "cook": 0, "video": "https://www.tiktok.com/@bayleennicole/video/7359663047276809518", "slug": "afternoon-espresso-banana-date-smoothie", "ingredients": ["1 cup ice", "1/4 banana", "1 double shot espresso", "1 scoop vanilla protein powder", "1 pitted date", "1/2 tsp cinnamon", "1/2 cup water", "2 tbsp half and half"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["1 cup ice", "1/4 banana", "1 double shot espresso", "1 scoop vanilla protein powder", "1 pitted date", "1/2 tsp cinnamon", "1/2 cup water", "2 tbsp half and half"]}, {"title": "Load the Blender", "text": "Add the ice, banana, espresso, protein powder, date, cinnamon, water, and half and half to a blender.", "uses": ["1 cup ice", "1/4 banana", "1 double shot espresso", "1 scoop vanilla protein powder", "1 pitted date", "1/2 tsp cinnamon", "1/2 cup water", "2 tbsp half and half"]}, {"title": "Blend & Serve", "text": "Blend until smooth, then pour into a glass and serve."}]};
 const $ = id => document.getElementById(id);
 // card text: no Celsius conversions, no period at the very end
 const tidy = t => (t||"").replace(/\s*\(\s*-?\d+\s*°?\s*C\s*\)/g,"").replace(/\s*\/\s*-?\d+\s*°\s*C\b/g,"").replace(/\.\s*$/,"");
@@ -139,7 +139,7 @@ if(R.video){$("watch").href=R.video;$("watch").hidden=false}
 $("desc").textContent=tidy(R.description); $("desc").hidden=!R.description;
 
 /* ---- steps ---- */
-const N=R.slides.length;
+let N=R.slides.length;
 function show(i){
   cur=Math.max(0,Math.min(N,i));
   $("intro").hidden=true; $("cook").hidden=false;
@@ -229,6 +229,17 @@ async function keepAwake(){if(!("wakeLock" in navigator)||lock||asking||document
 document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"){if(cur>=0)keepAwake();paintTimers()}});
 
 renderIntro();
+
+/* ---- edits published from the recipe planner (data/edits.json) ----
+   If this recipe was edited there, use the edited title, ingredients and the
+   cards the planner rebuilt from the new steps. Only before cooking starts. */
+fetch("../data/edits.json?t="+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.json():null).then(d=>{
+  const o=d&&d.recipes&&d.recipes[R.slug], c=o&&o.cook;
+  if(!c||cur!==-1) return;
+  if(c.title){ R.title=c.title; $("ttl").textContent=c.title; document.title=c.title; }
+  if(c.ingredients) R.ingredients=c.ingredients;
+  if(c.slides&&c.slides.length){ R.slides=c.slides; N=R.slides.length; }
+}).catch(()=>{});
 </script>
 
 </body></html>

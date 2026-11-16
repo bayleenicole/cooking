@@ -95,7 +95,7 @@ ul.ing li{padding:5px 0}
 <div class="alarm" id="alarm" role="alert" hidden><span id="alarmTxt"></span><button id="alarmOk">OK</button></div>
 
 <script>
-const R = {"title": "Starbucks Spinach Feta Wrap", "category": "Breakfast", "description": "A copycat spinach and feta wrap with egg whites, sun-dried tomatoes and cream cheese, toasted golden", "serves": 1, "prep": 5, "cook": 10, "video": "https://www.tiktok.com/@bayleennicole/video/7305508874621029674", "ingredients": ["1/2 tbsp butter", "1 cup fresh spinach", "2-3 sun-dried tomatoes, chopped", "1/2 cup egg whites", "1 tbsp cream cheese", "1 large flour tortilla or lavash wrap", "2-3 tbsp crumbled feta cheese"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["1/2 tbsp butter", "1 cup fresh spinach", "2-3 sun-dried tomatoes, chopped", "1/2 cup egg whites", "1 tbsp cream cheese", "1 large flour tortilla or lavash wrap", "2-3 tbsp crumbled feta cheese"]}, {"title": "Spinach & Tomatoes", "text": "Heat a pan over low heat and coat with butter, then add spinach and sun-dried tomatoes to the pan and let cook down.", "uses": ["1/2 tbsp butter", "1 cup fresh spinach", "2-3 sun-dried tomatoes, chopped"]}, {"title": "Egg Whites", "text": "Pour egg whites over the spinach and tomatoes, cover, and cook without flipping until set.", "uses": ["1/2 cup egg whites"]}, {"title": "Prep the Wrap", "text": "Spread a thin layer of cream cheese over the wrap and sprinkle feta cheese over the cream cheese.", "uses": ["1 large flour tortilla or lavash wrap", "1 tbsp cream cheese", "2-3 tbsp crumbled feta cheese"]}, {"title": "Fill & Roll", "text": "Once eggs are cooked, place them on top of the feta and roll the wrap up tightly."}, {"title": "Toast & Serve", "text": "Toast the wrap on the pan on both sides until golden, then slice in half and serve."}]};
+let R = {"title": "Starbucks Spinach Feta Wrap", "category": "Breakfast", "description": "A copycat spinach and feta wrap with egg whites, sun-dried tomatoes and cream cheese, toasted golden", "serves": 1, "prep": 5, "cook": 10, "video": "https://www.tiktok.com/@bayleennicole/video/7305508874621029674", "slug": "starbucks-spinach-feta-wrap", "ingredients": ["1/2 tbsp butter", "1 cup fresh spinach", "2-3 sun-dried tomatoes, chopped", "1/2 cup egg whites", "1 tbsp cream cheese", "1 large flour tortilla or lavash wrap", "2-3 tbsp crumbled feta cheese"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["1/2 tbsp butter", "1 cup fresh spinach", "2-3 sun-dried tomatoes, chopped", "1/2 cup egg whites", "1 tbsp cream cheese", "1 large flour tortilla or lavash wrap", "2-3 tbsp crumbled feta cheese"]}, {"title": "Spinach & Tomatoes", "text": "Heat a pan over low heat and coat with butter, then add spinach and sun-dried tomatoes to the pan and let cook down.", "uses": ["1/2 tbsp butter", "1 cup fresh spinach", "2-3 sun-dried tomatoes, chopped"]}, {"title": "Egg Whites", "text": "Pour egg whites over the spinach and tomatoes, cover, and cook without flipping until set.", "uses": ["1/2 cup egg whites"]}, {"title": "Prep the Wrap", "text": "Spread a thin layer of cream cheese over the wrap and sprinkle feta cheese over the cream cheese.", "uses": ["1 large flour tortilla or lavash wrap", "1 tbsp cream cheese", "2-3 tbsp crumbled feta cheese"]}, {"title": "Fill & Roll", "text": "Once eggs are cooked, place them on top of the feta and roll the wrap up tightly."}, {"title": "Toast & Serve", "text": "Toast the wrap on the pan on both sides until golden, then slice in half and serve."}]};
 const $ = id => document.getElementById(id);
 // card text: no Celsius conversions, no period at the very end
 const tidy = t => (t||"").replace(/\s*\(\s*-?\d+\s*°?\s*C\s*\)/g,"").replace(/\s*\/\s*-?\d+\s*°\s*C\b/g,"").replace(/\.\s*$/,"");
@@ -139,7 +139,7 @@ if(R.video){$("watch").href=R.video;$("watch").hidden=false}
 $("desc").textContent=tidy(R.description); $("desc").hidden=!R.description;
 
 /* ---- steps ---- */
-const N=R.slides.length;
+let N=R.slides.length;
 function show(i){
   cur=Math.max(0,Math.min(N,i));
   $("intro").hidden=true; $("cook").hidden=false;
@@ -229,6 +229,17 @@ async function keepAwake(){if(!("wakeLock" in navigator)||lock||asking||document
 document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"){if(cur>=0)keepAwake();paintTimers()}});
 
 renderIntro();
+
+/* ---- edits published from the recipe planner (data/edits.json) ----
+   If this recipe was edited there, use the edited title, ingredients and the
+   cards the planner rebuilt from the new steps. Only before cooking starts. */
+fetch("../data/edits.json?t="+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.json():null).then(d=>{
+  const o=d&&d.recipes&&d.recipes[R.slug], c=o&&o.cook;
+  if(!c||cur!==-1) return;
+  if(c.title){ R.title=c.title; $("ttl").textContent=c.title; document.title=c.title; }
+  if(c.ingredients) R.ingredients=c.ingredients;
+  if(c.slides&&c.slides.length){ R.slides=c.slides; N=R.slides.length; }
+}).catch(()=>{});
 </script>
 
 </body></html>

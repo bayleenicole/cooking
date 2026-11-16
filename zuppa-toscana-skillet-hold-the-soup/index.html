@@ -95,7 +95,7 @@ ul.ing li{padding:5px 0}
 <div class="alarm" id="alarm" role="alert" hidden><span id="alarmTxt"></span><button id="alarmOk">OK</button></div>
 
 <script>
-const R = {"title": "Zuppa Toscana Skillet (Hold the Soup)", "category": "Dinner", "description": "All the flavors of zuppa toscana — sausage, bacon, potatoes, kale and cream — as a thick one-skillet dinner", "serves": 4, "prep": 15, "cook": 30, "video": "https://www.tiktok.com/@bayleennicole/video/7265788346864274734", "ingredients": ["4 slices bacon, chopped", "1 lb Italian sausage, casings removed", "1/2 onion, chopped", "2 cloves garlic, minced", "2 potatoes, chopped", "1/2 cup chicken broth", "1 cup heavy cream", "2 cups chopped kale", "Salt and pepper, to taste", "1/4 cup grated Parmesan, for topping"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["4 slices bacon, chopped", "1 lb Italian sausage, casings removed", "1/2 onion, chopped", "2 cloves garlic, minced", "2 potatoes, chopped", "1/2 cup chicken broth", "1 cup heavy cream", "2 cups chopped kale", "Salt and pepper, to taste", "1/4 cup grated Parmesan, for topping"]}, {"title": "Bacon", "text": "Cook the bacon in a skillet until crisp, then remove and set aside.", "uses": ["4 slices bacon, chopped"]}, {"title": "Sausage", "text": "Brown the Italian sausage in the same skillet, breaking it apart, then remove.", "uses": ["1 lb Italian sausage, casings removed"]}, {"title": "Onion & Garlic", "text": "Sauté the onion and garlic in the skillet.", "uses": ["1/2 onion, chopped", "2 cloves garlic, minced"]}, {"title": "Potatoes", "text": "Add the potatoes and chicken broth, and cook until the potatoes are tender and most of the liquid has cooked off.", "uses": ["2 potatoes, chopped", "1/2 cup chicken broth"]}, {"title": "Cream & Kale", "text": "Stir in the heavy cream, sausage, and kale, let the kale wilt, and season with salt and pepper.", "uses": ["1 cup heavy cream", "2 cups chopped kale", "Salt and pepper, to taste"]}, {"title": "Top & Serve", "text": "Top with the crispy bacon and grated Parmesan, and serve as a thick, brothless skillet instead of a soup.", "uses": ["1/4 cup grated Parmesan, for topping"]}]};
+let R = {"title": "Zuppa Toscana Skillet (Hold the Soup)", "category": "Dinner", "description": "All the flavors of zuppa toscana — sausage, bacon, potatoes, kale and cream — as a thick one-skillet dinner", "serves": 4, "prep": 15, "cook": 30, "video": "https://www.tiktok.com/@bayleennicole/video/7265788346864274734", "slug": "zuppa-toscana-skillet-hold-the-soup", "ingredients": ["4 slices bacon, chopped", "1 lb Italian sausage, casings removed", "1/2 onion, chopped", "2 cloves garlic, minced", "2 potatoes, chopped", "1/2 cup chicken broth", "1 cup heavy cream", "2 cups chopped kale", "Salt and pepper, to taste", "1/4 cup grated Parmesan, for topping"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["4 slices bacon, chopped", "1 lb Italian sausage, casings removed", "1/2 onion, chopped", "2 cloves garlic, minced", "2 potatoes, chopped", "1/2 cup chicken broth", "1 cup heavy cream", "2 cups chopped kale", "Salt and pepper, to taste", "1/4 cup grated Parmesan, for topping"]}, {"title": "Bacon", "text": "Cook the bacon in a skillet until crisp, then remove and set aside.", "uses": ["4 slices bacon, chopped"]}, {"title": "Sausage", "text": "Brown the Italian sausage in the same skillet, breaking it apart, then remove.", "uses": ["1 lb Italian sausage, casings removed"]}, {"title": "Onion & Garlic", "text": "Sauté the onion and garlic in the skillet.", "uses": ["1/2 onion, chopped", "2 cloves garlic, minced"]}, {"title": "Potatoes", "text": "Add the potatoes and chicken broth, and cook until the potatoes are tender and most of the liquid has cooked off.", "uses": ["2 potatoes, chopped", "1/2 cup chicken broth"]}, {"title": "Cream & Kale", "text": "Stir in the heavy cream, sausage, and kale, let the kale wilt, and season with salt and pepper.", "uses": ["1 cup heavy cream", "2 cups chopped kale", "Salt and pepper, to taste"]}, {"title": "Top & Serve", "text": "Top with the crispy bacon and grated Parmesan, and serve as a thick, brothless skillet instead of a soup.", "uses": ["1/4 cup grated Parmesan, for topping"]}]};
 const $ = id => document.getElementById(id);
 // card text: no Celsius conversions, no period at the very end
 const tidy = t => (t||"").replace(/\s*\(\s*-?\d+\s*°?\s*C\s*\)/g,"").replace(/\s*\/\s*-?\d+\s*°\s*C\b/g,"").replace(/\.\s*$/,"");
@@ -139,7 +139,7 @@ if(R.video){$("watch").href=R.video;$("watch").hidden=false}
 $("desc").textContent=tidy(R.description); $("desc").hidden=!R.description;
 
 /* ---- steps ---- */
-const N=R.slides.length;
+let N=R.slides.length;
 function show(i){
   cur=Math.max(0,Math.min(N,i));
   $("intro").hidden=true; $("cook").hidden=false;
@@ -229,6 +229,17 @@ async function keepAwake(){if(!("wakeLock" in navigator)||lock||asking||document
 document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"){if(cur>=0)keepAwake();paintTimers()}});
 
 renderIntro();
+
+/* ---- edits published from the recipe planner (data/edits.json) ----
+   If this recipe was edited there, use the edited title, ingredients and the
+   cards the planner rebuilt from the new steps. Only before cooking starts. */
+fetch("../data/edits.json?t="+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.json():null).then(d=>{
+  const o=d&&d.recipes&&d.recipes[R.slug], c=o&&o.cook;
+  if(!c||cur!==-1) return;
+  if(c.title){ R.title=c.title; $("ttl").textContent=c.title; document.title=c.title; }
+  if(c.ingredients) R.ingredients=c.ingredients;
+  if(c.slides&&c.slides.length){ R.slides=c.slides; N=R.slides.length; }
+}).catch(()=>{});
 </script>
 
 </body></html>

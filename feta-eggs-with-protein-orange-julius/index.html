@@ -95,7 +95,7 @@ ul.ing li{padding:5px 0}
 <div class="alarm" id="alarm" role="alert" hidden><span id="alarmTxt"></span><button id="alarmOk">OK</button></div>
 
 <script>
-const R = {"title": "Feta Eggs with Protein Orange Julius", "category": "Breakfast", "description": "Feta eggs on warm tortillas with honey, plus a frothy orange juice protein shake over ice", "serves": 1, "prep": 5, "cook": 5, "video": "https://www.tiktok.com/@bayleennicole/video/7308085297693084974", "ingredients": ["2 almond flour tortillas", "1 tbsp butter", "1/4 cup crumbled feta", "2 eggs (or egg whites)", "1 tbsp honey, for drizzling", "1 cup orange juice", "1 scoop vanilla or cake batter protein powder", "Ice, to serve"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["2 almond flour tortillas", "1 tbsp butter", "1/4 cup crumbled feta", "2 eggs (or egg whites)", "1 tbsp honey, for drizzling", "1 cup orange juice", "1 scoop vanilla or cake batter protein powder", "Ice, to serve"]}, {"title": "Warm the Tortillas", "text": "Heat the tortillas in a pan, then set aside.", "uses": ["2 almond flour tortillas"]}, {"title": "Feta Eggs", "text": "Melt the butter in the pan and add the feta, letting it warm through, then crack the eggs on top of the feta, cover, and cook until done.", "uses": ["1 tbsp butter", "1/4 cup crumbled feta", "2 eggs (or egg whites)"]}, {"title": "Plate the Eggs", "text": "Slide the eggs onto the warmed tortillas and drizzle with honey.", "uses": ["1 tbsp honey, for drizzling"]}, {"title": "Orange Julius", "text": "For the Orange Julius, blend the orange juice with the protein powder until frothy, then pour over ice and serve alongside the eggs.", "uses": ["1 cup orange juice", "1 scoop vanilla or cake batter protein powder", "Ice, to serve"]}]};
+let R = {"title": "Feta Eggs with Protein Orange Julius", "category": "Breakfast", "description": "Feta eggs on warm tortillas with honey, plus a frothy orange juice protein shake over ice", "serves": 1, "prep": 5, "cook": 5, "video": "https://www.tiktok.com/@bayleennicole/video/7308085297693084974", "slug": "feta-eggs-with-protein-orange-julius", "ingredients": ["2 almond flour tortillas", "1 tbsp butter", "1/4 cup crumbled feta", "2 eggs (or egg whites)", "1 tbsp honey, for drizzling", "1 cup orange juice", "1 scoop vanilla or cake batter protein powder", "Ice, to serve"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["2 almond flour tortillas", "1 tbsp butter", "1/4 cup crumbled feta", "2 eggs (or egg whites)", "1 tbsp honey, for drizzling", "1 cup orange juice", "1 scoop vanilla or cake batter protein powder", "Ice, to serve"]}, {"title": "Warm the Tortillas", "text": "Heat the tortillas in a pan, then set aside.", "uses": ["2 almond flour tortillas"]}, {"title": "Feta Eggs", "text": "Melt the butter in the pan and add the feta, letting it warm through, then crack the eggs on top of the feta, cover, and cook until done.", "uses": ["1 tbsp butter", "1/4 cup crumbled feta", "2 eggs (or egg whites)"]}, {"title": "Plate the Eggs", "text": "Slide the eggs onto the warmed tortillas and drizzle with honey.", "uses": ["1 tbsp honey, for drizzling"]}, {"title": "Orange Julius", "text": "For the Orange Julius, blend the orange juice with the protein powder until frothy, then pour over ice and serve alongside the eggs.", "uses": ["1 cup orange juice", "1 scoop vanilla or cake batter protein powder", "Ice, to serve"]}]};
 const $ = id => document.getElementById(id);
 // card text: no Celsius conversions, no period at the very end
 const tidy = t => (t||"").replace(/\s*\(\s*-?\d+\s*°?\s*C\s*\)/g,"").replace(/\s*\/\s*-?\d+\s*°\s*C\b/g,"").replace(/\.\s*$/,"");
@@ -139,7 +139,7 @@ if(R.video){$("watch").href=R.video;$("watch").hidden=false}
 $("desc").textContent=tidy(R.description); $("desc").hidden=!R.description;
 
 /* ---- steps ---- */
-const N=R.slides.length;
+let N=R.slides.length;
 function show(i){
   cur=Math.max(0,Math.min(N,i));
   $("intro").hidden=true; $("cook").hidden=false;
@@ -229,6 +229,17 @@ async function keepAwake(){if(!("wakeLock" in navigator)||lock||asking||document
 document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"){if(cur>=0)keepAwake();paintTimers()}});
 
 renderIntro();
+
+/* ---- edits published from the recipe planner (data/edits.json) ----
+   If this recipe was edited there, use the edited title, ingredients and the
+   cards the planner rebuilt from the new steps. Only before cooking starts. */
+fetch("../data/edits.json?t="+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.json():null).then(d=>{
+  const o=d&&d.recipes&&d.recipes[R.slug], c=o&&o.cook;
+  if(!c||cur!==-1) return;
+  if(c.title){ R.title=c.title; $("ttl").textContent=c.title; document.title=c.title; }
+  if(c.ingredients) R.ingredients=c.ingredients;
+  if(c.slides&&c.slides.length){ R.slides=c.slides; N=R.slides.length; }
+}).catch(()=>{});
 </script>
 
 </body></html>

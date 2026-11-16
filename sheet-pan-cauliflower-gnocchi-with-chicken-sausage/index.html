@@ -95,7 +95,7 @@ ul.ing li{padding:5px 0}
 <div class="alarm" id="alarm" role="alert" hidden><span id="alarmTxt"></span><button id="alarmOk">OK</button></div>
 
 <script>
-const R = {"title": "Sheet Pan Cauliflower Gnocchi with Chicken Sausage", "category": "Dinner", "description": "Crispy cauliflower gnocchi roasted with chicken sausage and vegetables, tossed with spinach and pesto", "serves": 2, "prep": 10, "cook": 20, "video": "https://www.tiktok.com/@bayleennicole/video/7543846287054048526", "ingredients": ["1 bell pepper, chopped", "1 cup broccoli florets", "1 cup cherry tomatoes", "2 tbsp olive oil", "Salt, pepper, and garlic powder, to taste", "2 chicken sausages, sliced", "1 (12 oz) bag frozen cauliflower gnocchi", "2 cups fresh spinach", "2 tbsp pesto"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["1 bell pepper, chopped", "1 cup broccoli florets", "1 cup cherry tomatoes", "2 tbsp olive oil", "Salt, pepper, and garlic powder, to taste", "2 chicken sausages, sliced", "1 (12 oz) bag frozen cauliflower gnocchi", "2 cups fresh spinach", "2 tbsp pesto"]}, {"title": "Toss & Pan", "text": "Preheat oven to 425°F. In a bowl, toss the bell pepper, broccoli, and cherry tomatoes with olive oil, salt, pepper, and garlic powder, then add them to a baking sheet along with the sliced chicken sausage and cauliflower gnocchi.", "uses": ["1 bell pepper, chopped", "1 cup broccoli florets", "1 cup cherry tomatoes", "2 tbsp olive oil", "Salt, pepper, and garlic powder, to taste", "2 chicken sausages, sliced", "1 (12 oz) bag frozen cauliflower gnocchi"]}, {"title": "Bake", "text": "Bake for 15 minutes.", "timer": 900}, {"title": "Spinach", "text": "Remove from the oven, add the spinach, and return to the oven for another 5 minutes, until the spinach has wilted and the gnocchi is warmed through.", "timer": 300, "uses": ["2 cups fresh spinach"]}, {"title": "Pesto & Serve", "text": "Add dollops of pesto, mix well, and serve immediately.", "uses": ["2 tbsp pesto"]}]};
+let R = {"title": "Sheet Pan Cauliflower Gnocchi with Chicken Sausage", "category": "Dinner", "description": "Crispy cauliflower gnocchi roasted with chicken sausage and vegetables, tossed with spinach and pesto", "serves": 2, "prep": 10, "cook": 20, "video": "https://www.tiktok.com/@bayleennicole/video/7543846287054048526", "slug": "sheet-pan-cauliflower-gnocchi-with-chicken-sausage", "ingredients": ["1 bell pepper, chopped", "1 cup broccoli florets", "1 cup cherry tomatoes", "2 tbsp olive oil", "Salt, pepper, and garlic powder, to taste", "2 chicken sausages, sliced", "1 (12 oz) bag frozen cauliflower gnocchi", "2 cups fresh spinach", "2 tbsp pesto"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["1 bell pepper, chopped", "1 cup broccoli florets", "1 cup cherry tomatoes", "2 tbsp olive oil", "Salt, pepper, and garlic powder, to taste", "2 chicken sausages, sliced", "1 (12 oz) bag frozen cauliflower gnocchi", "2 cups fresh spinach", "2 tbsp pesto"]}, {"title": "Toss & Pan", "text": "Preheat oven to 425°F. In a bowl, toss the bell pepper, broccoli, and cherry tomatoes with olive oil, salt, pepper, and garlic powder, then add them to a baking sheet along with the sliced chicken sausage and cauliflower gnocchi.", "uses": ["1 bell pepper, chopped", "1 cup broccoli florets", "1 cup cherry tomatoes", "2 tbsp olive oil", "Salt, pepper, and garlic powder, to taste", "2 chicken sausages, sliced", "1 (12 oz) bag frozen cauliflower gnocchi"]}, {"title": "Bake", "text": "Bake for 15 minutes.", "timer": 900}, {"title": "Spinach", "text": "Remove from the oven, add the spinach, and return to the oven for another 5 minutes, until the spinach has wilted and the gnocchi is warmed through.", "timer": 300, "uses": ["2 cups fresh spinach"]}, {"title": "Pesto & Serve", "text": "Add dollops of pesto, mix well, and serve immediately.", "uses": ["2 tbsp pesto"]}]};
 const $ = id => document.getElementById(id);
 // card text: no Celsius conversions, no period at the very end
 const tidy = t => (t||"").replace(/\s*\(\s*-?\d+\s*°?\s*C\s*\)/g,"").replace(/\s*\/\s*-?\d+\s*°\s*C\b/g,"").replace(/\.\s*$/,"");
@@ -139,7 +139,7 @@ if(R.video){$("watch").href=R.video;$("watch").hidden=false}
 $("desc").textContent=tidy(R.description); $("desc").hidden=!R.description;
 
 /* ---- steps ---- */
-const N=R.slides.length;
+let N=R.slides.length;
 function show(i){
   cur=Math.max(0,Math.min(N,i));
   $("intro").hidden=true; $("cook").hidden=false;
@@ -229,6 +229,17 @@ async function keepAwake(){if(!("wakeLock" in navigator)||lock||asking||document
 document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"){if(cur>=0)keepAwake();paintTimers()}});
 
 renderIntro();
+
+/* ---- edits published from the recipe planner (data/edits.json) ----
+   If this recipe was edited there, use the edited title, ingredients and the
+   cards the planner rebuilt from the new steps. Only before cooking starts. */
+fetch("../data/edits.json?t="+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.json():null).then(d=>{
+  const o=d&&d.recipes&&d.recipes[R.slug], c=o&&o.cook;
+  if(!c||cur!==-1) return;
+  if(c.title){ R.title=c.title; $("ttl").textContent=c.title; document.title=c.title; }
+  if(c.ingredients) R.ingredients=c.ingredients;
+  if(c.slides&&c.slides.length){ R.slides=c.slides; N=R.slides.length; }
+}).catch(()=>{});
 </script>
 
 </body></html>

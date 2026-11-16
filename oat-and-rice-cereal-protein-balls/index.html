@@ -95,7 +95,7 @@ ul.ing li{padding:5px 0}
 <div class="alarm" id="alarm" role="alert" hidden><span id="alarmTxt"></span><button id="alarmOk">OK</button></div>
 
 <script>
-const R = {"title": "Oat and Rice Cereal Protein Balls", "category": "Dessert", "description": "No-bake peanut butter protein balls with oats, crispy rice cereal and mini M&Ms", "serves": 4, "prep": 15, "cook": 0, "video": "https://www.tiktok.com/@bayleennicole/video/7569072776468843831", "ingredients": ["1 cup pb (I used)", "Water, as needed (if using powder)", "1 cup oats", "1 cup rice cereal", "2 servings protein powder", "1/4 - 1/2 cup honey", "Splash of vanilla", "Pinch of salt", "2 tbsp mini M&M's"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["1 cup pb (I used)", "Water, as needed (if using powder)", "1 cup oats", "1 cup rice cereal", "2 servings protein powder", "1/4 - 1/2 cup honey", "Splash of vanilla", "Pinch of salt", "2 tbsp mini M&M's"]}, {"title": "Peanut Butter", "text": "If using powder, mix with water to prepare 1 cup of peanut butter.", "uses": ["1 cup pb (I used)", "Water, as needed (if using powder)"]}, {"title": "Mix", "text": "In a large bowl, mix together 1 cup oats, 1 cup rice cereal, 1 cup pb, 2 servings protein powder, 1/4 - 1/2 cup honey, a splash of vanilla, and a pinch of salt until well combined.", "uses": ["1 cup oats", "1 cup rice cereal", "2 servings protein powder", "1/4 - 1/2 cup honey", "Splash of vanilla", "Pinch of salt"]}, {"title": "Fold & Roll", "text": "Gently fold in 2 tbsp mini M&M's, then scoop and roll the mixture into 12 individual balls.", "uses": ["2 tbsp mini M&M's"]}, {"title": "Chill", "text": "Place the balls on a parchment-lined plate and refrigerate for 30 minutes to set.", "timer": 1800}]};
+let R = {"title": "Oat and Rice Cereal Protein Balls", "category": "Dessert", "description": "No-bake peanut butter protein balls with oats, crispy rice cereal and mini M&Ms", "serves": 4, "prep": 15, "cook": 0, "video": "https://www.tiktok.com/@bayleennicole/video/7569072776468843831", "slug": "oat-and-rice-cereal-protein-balls", "ingredients": ["1 cup pb (I used)", "Water, as needed (if using powder)", "1 cup oats", "1 cup rice cereal", "2 servings protein powder", "1/4 - 1/2 cup honey", "Splash of vanilla", "Pinch of salt", "2 tbsp mini M&M's"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["1 cup pb (I used)", "Water, as needed (if using powder)", "1 cup oats", "1 cup rice cereal", "2 servings protein powder", "1/4 - 1/2 cup honey", "Splash of vanilla", "Pinch of salt", "2 tbsp mini M&M's"]}, {"title": "Peanut Butter", "text": "If using powder, mix with water to prepare 1 cup of peanut butter.", "uses": ["1 cup pb (I used)", "Water, as needed (if using powder)"]}, {"title": "Mix", "text": "In a large bowl, mix together 1 cup oats, 1 cup rice cereal, 1 cup pb, 2 servings protein powder, 1/4 - 1/2 cup honey, a splash of vanilla, and a pinch of salt until well combined.", "uses": ["1 cup oats", "1 cup rice cereal", "2 servings protein powder", "1/4 - 1/2 cup honey", "Splash of vanilla", "Pinch of salt"]}, {"title": "Fold & Roll", "text": "Gently fold in 2 tbsp mini M&M's, then scoop and roll the mixture into 12 individual balls.", "uses": ["2 tbsp mini M&M's"]}, {"title": "Chill", "text": "Place the balls on a parchment-lined plate and refrigerate for 30 minutes to set.", "timer": 1800}]};
 const $ = id => document.getElementById(id);
 // card text: no Celsius conversions, no period at the very end
 const tidy = t => (t||"").replace(/\s*\(\s*-?\d+\s*°?\s*C\s*\)/g,"").replace(/\s*\/\s*-?\d+\s*°\s*C\b/g,"").replace(/\.\s*$/,"");
@@ -139,7 +139,7 @@ if(R.video){$("watch").href=R.video;$("watch").hidden=false}
 $("desc").textContent=tidy(R.description); $("desc").hidden=!R.description;
 
 /* ---- steps ---- */
-const N=R.slides.length;
+let N=R.slides.length;
 function show(i){
   cur=Math.max(0,Math.min(N,i));
   $("intro").hidden=true; $("cook").hidden=false;
@@ -229,6 +229,17 @@ async function keepAwake(){if(!("wakeLock" in navigator)||lock||asking||document
 document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"){if(cur>=0)keepAwake();paintTimers()}});
 
 renderIntro();
+
+/* ---- edits published from the recipe planner (data/edits.json) ----
+   If this recipe was edited there, use the edited title, ingredients and the
+   cards the planner rebuilt from the new steps. Only before cooking starts. */
+fetch("../data/edits.json?t="+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.json():null).then(d=>{
+  const o=d&&d.recipes&&d.recipes[R.slug], c=o&&o.cook;
+  if(!c||cur!==-1) return;
+  if(c.title){ R.title=c.title; $("ttl").textContent=c.title; document.title=c.title; }
+  if(c.ingredients) R.ingredients=c.ingredients;
+  if(c.slides&&c.slides.length){ R.slides=c.slides; N=R.slides.length; }
+}).catch(()=>{});
 </script>
 
 </body></html>

@@ -95,7 +95,7 @@ ul.ing li{padding:5px 0}
 <div class="alarm" id="alarm" role="alert" hidden><span id="alarmTxt"></span><button id="alarmOk">OK</button></div>
 
 <script>
-const R = {"title": "Sweet & Savory Bagel with Egg and Jam", "category": "Breakfast", "description": "A toasted blueberry bagel with cream cheese, raspberry jam and a fried egg with flaky salt", "serves": 1, "prep": 5, "cook": 5, "video": "https://www.tiktok.com/@bayleennicole/video/7456861859958820142", "ingredients": ["1 blueberry bagel, halved", "2 tbsp plain cream cheese", "1 tbsp raspberry jam", "1 tsp butter", "1 egg", "Flaky salt, to taste"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["1 blueberry bagel, halved", "2 tbsp plain cream cheese", "1 tbsp raspberry jam", "1 tsp butter", "1 egg", "Flaky salt, to taste"]}, {"title": "Toast", "text": "Toast the bagel halves in a toaster for 2-3 minutes until golden brown.", "timer": 120, "uses": ["1 blueberry bagel, halved"]}, {"title": "Spread", "text": "Spread 2 tbsp plain cream cheese evenly on each toasted bagel half, then add a thin layer of 1 tbsp raspberry jam on top of the cream cheese.", "uses": ["2 tbsp plain cream cheese", "1 tbsp raspberry jam"]}, {"title": "Fry the Egg", "text": "Melt 1 tsp butter in a skillet over medium heat and fry the egg for 2-3 minutes until the whites are set, then place on top of one bagel half.", "timer": 120, "uses": ["1 tsp butter", "1 egg"]}, {"title": "Season & Serve", "text": "Sprinkle with flaky salt to taste and serve immediately.", "uses": ["Flaky salt, to taste"]}]};
+let R = {"title": "Sweet & Savory Bagel with Egg and Jam", "category": "Breakfast", "description": "A toasted blueberry bagel with cream cheese, raspberry jam and a fried egg with flaky salt", "serves": 1, "prep": 5, "cook": 5, "video": "https://www.tiktok.com/@bayleennicole/video/7456861859958820142", "slug": "sweet-and-savory-bagel-with-egg-and-jam", "ingredients": ["1 blueberry bagel, halved", "2 tbsp plain cream cheese", "1 tbsp raspberry jam", "1 tsp butter", "1 egg", "Flaky salt, to taste"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["1 blueberry bagel, halved", "2 tbsp plain cream cheese", "1 tbsp raspberry jam", "1 tsp butter", "1 egg", "Flaky salt, to taste"]}, {"title": "Toast", "text": "Toast the bagel halves in a toaster for 2-3 minutes until golden brown.", "timer": 120, "uses": ["1 blueberry bagel, halved"]}, {"title": "Spread", "text": "Spread 2 tbsp plain cream cheese evenly on each toasted bagel half, then add a thin layer of 1 tbsp raspberry jam on top of the cream cheese.", "uses": ["2 tbsp plain cream cheese", "1 tbsp raspberry jam"]}, {"title": "Fry the Egg", "text": "Melt 1 tsp butter in a skillet over medium heat and fry the egg for 2-3 minutes until the whites are set, then place on top of one bagel half.", "timer": 120, "uses": ["1 tsp butter", "1 egg"]}, {"title": "Season & Serve", "text": "Sprinkle with flaky salt to taste and serve immediately.", "uses": ["Flaky salt, to taste"]}]};
 const $ = id => document.getElementById(id);
 // card text: no Celsius conversions, no period at the very end
 const tidy = t => (t||"").replace(/\s*\(\s*-?\d+\s*°?\s*C\s*\)/g,"").replace(/\s*\/\s*-?\d+\s*°\s*C\b/g,"").replace(/\.\s*$/,"");
@@ -139,7 +139,7 @@ if(R.video){$("watch").href=R.video;$("watch").hidden=false}
 $("desc").textContent=tidy(R.description); $("desc").hidden=!R.description;
 
 /* ---- steps ---- */
-const N=R.slides.length;
+let N=R.slides.length;
 function show(i){
   cur=Math.max(0,Math.min(N,i));
   $("intro").hidden=true; $("cook").hidden=false;
@@ -229,6 +229,17 @@ async function keepAwake(){if(!("wakeLock" in navigator)||lock||asking||document
 document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"){if(cur>=0)keepAwake();paintTimers()}});
 
 renderIntro();
+
+/* ---- edits published from the recipe planner (data/edits.json) ----
+   If this recipe was edited there, use the edited title, ingredients and the
+   cards the planner rebuilt from the new steps. Only before cooking starts. */
+fetch("../data/edits.json?t="+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.json():null).then(d=>{
+  const o=d&&d.recipes&&d.recipes[R.slug], c=o&&o.cook;
+  if(!c||cur!==-1) return;
+  if(c.title){ R.title=c.title; $("ttl").textContent=c.title; document.title=c.title; }
+  if(c.ingredients) R.ingredients=c.ingredients;
+  if(c.slides&&c.slides.length){ R.slides=c.slides; N=R.slides.length; }
+}).catch(()=>{});
 </script>
 
 </body></html>

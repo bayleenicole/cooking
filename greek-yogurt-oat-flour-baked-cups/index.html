@@ -95,7 +95,7 @@ ul.ing li{padding:5px 0}
 <div class="alarm" id="alarm" role="alert" hidden><span id="alarmTxt"></span><button id="alarmOk">OK</button></div>
 
 <script>
-const R = {"title": "Greek Yogurt Oat Flour Baked Cups", "category": "Breakfast", "description": "Soft almond-scented muffin cups made with oat flour, Greek yogurt and a touch of coconut sugar", "serves": 12, "prep": 10, "cook": 20, "video": "https://www.tiktok.com/@bayleennicole/video/7524357607272795447", "ingredients": ["2 lightly beaten eggs", "1 cup of Greek yogurt", "1 tsp almond extract", "1 cup oat flour", "1/4 cup all purpose flour", "3 tbsp coconut sugar", "1 tsp baking powder", "1/2 tsp baking soda", "1/2 tsp cinnamon", "1/4 tsp salt", "1/4 cup milk"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["2 lightly beaten eggs", "1 cup of Greek yogurt", "1 tsp almond extract", "1 cup oat flour", "1/4 cup all purpose flour", "3 tbsp coconut sugar", "1 tsp baking powder", "1/2 tsp baking soda", "1/2 tsp cinnamon", "1/4 tsp salt", "1/4 cup milk"]}, {"title": "Preheat", "text": "Preheat oven to 350°F and grease or line a muffin tin."}, {"title": "Wet Ingredients", "text": "In a mixing bowl, mix wet ingredients together (eggs, Greek yogurt, and almond extract).", "uses": ["2 lightly beaten eggs", "1 cup of Greek yogurt", "1 tsp almond extract"]}, {"title": "Dry Ingredients", "text": "Add your dry ingredients (oat flour, all purpose flour, coconut sugar, baking powder, baking soda, cinnamon, and salt), then mix together and add milk until you get your desired consistency.", "uses": ["1 cup oat flour", "1/4 cup all purpose flour", "3 tbsp coconut sugar", "1 tsp baking powder", "1/2 tsp baking soda", "1/2 tsp cinnamon", "1/4 tsp salt", "1/4 cup milk"]}, {"title": "Bake", "text": "Pour batter into the prepared muffin tin and bake at 350°F for 18-20 minutes or until set, then allow to cool before serving.", "timer": 1080}]};
+let R = {"title": "Greek Yogurt Oat Flour Baked Cups", "category": "Breakfast", "description": "Soft almond-scented muffin cups made with oat flour, Greek yogurt and a touch of coconut sugar", "serves": 12, "prep": 10, "cook": 20, "video": "https://www.tiktok.com/@bayleennicole/video/7524357607272795447", "slug": "greek-yogurt-oat-flour-baked-cups", "ingredients": ["2 lightly beaten eggs", "1 cup of Greek yogurt", "1 tsp almond extract", "1 cup oat flour", "1/4 cup all purpose flour", "3 tbsp coconut sugar", "1 tsp baking powder", "1/2 tsp baking soda", "1/2 tsp cinnamon", "1/4 tsp salt", "1/4 cup milk"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["2 lightly beaten eggs", "1 cup of Greek yogurt", "1 tsp almond extract", "1 cup oat flour", "1/4 cup all purpose flour", "3 tbsp coconut sugar", "1 tsp baking powder", "1/2 tsp baking soda", "1/2 tsp cinnamon", "1/4 tsp salt", "1/4 cup milk"]}, {"title": "Preheat", "text": "Preheat oven to 350°F and grease or line a muffin tin."}, {"title": "Wet Ingredients", "text": "In a mixing bowl, mix wet ingredients together (eggs, Greek yogurt, and almond extract).", "uses": ["2 lightly beaten eggs", "1 cup of Greek yogurt", "1 tsp almond extract"]}, {"title": "Dry Ingredients", "text": "Add your dry ingredients (oat flour, all purpose flour, coconut sugar, baking powder, baking soda, cinnamon, and salt), then mix together and add milk until you get your desired consistency.", "uses": ["1 cup oat flour", "1/4 cup all purpose flour", "3 tbsp coconut sugar", "1 tsp baking powder", "1/2 tsp baking soda", "1/2 tsp cinnamon", "1/4 tsp salt", "1/4 cup milk"]}, {"title": "Bake", "text": "Pour batter into the prepared muffin tin and bake at 350°F for 18-20 minutes or until set, then allow to cool before serving.", "timer": 1080}]};
 const $ = id => document.getElementById(id);
 // card text: no Celsius conversions, no period at the very end
 const tidy = t => (t||"").replace(/\s*\(\s*-?\d+\s*°?\s*C\s*\)/g,"").replace(/\s*\/\s*-?\d+\s*°\s*C\b/g,"").replace(/\.\s*$/,"");
@@ -139,7 +139,7 @@ if(R.video){$("watch").href=R.video;$("watch").hidden=false}
 $("desc").textContent=tidy(R.description); $("desc").hidden=!R.description;
 
 /* ---- steps ---- */
-const N=R.slides.length;
+let N=R.slides.length;
 function show(i){
   cur=Math.max(0,Math.min(N,i));
   $("intro").hidden=true; $("cook").hidden=false;
@@ -229,6 +229,17 @@ async function keepAwake(){if(!("wakeLock" in navigator)||lock||asking||document
 document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"){if(cur>=0)keepAwake();paintTimers()}});
 
 renderIntro();
+
+/* ---- edits published from the recipe planner (data/edits.json) ----
+   If this recipe was edited there, use the edited title, ingredients and the
+   cards the planner rebuilt from the new steps. Only before cooking starts. */
+fetch("../data/edits.json?t="+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.json():null).then(d=>{
+  const o=d&&d.recipes&&d.recipes[R.slug], c=o&&o.cook;
+  if(!c||cur!==-1) return;
+  if(c.title){ R.title=c.title; $("ttl").textContent=c.title; document.title=c.title; }
+  if(c.ingredients) R.ingredients=c.ingredients;
+  if(c.slides&&c.slides.length){ R.slides=c.slides; N=R.slides.length; }
+}).catch(()=>{});
 </script>
 
 </body></html>

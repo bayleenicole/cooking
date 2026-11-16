@@ -95,7 +95,7 @@ ul.ing li{padding:5px 0}
 <div class="alarm" id="alarm" role="alert" hidden><span id="alarmTxt"></span><button id="alarmOk">OK</button></div>
 
 <script>
-const R = {"title": "Japanese-Style Cottage Cheese Cheesecake", "category": "Dessert", "description": "A no-bake blended cottage cheese cheesecake layered with graham crackers, strawberries and marshmallow cream", "serves": 4, "prep": 10, "cook": 0, "video": "https://www.tiktok.com/@bayleennicole/video/7605445938991205646", "ingredients": ["1 (16 oz) container cottage cheese (, 2%)", "2 tbsp maple syrup", "Splash of vanilla extract", "4-5 graham crackers, crushed", "1 cup strawberries, sliced", "2-3 tbsp vanilla marshmallow cream"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["1 (16 oz) container cottage cheese (, 2%)", "2 tbsp maple syrup", "Splash of vanilla extract", "4-5 graham crackers, crushed", "1 cup strawberries, sliced", "2-3 tbsp vanilla marshmallow cream"]}, {"title": "Blend", "text": "Blend the cottage cheese, maple syrup, and vanilla until mostly smooth, leaving a little texture.", "uses": ["1 (16 oz) container cottage cheese (, 2%)", "2 tbsp maple syrup", "Splash of vanilla extract"]}, {"title": "Into the Dish", "text": "Pour into a serving dish and smooth the top."}, {"title": "Top", "text": "Layer crushed graham crackers over the top, add sliced strawberries, and dollop marshmallow cream over half of the dish.", "uses": ["4-5 graham crackers, crushed", "1 cup strawberries, sliced", "2-3 tbsp vanilla marshmallow cream"]}, {"title": "Chill & Serve", "text": "Refrigerate until chilled and serve cold."}]};
+let R = {"title": "Japanese-Style Cottage Cheese Cheesecake", "category": "Dessert", "description": "A no-bake blended cottage cheese cheesecake layered with graham crackers, strawberries and marshmallow cream", "serves": 4, "prep": 10, "cook": 0, "video": "https://www.tiktok.com/@bayleennicole/video/7605445938991205646", "slug": "japanese-style-cottage-cheese-cheesecake", "ingredients": ["1 (16 oz) container cottage cheese (, 2%)", "2 tbsp maple syrup", "Splash of vanilla extract", "4-5 graham crackers, crushed", "1 cup strawberries, sliced", "2-3 tbsp vanilla marshmallow cream"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["1 (16 oz) container cottage cheese (, 2%)", "2 tbsp maple syrup", "Splash of vanilla extract", "4-5 graham crackers, crushed", "1 cup strawberries, sliced", "2-3 tbsp vanilla marshmallow cream"]}, {"title": "Blend", "text": "Blend the cottage cheese, maple syrup, and vanilla until mostly smooth, leaving a little texture.", "uses": ["1 (16 oz) container cottage cheese (, 2%)", "2 tbsp maple syrup", "Splash of vanilla extract"]}, {"title": "Into the Dish", "text": "Pour into a serving dish and smooth the top."}, {"title": "Top", "text": "Layer crushed graham crackers over the top, add sliced strawberries, and dollop marshmallow cream over half of the dish.", "uses": ["4-5 graham crackers, crushed", "1 cup strawberries, sliced", "2-3 tbsp vanilla marshmallow cream"]}, {"title": "Chill & Serve", "text": "Refrigerate until chilled and serve cold."}]};
 const $ = id => document.getElementById(id);
 // card text: no Celsius conversions, no period at the very end
 const tidy = t => (t||"").replace(/\s*\(\s*-?\d+\s*°?\s*C\s*\)/g,"").replace(/\s*\/\s*-?\d+\s*°\s*C\b/g,"").replace(/\.\s*$/,"");
@@ -139,7 +139,7 @@ if(R.video){$("watch").href=R.video;$("watch").hidden=false}
 $("desc").textContent=tidy(R.description); $("desc").hidden=!R.description;
 
 /* ---- steps ---- */
-const N=R.slides.length;
+let N=R.slides.length;
 function show(i){
   cur=Math.max(0,Math.min(N,i));
   $("intro").hidden=true; $("cook").hidden=false;
@@ -229,6 +229,17 @@ async function keepAwake(){if(!("wakeLock" in navigator)||lock||asking||document
 document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"){if(cur>=0)keepAwake();paintTimers()}});
 
 renderIntro();
+
+/* ---- edits published from the recipe planner (data/edits.json) ----
+   If this recipe was edited there, use the edited title, ingredients and the
+   cards the planner rebuilt from the new steps. Only before cooking starts. */
+fetch("../data/edits.json?t="+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.json():null).then(d=>{
+  const o=d&&d.recipes&&d.recipes[R.slug], c=o&&o.cook;
+  if(!c||cur!==-1) return;
+  if(c.title){ R.title=c.title; $("ttl").textContent=c.title; document.title=c.title; }
+  if(c.ingredients) R.ingredients=c.ingredients;
+  if(c.slides&&c.slides.length){ R.slides=c.slides; N=R.slides.length; }
+}).catch(()=>{});
 </script>
 
 </body></html>

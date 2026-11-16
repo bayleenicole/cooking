@@ -95,7 +95,7 @@ ul.ing li{padding:5px 0}
 <div class="alarm" id="alarm" role="alert" hidden><span id="alarmTxt"></span><button id="alarmOk">OK</button></div>
 
 <script>
-const R = {"title": "Homemade Poke Bowl", "category": "Lunch", "description": "Sushi-grade salmon and tuna over rice and greens with seaweed salad, kimchi and a drizzle of Kewpie mayo", "serves": 2, "prep": 15, "cook": 0, "video": "https://www.tiktok.com/@bayleennicole/video/7536779444166397239", "ingredients": ["2 cups mixed greens", "2 cups cooked rice", "4 oz sushi-grade salmon, cubed", "4 oz sushi-grade tuna, cubed", "1/4 cup seaweed salad", "1/2 cucumber, sliced", "1/4 cup shredded carrots", "2 tbsp kimchi", "1 tbsp rice vinegar", "1 tbsp soy sauce", "1 tsp sesame oil", "2 tbsp Kewpie mayo"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["2 cups mixed greens", "2 cups cooked rice", "4 oz sushi-grade salmon, cubed", "4 oz sushi-grade tuna, cubed", "1/4 cup seaweed salad", "1/2 cucumber, sliced", "1/4 cup shredded carrots", "2 tbsp kimchi", "1 tbsp rice vinegar", "1 tbsp soy sauce", "1 tsp sesame oil", "2 tbsp Kewpie mayo"]}, {"title": "Base", "text": "Add the mixed greens and rice to bowls to create the base.", "uses": ["2 cups mixed greens", "2 cups cooked rice"]}, {"title": "Fish", "text": "Top with the cubed salmon and tuna.", "uses": ["4 oz sushi-grade salmon, cubed", "4 oz sushi-grade tuna, cubed"]}, {"title": "Toppings", "text": "Add the seaweed salad, cucumber, carrots, and kimchi.", "uses": ["1/4 cup seaweed salad", "1/2 cucumber, sliced", "1/4 cup shredded carrots", "2 tbsp kimchi"]}, {"title": "Drizzle & Serve", "text": "Drizzle with rice vinegar, soy sauce, and sesame oil, then top with a drizzle of Kewpie mayo and serve immediately.", "uses": ["1 tbsp rice vinegar", "1 tbsp soy sauce", "1 tsp sesame oil", "2 tbsp Kewpie mayo"]}]};
+let R = {"title": "Homemade Poke Bowl", "category": "Lunch", "description": "Sushi-grade salmon and tuna over rice and greens with seaweed salad, kimchi and a drizzle of Kewpie mayo", "serves": 2, "prep": 15, "cook": 0, "video": "https://www.tiktok.com/@bayleennicole/video/7536779444166397239", "slug": "homemade-poke-bowl", "ingredients": ["2 cups mixed greens", "2 cups cooked rice", "4 oz sushi-grade salmon, cubed", "4 oz sushi-grade tuna, cubed", "1/4 cup seaweed salad", "1/2 cucumber, sliced", "1/4 cup shredded carrots", "2 tbsp kimchi", "1 tbsp rice vinegar", "1 tbsp soy sauce", "1 tsp sesame oil", "2 tbsp Kewpie mayo"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["2 cups mixed greens", "2 cups cooked rice", "4 oz sushi-grade salmon, cubed", "4 oz sushi-grade tuna, cubed", "1/4 cup seaweed salad", "1/2 cucumber, sliced", "1/4 cup shredded carrots", "2 tbsp kimchi", "1 tbsp rice vinegar", "1 tbsp soy sauce", "1 tsp sesame oil", "2 tbsp Kewpie mayo"]}, {"title": "Base", "text": "Add the mixed greens and rice to bowls to create the base.", "uses": ["2 cups mixed greens", "2 cups cooked rice"]}, {"title": "Fish", "text": "Top with the cubed salmon and tuna.", "uses": ["4 oz sushi-grade salmon, cubed", "4 oz sushi-grade tuna, cubed"]}, {"title": "Toppings", "text": "Add the seaweed salad, cucumber, carrots, and kimchi.", "uses": ["1/4 cup seaweed salad", "1/2 cucumber, sliced", "1/4 cup shredded carrots", "2 tbsp kimchi"]}, {"title": "Drizzle & Serve", "text": "Drizzle with rice vinegar, soy sauce, and sesame oil, then top with a drizzle of Kewpie mayo and serve immediately.", "uses": ["1 tbsp rice vinegar", "1 tbsp soy sauce", "1 tsp sesame oil", "2 tbsp Kewpie mayo"]}]};
 const $ = id => document.getElementById(id);
 // card text: no Celsius conversions, no period at the very end
 const tidy = t => (t||"").replace(/\s*\(\s*-?\d+\s*°?\s*C\s*\)/g,"").replace(/\s*\/\s*-?\d+\s*°\s*C\b/g,"").replace(/\.\s*$/,"");
@@ -139,7 +139,7 @@ if(R.video){$("watch").href=R.video;$("watch").hidden=false}
 $("desc").textContent=tidy(R.description); $("desc").hidden=!R.description;
 
 /* ---- steps ---- */
-const N=R.slides.length;
+let N=R.slides.length;
 function show(i){
   cur=Math.max(0,Math.min(N,i));
   $("intro").hidden=true; $("cook").hidden=false;
@@ -229,6 +229,17 @@ async function keepAwake(){if(!("wakeLock" in navigator)||lock||asking||document
 document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"){if(cur>=0)keepAwake();paintTimers()}});
 
 renderIntro();
+
+/* ---- edits published from the recipe planner (data/edits.json) ----
+   If this recipe was edited there, use the edited title, ingredients and the
+   cards the planner rebuilt from the new steps. Only before cooking starts. */
+fetch("../data/edits.json?t="+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.json():null).then(d=>{
+  const o=d&&d.recipes&&d.recipes[R.slug], c=o&&o.cook;
+  if(!c||cur!==-1) return;
+  if(c.title){ R.title=c.title; $("ttl").textContent=c.title; document.title=c.title; }
+  if(c.ingredients) R.ingredients=c.ingredients;
+  if(c.slides&&c.slides.length){ R.slides=c.slides; N=R.slides.length; }
+}).catch(()=>{});
 </script>
 
 </body></html>

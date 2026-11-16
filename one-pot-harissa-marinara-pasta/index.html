@@ -95,7 +95,7 @@ ul.ing li{padding:5px 0}
 <div class="alarm" id="alarm" role="alert" hidden><span id="alarmTxt"></span><button id="alarmOk">OK</button></div>
 
 <script>
-const R = {"title": "One-Pot Harissa Marinara Pasta", "category": "Dinner", "description": "Chicken and vegetables in a spicy harissa marinara with broken lasagna noodles under melted mozzarella", "serves": 4, "prep": 15, "cook": 30, "video": "https://www.tiktok.com/@bayleennicole/video/7545592096879545613", "ingredients": ["1 tbsp olive oil", "2 chicken breasts", "1 bell pepper, chopped", "1 zucchini, chopped", "2 tbsp tomato paste", "2 tbsp harissa paste", "1 (24 oz) jar marinara sauce", "1 (5 oz) bag spinach", "8-10 lasagna noodles, broken into pieces", "1 cup shredded mozzarella"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["1 tbsp olive oil", "2 chicken breasts", "1 bell pepper, chopped", "1 zucchini, chopped", "2 tbsp tomato paste", "2 tbsp harissa paste", "1 (24 oz) jar marinara sauce", "1 (5 oz) bag spinach", "8-10 lasagna noodles, broken into pieces", "1 cup shredded mozzarella"]}, {"title": "Cook the Chicken", "text": "Heat 1 tbsp olive oil in a large pot over medium-high heat, add the chicken breasts, and cook until cooked through, about 6-8 minutes per side, then remove and set aside.", "timer": 360, "uses": ["1 tbsp olive oil", "2 chicken breasts"]}, {"title": "Vegetables", "text": "In the same pot, sauté the bell pepper and zucchini over medium heat for 4-5 minutes until softened.", "timer": 240, "uses": ["1 bell pepper, chopped", "1 zucchini, chopped"]}, {"title": "Harissa", "text": "Stir in the tomato paste and harissa paste, and let the flavors combine for a couple of minutes.", "timer": 120, "uses": ["2 tbsp tomato paste", "2 tbsp harissa paste"]}, {"title": "Marinara & Spinach", "text": "Add the jar of marinara sauce and stir, then add the spinach and let it wilt for 2 minutes.", "timer": 120, "uses": ["1 (24 oz) jar marinara sauce", "1 (5 oz) bag spinach"]}, {"title": "Cook the Noodles", "text": "Meanwhile, break the lasagna noodles into pieces and cook in a separate pot of boiling water until al dente, about 8-10 minutes, then drain.", "timer": 480, "uses": ["8-10 lasagna noodles, broken into pieces"]}, {"title": "Combine", "text": "Slice the cooked chicken and add it back to the pot, then mix the cooked noodles into the sauce."}, {"title": "Melt & Serve", "text": "Top with shredded mozzarella, cover, and let melt for 2-3 minutes over low heat, then serve.", "timer": 120, "uses": ["1 cup shredded mozzarella"]}]};
+let R = {"title": "One-Pot Harissa Marinara Pasta", "category": "Dinner", "description": "Chicken and vegetables in a spicy harissa marinara with broken lasagna noodles under melted mozzarella", "serves": 4, "prep": 15, "cook": 30, "video": "https://www.tiktok.com/@bayleennicole/video/7545592096879545613", "slug": "one-pot-harissa-marinara-pasta", "ingredients": ["1 tbsp olive oil", "2 chicken breasts", "1 bell pepper, chopped", "1 zucchini, chopped", "2 tbsp tomato paste", "2 tbsp harissa paste", "1 (24 oz) jar marinara sauce", "1 (5 oz) bag spinach", "8-10 lasagna noodles, broken into pieces", "1 cup shredded mozzarella"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["1 tbsp olive oil", "2 chicken breasts", "1 bell pepper, chopped", "1 zucchini, chopped", "2 tbsp tomato paste", "2 tbsp harissa paste", "1 (24 oz) jar marinara sauce", "1 (5 oz) bag spinach", "8-10 lasagna noodles, broken into pieces", "1 cup shredded mozzarella"]}, {"title": "Cook the Chicken", "text": "Heat 1 tbsp olive oil in a large pot over medium-high heat, add the chicken breasts, and cook until cooked through, about 6-8 minutes per side, then remove and set aside.", "timer": 360, "uses": ["1 tbsp olive oil", "2 chicken breasts"]}, {"title": "Vegetables", "text": "In the same pot, sauté the bell pepper and zucchini over medium heat for 4-5 minutes until softened.", "timer": 240, "uses": ["1 bell pepper, chopped", "1 zucchini, chopped"]}, {"title": "Harissa", "text": "Stir in the tomato paste and harissa paste, and let the flavors combine for a couple of minutes.", "timer": 120, "uses": ["2 tbsp tomato paste", "2 tbsp harissa paste"]}, {"title": "Marinara & Spinach", "text": "Add the jar of marinara sauce and stir, then add the spinach and let it wilt for 2 minutes.", "timer": 120, "uses": ["1 (24 oz) jar marinara sauce", "1 (5 oz) bag spinach"]}, {"title": "Cook the Noodles", "text": "Meanwhile, break the lasagna noodles into pieces and cook in a separate pot of boiling water until al dente, about 8-10 minutes, then drain.", "timer": 480, "uses": ["8-10 lasagna noodles, broken into pieces"]}, {"title": "Combine", "text": "Slice the cooked chicken and add it back to the pot, then mix the cooked noodles into the sauce."}, {"title": "Melt & Serve", "text": "Top with shredded mozzarella, cover, and let melt for 2-3 minutes over low heat, then serve.", "timer": 120, "uses": ["1 cup shredded mozzarella"]}]};
 const $ = id => document.getElementById(id);
 // card text: no Celsius conversions, no period at the very end
 const tidy = t => (t||"").replace(/\s*\(\s*-?\d+\s*°?\s*C\s*\)/g,"").replace(/\s*\/\s*-?\d+\s*°\s*C\b/g,"").replace(/\.\s*$/,"");
@@ -139,7 +139,7 @@ if(R.video){$("watch").href=R.video;$("watch").hidden=false}
 $("desc").textContent=tidy(R.description); $("desc").hidden=!R.description;
 
 /* ---- steps ---- */
-const N=R.slides.length;
+let N=R.slides.length;
 function show(i){
   cur=Math.max(0,Math.min(N,i));
   $("intro").hidden=true; $("cook").hidden=false;
@@ -229,6 +229,17 @@ async function keepAwake(){if(!("wakeLock" in navigator)||lock||asking||document
 document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"){if(cur>=0)keepAwake();paintTimers()}});
 
 renderIntro();
+
+/* ---- edits published from the recipe planner (data/edits.json) ----
+   If this recipe was edited there, use the edited title, ingredients and the
+   cards the planner rebuilt from the new steps. Only before cooking starts. */
+fetch("../data/edits.json?t="+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.json():null).then(d=>{
+  const o=d&&d.recipes&&d.recipes[R.slug], c=o&&o.cook;
+  if(!c||cur!==-1) return;
+  if(c.title){ R.title=c.title; $("ttl").textContent=c.title; document.title=c.title; }
+  if(c.ingredients) R.ingredients=c.ingredients;
+  if(c.slides&&c.slides.length){ R.slides=c.slides; N=R.slides.length; }
+}).catch(()=>{});
 </script>
 
 </body></html>

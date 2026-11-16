@@ -95,7 +95,7 @@ ul.ing li{padding:5px 0}
 <div class="alarm" id="alarm" role="alert" hidden><span id="alarmTxt"></span><button id="alarmOk">OK</button></div>
 
 <script>
-const R = {"title": "Skillet Lasagna", "category": "Dinner", "description": "All the layers of lasagna in one skillet: meat sauce, noodles, creamy cottage cheese dollops and melted mozzarella", "serves": 4, "prep": 15, "cook": 20, "video": "https://www.tiktok.com/@bayleennicole/video/7272758398951623978", "ingredients": ["8 oz lasagna noodles, cut up", "2 cups cottage cheese", "1/4 cup Parmesan", "1/2 onion, diced", "2 cloves garlic, minced", "1 lb ground beef or turkey", "1 tsp oregano", "1 (24 oz) jar marinara", "1 cup shredded mozzarella"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["8 oz lasagna noodles, cut up", "2 cups cottage cheese", "1/4 cup Parmesan", "1/2 onion, diced", "2 cloves garlic, minced", "1 lb ground beef or turkey", "1 tsp oregano", "1 (24 oz) jar marinara", "1 cup shredded mozzarella"]}, {"title": "Boil the Noodles", "text": "Bring a pot of salted water to a boil and boil the cut up lasagna noodles for 8 minutes until al dente, then drain.", "timer": 480, "uses": ["8 oz lasagna noodles, cut up"], "while": "While the noodles cook, blend the cheese and brown the meat (next two steps)."}, {"title": "Blend the Cheese", "text": "Blend cottage cheese and Parmesan together until smooth in a food processor or blender.", "uses": ["2 cups cottage cheese", "1/4 cup Parmesan"]}, {"title": "Meat", "text": "In a large skillet over medium heat, cook the diced onion, minced garlic, and ground beef together until the meat is browned, about 5 to 7 minutes, draining excess fat if needed.", "timer": 300, "uses": ["1/2 onion, diced", "2 cloves garlic, minced", "1 lb ground beef or turkey"]}, {"title": "Sauce & Noodles", "text": "Add oregano and marinara to beef and stir well, then add noodles to the skillet and stir to combine.", "uses": ["1 tsp oregano", "1 (24 oz) jar marinara"]}, {"title": "Cheese & Melt", "text": "Add dollops of the cottage cheese mixture to the mixture in the skillet, top with mozzarella, cover the skillet, and let it melt for 5 min over low heat.", "timer": 300, "uses": ["1 cup shredded mozzarella"]}]};
+let R = {"title": "Skillet Lasagna", "category": "Dinner", "description": "All the layers of lasagna in one skillet: meat sauce, noodles, creamy cottage cheese dollops and melted mozzarella", "serves": 4, "prep": 15, "cook": 20, "video": "https://www.tiktok.com/@bayleennicole/video/7272758398951623978", "slug": "skillet-lasagna", "ingredients": ["8 oz lasagna noodles, cut up", "2 cups cottage cheese", "1/4 cup Parmesan", "1/2 onion, diced", "2 cloves garlic, minced", "1 lb ground beef or turkey", "1 tsp oregano", "1 (24 oz) jar marinara", "1 cup shredded mozzarella"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["8 oz lasagna noodles, cut up", "2 cups cottage cheese", "1/4 cup Parmesan", "1/2 onion, diced", "2 cloves garlic, minced", "1 lb ground beef or turkey", "1 tsp oregano", "1 (24 oz) jar marinara", "1 cup shredded mozzarella"]}, {"title": "Boil the Noodles", "text": "Bring a pot of salted water to a boil and boil the cut up lasagna noodles for 8 minutes until al dente, then drain.", "timer": 480, "uses": ["8 oz lasagna noodles, cut up"], "while": "While the noodles cook, blend the cheese and brown the meat (next two steps)."}, {"title": "Blend the Cheese", "text": "Blend cottage cheese and Parmesan together until smooth in a food processor or blender.", "uses": ["2 cups cottage cheese", "1/4 cup Parmesan"]}, {"title": "Meat", "text": "In a large skillet over medium heat, cook the diced onion, minced garlic, and ground beef together until the meat is browned, about 5 to 7 minutes, draining excess fat if needed.", "timer": 300, "uses": ["1/2 onion, diced", "2 cloves garlic, minced", "1 lb ground beef or turkey"]}, {"title": "Sauce & Noodles", "text": "Add oregano and marinara to beef and stir well, then add noodles to the skillet and stir to combine.", "uses": ["1 tsp oregano", "1 (24 oz) jar marinara"]}, {"title": "Cheese & Melt", "text": "Add dollops of the cottage cheese mixture to the mixture in the skillet, top with mozzarella, cover the skillet, and let it melt for 5 min over low heat.", "timer": 300, "uses": ["1 cup shredded mozzarella"]}]};
 const $ = id => document.getElementById(id);
 // card text: no Celsius conversions, no period at the very end
 const tidy = t => (t||"").replace(/\s*\(\s*-?\d+\s*°?\s*C\s*\)/g,"").replace(/\s*\/\s*-?\d+\s*°\s*C\b/g,"").replace(/\.\s*$/,"");
@@ -139,7 +139,7 @@ if(R.video){$("watch").href=R.video;$("watch").hidden=false}
 $("desc").textContent=tidy(R.description); $("desc").hidden=!R.description;
 
 /* ---- steps ---- */
-const N=R.slides.length;
+let N=R.slides.length;
 function show(i){
   cur=Math.max(0,Math.min(N,i));
   $("intro").hidden=true; $("cook").hidden=false;
@@ -229,6 +229,17 @@ async function keepAwake(){if(!("wakeLock" in navigator)||lock||asking||document
 document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"){if(cur>=0)keepAwake();paintTimers()}});
 
 renderIntro();
+
+/* ---- edits published from the recipe planner (data/edits.json) ----
+   If this recipe was edited there, use the edited title, ingredients and the
+   cards the planner rebuilt from the new steps. Only before cooking starts. */
+fetch("../data/edits.json?t="+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.json():null).then(d=>{
+  const o=d&&d.recipes&&d.recipes[R.slug], c=o&&o.cook;
+  if(!c||cur!==-1) return;
+  if(c.title){ R.title=c.title; $("ttl").textContent=c.title; document.title=c.title; }
+  if(c.ingredients) R.ingredients=c.ingredients;
+  if(c.slides&&c.slides.length){ R.slides=c.slides; N=R.slides.length; }
+}).catch(()=>{});
 </script>
 
 </body></html>

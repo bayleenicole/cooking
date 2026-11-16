@@ -95,7 +95,7 @@ ul.ing li{padding:5px 0}
 <div class="alarm" id="alarm" role="alert" hidden><span id="alarmTxt"></span><button id="alarmOk">OK</button></div>
 
 <script>
-const R = {"title": "Mediterranean Chicken Salad with Tzatziki", "category": "Lunch", "description": "Rotisserie chicken over a chopped salad with pickles, roasted peppers, feta and pita crunch, dressed with tzatziki and hummus", "serves": 4, "prep": 15, "cook": 0, "video": "https://www.tiktok.com/@bayleennicole/video/7278812716800724267", "ingredients": ["For the tzatziki:", "1 cup Greek yogurt", "2-3 tbsp white wine vinegar", "1/4 cup olive oil", "2 cloves garlic, minced", "1 tbsp chopped dill", "1/2 cucumber, chopped", "Juice of 1 lemon", "Salt and pepper, to taste", "For the salad:", "4 cups chopped romaine", "1 cucumber, chopped", "1 cup cherry tomatoes, halved", "1/4 red onion, sliced", "1/4 cup baby pickles", "1/2 cup roasted red peppers", "1/2 cup crumbled feta", "1/2 cup crumbled pita chips", "2 cups shredded rotisserie chicken", "1/4 cup hummus"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["§Tzatziki", "1 cup Greek yogurt", "2-3 tbsp white wine vinegar", "1/4 cup olive oil", "2 cloves garlic, minced", "1 tbsp chopped dill", "1/2 cucumber, chopped", "Juice of 1 lemon", "Salt and pepper, to taste", "§Salad", "4 cups chopped romaine", "1 cucumber, chopped", "1 cup cherry tomatoes, halved", "1/4 red onion, sliced", "1/4 cup baby pickles", "1/2 cup roasted red peppers", "1/2 cup crumbled feta", "1/2 cup crumbled pita chips", "2 cups shredded rotisserie chicken", "1/4 cup hummus"]}, {"title": "Tzatziki", "text": "For the tzatziki, mix the Greek yogurt, white wine vinegar, olive oil, garlic, dill, cucumber, lemon juice, salt, and pepper in a medium bowl, then chill for 10 minutes.", "timer": 600, "uses": ["1 cup Greek yogurt", "2-3 tbsp white wine vinegar", "1/4 cup olive oil", "2 cloves garlic, minced", "1 tbsp chopped dill", "1/2 cucumber, chopped", "Juice of 1 lemon", "Salt and pepper, to taste"], "while": "While it chills, build the salad (next two steps)."}, {"title": "Salad", "text": "In a large bowl, combine the romaine, cucumber, cherry tomatoes, red onion, baby pickles, and roasted red peppers.", "uses": ["4 cups chopped romaine", "1 cucumber, chopped", "1 cup cherry tomatoes, halved", "1/4 red onion, sliced", "1/4 cup baby pickles", "1/2 cup roasted red peppers"]}, {"title": "Toppings", "text": "Top with feta, crumbled pita chips, and shredded chicken.", "uses": ["1/2 cup crumbled feta", "1/2 cup crumbled pita chips", "2 cups shredded rotisserie chicken"]}, {"title": "Dress & Serve", "text": "Add a dollop of hummus and the tzatziki as dressing, then toss and serve immediately.", "uses": ["1/4 cup hummus"]}]};
+let R = {"title": "Mediterranean Chicken Salad with Tzatziki", "category": "Lunch", "description": "Rotisserie chicken over a chopped salad with pickles, roasted peppers, feta and pita crunch, dressed with tzatziki and hummus", "serves": 4, "prep": 15, "cook": 0, "video": "https://www.tiktok.com/@bayleennicole/video/7278812716800724267", "slug": "mediterranean-chicken-salad-with-tzatziki", "ingredients": ["For the tzatziki:", "1 cup Greek yogurt", "2-3 tbsp white wine vinegar", "1/4 cup olive oil", "2 cloves garlic, minced", "1 tbsp chopped dill", "1/2 cucumber, chopped", "Juice of 1 lemon", "Salt and pepper, to taste", "For the salad:", "4 cups chopped romaine", "1 cucumber, chopped", "1 cup cherry tomatoes, halved", "1/4 red onion, sliced", "1/4 cup baby pickles", "1/2 cup roasted red peppers", "1/2 cup crumbled feta", "1/2 cup crumbled pita chips", "2 cups shredded rotisserie chicken", "1/4 cup hummus"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["§Tzatziki", "1 cup Greek yogurt", "2-3 tbsp white wine vinegar", "1/4 cup olive oil", "2 cloves garlic, minced", "1 tbsp chopped dill", "1/2 cucumber, chopped", "Juice of 1 lemon", "Salt and pepper, to taste", "§Salad", "4 cups chopped romaine", "1 cucumber, chopped", "1 cup cherry tomatoes, halved", "1/4 red onion, sliced", "1/4 cup baby pickles", "1/2 cup roasted red peppers", "1/2 cup crumbled feta", "1/2 cup crumbled pita chips", "2 cups shredded rotisserie chicken", "1/4 cup hummus"]}, {"title": "Tzatziki", "text": "For the tzatziki, mix the Greek yogurt, white wine vinegar, olive oil, garlic, dill, cucumber, lemon juice, salt, and pepper in a medium bowl, then chill for 10 minutes.", "timer": 600, "uses": ["1 cup Greek yogurt", "2-3 tbsp white wine vinegar", "1/4 cup olive oil", "2 cloves garlic, minced", "1 tbsp chopped dill", "1/2 cucumber, chopped", "Juice of 1 lemon", "Salt and pepper, to taste"], "while": "While it chills, build the salad (next two steps)."}, {"title": "Salad", "text": "In a large bowl, combine the romaine, cucumber, cherry tomatoes, red onion, baby pickles, and roasted red peppers.", "uses": ["4 cups chopped romaine", "1 cucumber, chopped", "1 cup cherry tomatoes, halved", "1/4 red onion, sliced", "1/4 cup baby pickles", "1/2 cup roasted red peppers"]}, {"title": "Toppings", "text": "Top with feta, crumbled pita chips, and shredded chicken.", "uses": ["1/2 cup crumbled feta", "1/2 cup crumbled pita chips", "2 cups shredded rotisserie chicken"]}, {"title": "Dress & Serve", "text": "Add a dollop of hummus and the tzatziki as dressing, then toss and serve immediately.", "uses": ["1/4 cup hummus"]}]};
 const $ = id => document.getElementById(id);
 // card text: no Celsius conversions, no period at the very end
 const tidy = t => (t||"").replace(/\s*\(\s*-?\d+\s*°?\s*C\s*\)/g,"").replace(/\s*\/\s*-?\d+\s*°\s*C\b/g,"").replace(/\.\s*$/,"");
@@ -139,7 +139,7 @@ if(R.video){$("watch").href=R.video;$("watch").hidden=false}
 $("desc").textContent=tidy(R.description); $("desc").hidden=!R.description;
 
 /* ---- steps ---- */
-const N=R.slides.length;
+let N=R.slides.length;
 function show(i){
   cur=Math.max(0,Math.min(N,i));
   $("intro").hidden=true; $("cook").hidden=false;
@@ -229,6 +229,17 @@ async function keepAwake(){if(!("wakeLock" in navigator)||lock||asking||document
 document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"){if(cur>=0)keepAwake();paintTimers()}});
 
 renderIntro();
+
+/* ---- edits published from the recipe planner (data/edits.json) ----
+   If this recipe was edited there, use the edited title, ingredients and the
+   cards the planner rebuilt from the new steps. Only before cooking starts. */
+fetch("../data/edits.json?t="+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.json():null).then(d=>{
+  const o=d&&d.recipes&&d.recipes[R.slug], c=o&&o.cook;
+  if(!c||cur!==-1) return;
+  if(c.title){ R.title=c.title; $("ttl").textContent=c.title; document.title=c.title; }
+  if(c.ingredients) R.ingredients=c.ingredients;
+  if(c.slides&&c.slides.length){ R.slides=c.slides; N=R.slides.length; }
+}).catch(()=>{});
 </script>
 
 </body></html>

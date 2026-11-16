@@ -95,7 +95,7 @@ ul.ing li{padding:5px 0}
 <div class="alarm" id="alarm" role="alert" hidden><span id="alarmTxt"></span><button id="alarmOk">OK</button></div>
 
 <script>
-const R = {"title": "Grilled Salmon Salad with Chili Crisp and Sesame Dressing", "category": "Lunch", "description": "Grilled spiced salmon over a crunchy romaine, pepper and avocado salad with soy sesame dressing and chili crisp", "serves": 2, "prep": 15, "cook": 10, "video": "https://www.tiktok.com/@bayleennicole/video/7647218156594826510", "ingredients": ["For the dressing:", "2 tbsp soy sauce", "2 tbsp sesame oil", "2 tbsp olive oil", "1 tbsp honey", "1/4 cup apple cider vinegar or rice vinegar", "1 clove fresh garlic, minced", "1 tsp fresh ginger, grated", "For the salad:", "2 salmon fillets", "1/2 tsp garlic powder", "1/2 tsp onion powder", "1/2 tsp paprika", "Salt and pepper to taste", "4 cups chopped romaine", "1/2 cup sliced mini bell peppers", "1/2 cup sliced cucumbers", "1 avocado, sliced", "1 tbsp sesame seeds", "1 tbsp chili oil"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["§Dressing", "2 tbsp soy sauce", "2 tbsp sesame oil", "2 tbsp olive oil", "1 tbsp honey", "1/4 cup apple cider vinegar or rice vinegar", "1 clove fresh garlic, minced", "1 tsp fresh ginger, grated", "§Salad", "2 salmon fillets", "1/2 tsp garlic powder", "1/2 tsp onion powder", "1/2 tsp paprika", "Salt and pepper to taste", "4 cups chopped romaine", "1/2 cup sliced mini bell peppers", "1/2 cup sliced cucumbers", "1 avocado, sliced", "1 tbsp sesame seeds", "1 tbsp chili oil"]}, {"title": "Dressing", "text": "In a small bowl, whisk together the soy sauce, sesame oil, olive oil, honey, apple cider vinegar (or rice vinegar), minced garlic, and grated ginger until emulsified.", "uses": ["2 tbsp soy sauce", "2 tbsp sesame oil", "2 tbsp olive oil", "1 tbsp honey", "1/4 cup apple cider vinegar or rice vinegar", "1 clove fresh garlic, minced", "1 tsp fresh ginger, grated"]}, {"title": "Grill the Salmon", "text": "Season the salmon fillets with garlic powder, onion powder, paprika, salt, and pepper, then grill over medium-high heat for 4 to 5 minutes per side until cooked through.", "timer": 240, "uses": ["2 salmon fillets", "1/2 tsp garlic powder", "1/2 tsp onion powder", "1/2 tsp paprika", "Salt and pepper to taste"]}, {"title": "Salad", "text": "In a large bowl, combine the chopped romaine, sliced mini bell peppers, sliced cucumbers, and sliced avocado.", "uses": ["4 cups chopped romaine", "1/2 cup sliced mini bell peppers", "1/2 cup sliced cucumbers", "1 avocado, sliced"]}, {"title": "Top & Serve", "text": "Place the grilled salmon on top of the salad, drizzle with the prepared dressing, and top with sesame seeds and chili oil.", "uses": ["1 tbsp sesame seeds", "1 tbsp chili oil"]}]};
+let R = {"title": "Grilled Salmon Salad with Chili Crisp and Sesame Dressing", "category": "Lunch", "description": "Grilled spiced salmon over a crunchy romaine, pepper and avocado salad with soy sesame dressing and chili crisp", "serves": 2, "prep": 15, "cook": 10, "video": "https://www.tiktok.com/@bayleennicole/video/7647218156594826510", "slug": "grilled-salmon-salad-with-chili-crisp-and-sesame-dressing", "ingredients": ["For the dressing:", "2 tbsp soy sauce", "2 tbsp sesame oil", "2 tbsp olive oil", "1 tbsp honey", "1/4 cup apple cider vinegar or rice vinegar", "1 clove fresh garlic, minced", "1 tsp fresh ginger, grated", "For the salad:", "2 salmon fillets", "1/2 tsp garlic powder", "1/2 tsp onion powder", "1/2 tsp paprika", "Salt and pepper to taste", "4 cups chopped romaine", "1/2 cup sliced mini bell peppers", "1/2 cup sliced cucumbers", "1 avocado, sliced", "1 tbsp sesame seeds", "1 tbsp chili oil"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["§Dressing", "2 tbsp soy sauce", "2 tbsp sesame oil", "2 tbsp olive oil", "1 tbsp honey", "1/4 cup apple cider vinegar or rice vinegar", "1 clove fresh garlic, minced", "1 tsp fresh ginger, grated", "§Salad", "2 salmon fillets", "1/2 tsp garlic powder", "1/2 tsp onion powder", "1/2 tsp paprika", "Salt and pepper to taste", "4 cups chopped romaine", "1/2 cup sliced mini bell peppers", "1/2 cup sliced cucumbers", "1 avocado, sliced", "1 tbsp sesame seeds", "1 tbsp chili oil"]}, {"title": "Dressing", "text": "In a small bowl, whisk together the soy sauce, sesame oil, olive oil, honey, apple cider vinegar (or rice vinegar), minced garlic, and grated ginger until emulsified.", "uses": ["2 tbsp soy sauce", "2 tbsp sesame oil", "2 tbsp olive oil", "1 tbsp honey", "1/4 cup apple cider vinegar or rice vinegar", "1 clove fresh garlic, minced", "1 tsp fresh ginger, grated"]}, {"title": "Grill the Salmon", "text": "Season the salmon fillets with garlic powder, onion powder, paprika, salt, and pepper, then grill over medium-high heat for 4 to 5 minutes per side until cooked through.", "timer": 240, "uses": ["2 salmon fillets", "1/2 tsp garlic powder", "1/2 tsp onion powder", "1/2 tsp paprika", "Salt and pepper to taste"]}, {"title": "Salad", "text": "In a large bowl, combine the chopped romaine, sliced mini bell peppers, sliced cucumbers, and sliced avocado.", "uses": ["4 cups chopped romaine", "1/2 cup sliced mini bell peppers", "1/2 cup sliced cucumbers", "1 avocado, sliced"]}, {"title": "Top & Serve", "text": "Place the grilled salmon on top of the salad, drizzle with the prepared dressing, and top with sesame seeds and chili oil.", "uses": ["1 tbsp sesame seeds", "1 tbsp chili oil"]}]};
 const $ = id => document.getElementById(id);
 // card text: no Celsius conversions, no period at the very end
 const tidy = t => (t||"").replace(/\s*\(\s*-?\d+\s*°?\s*C\s*\)/g,"").replace(/\s*\/\s*-?\d+\s*°\s*C\b/g,"").replace(/\.\s*$/,"");
@@ -139,7 +139,7 @@ if(R.video){$("watch").href=R.video;$("watch").hidden=false}
 $("desc").textContent=tidy(R.description); $("desc").hidden=!R.description;
 
 /* ---- steps ---- */
-const N=R.slides.length;
+let N=R.slides.length;
 function show(i){
   cur=Math.max(0,Math.min(N,i));
   $("intro").hidden=true; $("cook").hidden=false;
@@ -229,6 +229,17 @@ async function keepAwake(){if(!("wakeLock" in navigator)||lock||asking||document
 document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"){if(cur>=0)keepAwake();paintTimers()}});
 
 renderIntro();
+
+/* ---- edits published from the recipe planner (data/edits.json) ----
+   If this recipe was edited there, use the edited title, ingredients and the
+   cards the planner rebuilt from the new steps. Only before cooking starts. */
+fetch("../data/edits.json?t="+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.json():null).then(d=>{
+  const o=d&&d.recipes&&d.recipes[R.slug], c=o&&o.cook;
+  if(!c||cur!==-1) return;
+  if(c.title){ R.title=c.title; $("ttl").textContent=c.title; document.title=c.title; }
+  if(c.ingredients) R.ingredients=c.ingredients;
+  if(c.slides&&c.slides.length){ R.slides=c.slides; N=R.slides.length; }
+}).catch(()=>{});
 </script>
 
 </body></html>

@@ -95,7 +95,7 @@ ul.ing li{padding:5px 0}
 <div class="alarm" id="alarm" role="alert" hidden><span id="alarmTxt"></span><button id="alarmOk">OK</button></div>
 
 <script>
-const R = {"title": "Greek Chicken Bowl with Tzatziki", "category": "Lunch", "description": "Poached chicken over jasmine rice with cucumber, tomato, feta and olives, topped with dill tzatziki", "serves": 2, "prep": 15, "cook": 15, "video": "https://www.tiktok.com/@bayleennicole/video/7244297711594360107", "ingredients": ["2 chicken breasts", "1 cup nonfat Greek yogurt", "1/2 cucumber, chopped", "1 tbsp chopped dill", "Juice of 1/2 lemon", "Salt and pepper, to taste", "1 clove garlic, minced", "1 tsp white wine vinegar", "2 cups cooked jasmine rice", "1 cucumber, chopped", "1 cup cherry tomatoes, chopped", "1/4 red onion, chopped", "1/2 cup crumbled feta", "1/2 cup Greek olives"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["2 chicken breasts", "1 cup nonfat Greek yogurt", "1/2 cucumber, chopped", "1 tbsp chopped dill", "Juice of 1/2 lemon", "Salt and pepper, to taste", "1 clove garlic, minced", "1 tsp white wine vinegar", "2 cups cooked jasmine rice", "1 cucumber, chopped", "1 cup cherry tomatoes, chopped", "1/4 red onion, chopped", "1/2 cup crumbled feta", "1/2 cup Greek olives"]}, {"title": "Poach the Chicken", "text": "Bring a pot of water to a boil, add the chicken breasts, and boil for about 10 minutes until cooked through (internal temperature reaches 165°F), then shred or slice.", "timer": 600, "uses": ["2 chicken breasts"], "while": "While the chicken cooks, make the tzatziki (next step)."}, {"title": "Tzatziki", "text": "For the tzatziki, mix the Greek yogurt, 1/2 chopped cucumber, dill, lemon juice, salt, pepper, garlic, and white wine vinegar in a bowl.", "uses": ["1 cup nonfat Greek yogurt", "1/2 cucumber, chopped", "1 tbsp chopped dill", "Juice of 1/2 lemon", "Salt and pepper, to taste", "1 clove garlic, minced", "1 tsp white wine vinegar"]}, {"title": "Assemble", "text": "Assemble the bowls with jasmine rice, shredded or sliced chicken, 1 chopped cucumber, cherry tomatoes, red onion, feta, and olives.", "uses": ["2 cups cooked jasmine rice", "1 cucumber, chopped", "1 cup cherry tomatoes, chopped", "1/4 red onion, chopped", "1/2 cup crumbled feta", "1/2 cup Greek olives"]}, {"title": "Top & Serve", "text": "Top with the tzatziki sauce and serve."}]};
+let R = {"title": "Greek Chicken Bowl with Tzatziki", "category": "Lunch", "description": "Poached chicken over jasmine rice with cucumber, tomato, feta and olives, topped with dill tzatziki", "serves": 2, "prep": 15, "cook": 15, "video": "https://www.tiktok.com/@bayleennicole/video/7244297711594360107", "slug": "greek-chicken-bowl-with-tzatziki", "ingredients": ["2 chicken breasts", "1 cup nonfat Greek yogurt", "1/2 cucumber, chopped", "1 tbsp chopped dill", "Juice of 1/2 lemon", "Salt and pepper, to taste", "1 clove garlic, minced", "1 tsp white wine vinegar", "2 cups cooked jasmine rice", "1 cucumber, chopped", "1 cup cherry tomatoes, chopped", "1/4 red onion, chopped", "1/2 cup crumbled feta", "1/2 cup Greek olives"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["2 chicken breasts", "1 cup nonfat Greek yogurt", "1/2 cucumber, chopped", "1 tbsp chopped dill", "Juice of 1/2 lemon", "Salt and pepper, to taste", "1 clove garlic, minced", "1 tsp white wine vinegar", "2 cups cooked jasmine rice", "1 cucumber, chopped", "1 cup cherry tomatoes, chopped", "1/4 red onion, chopped", "1/2 cup crumbled feta", "1/2 cup Greek olives"]}, {"title": "Poach the Chicken", "text": "Bring a pot of water to a boil, add the chicken breasts, and boil for about 10 minutes until cooked through (internal temperature reaches 165°F), then shred or slice.", "timer": 600, "uses": ["2 chicken breasts"], "while": "While the chicken cooks, make the tzatziki (next step)."}, {"title": "Tzatziki", "text": "For the tzatziki, mix the Greek yogurt, 1/2 chopped cucumber, dill, lemon juice, salt, pepper, garlic, and white wine vinegar in a bowl.", "uses": ["1 cup nonfat Greek yogurt", "1/2 cucumber, chopped", "1 tbsp chopped dill", "Juice of 1/2 lemon", "Salt and pepper, to taste", "1 clove garlic, minced", "1 tsp white wine vinegar"]}, {"title": "Assemble", "text": "Assemble the bowls with jasmine rice, shredded or sliced chicken, 1 chopped cucumber, cherry tomatoes, red onion, feta, and olives.", "uses": ["2 cups cooked jasmine rice", "1 cucumber, chopped", "1 cup cherry tomatoes, chopped", "1/4 red onion, chopped", "1/2 cup crumbled feta", "1/2 cup Greek olives"]}, {"title": "Top & Serve", "text": "Top with the tzatziki sauce and serve."}]};
 const $ = id => document.getElementById(id);
 // card text: no Celsius conversions, no period at the very end
 const tidy = t => (t||"").replace(/\s*\(\s*-?\d+\s*°?\s*C\s*\)/g,"").replace(/\s*\/\s*-?\d+\s*°\s*C\b/g,"").replace(/\.\s*$/,"");
@@ -139,7 +139,7 @@ if(R.video){$("watch").href=R.video;$("watch").hidden=false}
 $("desc").textContent=tidy(R.description); $("desc").hidden=!R.description;
 
 /* ---- steps ---- */
-const N=R.slides.length;
+let N=R.slides.length;
 function show(i){
   cur=Math.max(0,Math.min(N,i));
   $("intro").hidden=true; $("cook").hidden=false;
@@ -229,6 +229,17 @@ async function keepAwake(){if(!("wakeLock" in navigator)||lock||asking||document
 document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"){if(cur>=0)keepAwake();paintTimers()}});
 
 renderIntro();
+
+/* ---- edits published from the recipe planner (data/edits.json) ----
+   If this recipe was edited there, use the edited title, ingredients and the
+   cards the planner rebuilt from the new steps. Only before cooking starts. */
+fetch("../data/edits.json?t="+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.json():null).then(d=>{
+  const o=d&&d.recipes&&d.recipes[R.slug], c=o&&o.cook;
+  if(!c||cur!==-1) return;
+  if(c.title){ R.title=c.title; $("ttl").textContent=c.title; document.title=c.title; }
+  if(c.ingredients) R.ingredients=c.ingredients;
+  if(c.slides&&c.slides.length){ R.slides=c.slides; N=R.slides.length; }
+}).catch(()=>{});
 </script>
 
 </body></html>

@@ -95,7 +95,7 @@ ul.ing li{padding:5px 0}
 <div class="alarm" id="alarm" role="alert" hidden><span id="alarmTxt"></span><button id="alarmOk">OK</button></div>
 
 <script>
-const R = {"title": "Coconut Mojito Mocktail", "category": "Drinks & Coffee", "description": "A muddled mint and lime mojito mocktail shaken with coconut milk and topped with bubbles", "serves": 1, "prep": 5, "cook": 0, "video": "https://www.tiktok.com/@bayleennicole/video/7376376606018784555", "ingredients": ["8 fresh mint leaves", "1 lime, sliced", "1 oz simple syrup", "2 oz coconut milk", "Ice, to fill", "1/2 cup Topo Chico or coconut water, for topping"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["8 fresh mint leaves", "1 lime, sliced", "1 oz simple syrup", "2 oz coconut milk", "Ice, to fill", "1/2 cup Topo Chico or coconut water, for topping"]}, {"title": "Shaker", "text": "Add the fresh mint leaves, sliced lime, and simple syrup to a shaker.", "uses": ["8 fresh mint leaves", "1 lime, sliced", "1 oz simple syrup"]}, {"title": "Muddle", "text": "Muddle the mixture well to release the flavors."}, {"title": "Shake", "text": "Add the coconut milk and ice to the shaker, then shake vigorously.", "uses": ["2 oz coconut milk", "Ice, to fill"]}, {"title": "Pour & Serve", "text": "Pour into a glass, top with Topo Chico or coconut water, and serve immediately.", "uses": ["1/2 cup Topo Chico or coconut water, for topping"]}]};
+let R = {"title": "Coconut Mojito Mocktail", "category": "Drinks & Coffee", "description": "A muddled mint and lime mojito mocktail shaken with coconut milk and topped with bubbles", "serves": 1, "prep": 5, "cook": 0, "video": "https://www.tiktok.com/@bayleennicole/video/7376376606018784555", "slug": "coconut-mojito-mocktail", "ingredients": ["8 fresh mint leaves", "1 lime, sliced", "1 oz simple syrup", "2 oz coconut milk", "Ice, to fill", "1/2 cup Topo Chico or coconut water, for topping"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["8 fresh mint leaves", "1 lime, sliced", "1 oz simple syrup", "2 oz coconut milk", "Ice, to fill", "1/2 cup Topo Chico or coconut water, for topping"]}, {"title": "Shaker", "text": "Add the fresh mint leaves, sliced lime, and simple syrup to a shaker.", "uses": ["8 fresh mint leaves", "1 lime, sliced", "1 oz simple syrup"]}, {"title": "Muddle", "text": "Muddle the mixture well to release the flavors."}, {"title": "Shake", "text": "Add the coconut milk and ice to the shaker, then shake vigorously.", "uses": ["2 oz coconut milk", "Ice, to fill"]}, {"title": "Pour & Serve", "text": "Pour into a glass, top with Topo Chico or coconut water, and serve immediately.", "uses": ["1/2 cup Topo Chico or coconut water, for topping"]}]};
 const $ = id => document.getElementById(id);
 // card text: no Celsius conversions, no period at the very end
 const tidy = t => (t||"").replace(/\s*\(\s*-?\d+\s*°?\s*C\s*\)/g,"").replace(/\s*\/\s*-?\d+\s*°\s*C\b/g,"").replace(/\.\s*$/,"");
@@ -139,7 +139,7 @@ if(R.video){$("watch").href=R.video;$("watch").hidden=false}
 $("desc").textContent=tidy(R.description); $("desc").hidden=!R.description;
 
 /* ---- steps ---- */
-const N=R.slides.length;
+let N=R.slides.length;
 function show(i){
   cur=Math.max(0,Math.min(N,i));
   $("intro").hidden=true; $("cook").hidden=false;
@@ -229,6 +229,17 @@ async function keepAwake(){if(!("wakeLock" in navigator)||lock||asking||document
 document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"){if(cur>=0)keepAwake();paintTimers()}});
 
 renderIntro();
+
+/* ---- edits published from the recipe planner (data/edits.json) ----
+   If this recipe was edited there, use the edited title, ingredients and the
+   cards the planner rebuilt from the new steps. Only before cooking starts. */
+fetch("../data/edits.json?t="+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.json():null).then(d=>{
+  const o=d&&d.recipes&&d.recipes[R.slug], c=o&&o.cook;
+  if(!c||cur!==-1) return;
+  if(c.title){ R.title=c.title; $("ttl").textContent=c.title; document.title=c.title; }
+  if(c.ingredients) R.ingredients=c.ingredients;
+  if(c.slides&&c.slides.length){ R.slides=c.slides; N=R.slides.length; }
+}).catch(()=>{});
 </script>
 
 </body></html>

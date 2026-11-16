@@ -95,7 +95,7 @@ ul.ing li{padding:5px 0}
 <div class="alarm" id="alarm" role="alert" hidden><span id="alarmTxt"></span><button id="alarmOk">OK</button></div>
 
 <script>
-const R = {"title": "Ground Chicken Crust Pizza", "category": "Dinner", "description": "A high-protein pizza with a baked ground chicken and Parmesan crust, topped with sauce, mozzarella and your favorite toppings", "serves": 4, "prep": 10, "cook": 35, "video": "https://www.tiktok.com/@bayleennicole/video/7538980081897622798", "ingredients": ["1 lb ground chicken", "2 eggs", "1/3 cup grated Parmesan", "1 tsp garlic powder", "1 tsp Italian seasoning", "Salt and pepper, to taste", "Cooking spray", "1/2 cup pizza sauce", "1 cup shredded mozzarella", "1 cup toppings of choice (pepperoni, veggies)"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["1 lb ground chicken", "2 eggs", "1/3 cup grated Parmesan", "1 tsp garlic powder", "1 tsp Italian seasoning", "Salt and pepper, to taste", "Cooking spray", "1/2 cup pizza sauce", "1 cup shredded mozzarella", "1 cup toppings of choice (pepperoni, veggies)"]}, {"title": "Preheat", "text": "Preheat oven to 425°F and line a baking sheet with parchment paper."}, {"title": "Crust: Mix", "text": "Mix the ground chicken, eggs, Parmesan, garlic powder, Italian seasoning, salt, and pepper in a bowl.", "uses": ["1 lb ground chicken", "2 eggs", "1/3 cup grated Parmesan", "1 tsp garlic powder", "1 tsp Italian seasoning", "Salt and pepper, to taste"]}, {"title": "Crust: Spread", "text": "Spray the parchment paper and spread the chicken mixture thin and even.", "uses": ["Cooking spray"]}, {"title": "Crust: Bake", "text": "Bake for 20-25 minutes, until cooked through and set.", "timer": 1200}, {"title": "Top & Bake", "text": "Remove from the oven and add pizza sauce, cheese, and desired toppings, then bake for an additional 10 minutes, until the cheese is melted.", "timer": 600, "uses": ["1/2 cup pizza sauce", "1 cup shredded mozzarella", "1 cup toppings of choice (pepperoni, veggies)"]}, {"title": "Slice & Serve", "text": "Slice and serve."}]};
+let R = {"title": "Ground Chicken Crust Pizza", "category": "Dinner", "description": "A high-protein pizza with a baked ground chicken and Parmesan crust, topped with sauce, mozzarella and your favorite toppings", "serves": 4, "prep": 10, "cook": 35, "video": "https://www.tiktok.com/@bayleennicole/video/7538980081897622798", "slug": "ground-chicken-crust-pizza", "ingredients": ["1 lb ground chicken", "2 eggs", "1/3 cup grated Parmesan", "1 tsp garlic powder", "1 tsp Italian seasoning", "Salt and pepper, to taste", "Cooking spray", "1/2 cup pizza sauce", "1 cup shredded mozzarella", "1 cup toppings of choice (pepperoni, veggies)"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["1 lb ground chicken", "2 eggs", "1/3 cup grated Parmesan", "1 tsp garlic powder", "1 tsp Italian seasoning", "Salt and pepper, to taste", "Cooking spray", "1/2 cup pizza sauce", "1 cup shredded mozzarella", "1 cup toppings of choice (pepperoni, veggies)"]}, {"title": "Preheat", "text": "Preheat oven to 425°F and line a baking sheet with parchment paper."}, {"title": "Crust: Mix", "text": "Mix the ground chicken, eggs, Parmesan, garlic powder, Italian seasoning, salt, and pepper in a bowl.", "uses": ["1 lb ground chicken", "2 eggs", "1/3 cup grated Parmesan", "1 tsp garlic powder", "1 tsp Italian seasoning", "Salt and pepper, to taste"]}, {"title": "Crust: Spread", "text": "Spray the parchment paper and spread the chicken mixture thin and even.", "uses": ["Cooking spray"]}, {"title": "Crust: Bake", "text": "Bake for 20-25 minutes, until cooked through and set.", "timer": 1200}, {"title": "Top & Bake", "text": "Remove from the oven and add pizza sauce, cheese, and desired toppings, then bake for an additional 10 minutes, until the cheese is melted.", "timer": 600, "uses": ["1/2 cup pizza sauce", "1 cup shredded mozzarella", "1 cup toppings of choice (pepperoni, veggies)"]}, {"title": "Slice & Serve", "text": "Slice and serve."}]};
 const $ = id => document.getElementById(id);
 // card text: no Celsius conversions, no period at the very end
 const tidy = t => (t||"").replace(/\s*\(\s*-?\d+\s*°?\s*C\s*\)/g,"").replace(/\s*\/\s*-?\d+\s*°\s*C\b/g,"").replace(/\.\s*$/,"");
@@ -139,7 +139,7 @@ if(R.video){$("watch").href=R.video;$("watch").hidden=false}
 $("desc").textContent=tidy(R.description); $("desc").hidden=!R.description;
 
 /* ---- steps ---- */
-const N=R.slides.length;
+let N=R.slides.length;
 function show(i){
   cur=Math.max(0,Math.min(N,i));
   $("intro").hidden=true; $("cook").hidden=false;
@@ -229,6 +229,17 @@ async function keepAwake(){if(!("wakeLock" in navigator)||lock||asking||document
 document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"){if(cur>=0)keepAwake();paintTimers()}});
 
 renderIntro();
+
+/* ---- edits published from the recipe planner (data/edits.json) ----
+   If this recipe was edited there, use the edited title, ingredients and the
+   cards the planner rebuilt from the new steps. Only before cooking starts. */
+fetch("../data/edits.json?t="+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.json():null).then(d=>{
+  const o=d&&d.recipes&&d.recipes[R.slug], c=o&&o.cook;
+  if(!c||cur!==-1) return;
+  if(c.title){ R.title=c.title; $("ttl").textContent=c.title; document.title=c.title; }
+  if(c.ingredients) R.ingredients=c.ingredients;
+  if(c.slides&&c.slides.length){ R.slides=c.slides; N=R.slides.length; }
+}).catch(()=>{});
 </script>
 
 </body></html>

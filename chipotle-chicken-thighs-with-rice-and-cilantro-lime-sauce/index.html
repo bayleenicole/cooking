@@ -95,7 +95,7 @@ ul.ing li{padding:5px 0}
 <div class="alarm" id="alarm" role="alert" hidden><span id="alarmTxt"></span><button id="alarmOk">OK</button></div>
 
 <script>
-const R = {"title": "Chipotle Chicken Thighs with Rice and Cilantro Lime Sauce", "category": "Dinner", "description": "Smoky chipotle-marinated chicken thighs over rice and lettuce with a cilantro lime yogurt sauce", "serves": 4, "prep": 15, "cook": 20, "video": "https://www.tiktok.com/@bayleennicole/video/7559622203453574414", "ingredients": ["1 cup rice", "2 cups water (for the rice)", "1 can chipotle peppers in adobo", "2 lbs chicken thighs", "1 tbsp olive oil", "2-4 tbsp water", "1 cup Greek yogurt", "1/2 cup cilantro", "1 lime", "1/2 tsp garlic salt", "Salt, to taste", "Pepper, to taste", "1 head lettuce"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["1 cup rice", "2 cups water (for the rice)", "1 can chipotle peppers in adobo", "2 lbs chicken thighs", "1 tbsp olive oil", "2-4 tbsp water", "1 cup Greek yogurt", "1/2 cup cilantro", "1 lime", "1/2 tsp garlic salt", "Salt, to taste", "Pepper, to taste", "1 head lettuce"]}, {"title": "Marinate", "text": "Blend the can of chipotle peppers, pour over your chicken thighs in a bag, and let marinate for at least 30 minutes.", "timer": 1800, "uses": ["1 can chipotle peppers in adobo", "2 lbs chicken thighs"], "while": "While the chicken marinates, cook the rice (next step)."}, {"title": "Cook the Rice", "text": "Cook 1 cup of rice with 2 cups of water according to package instructions.", "uses": ["1 cup rice", "2 cups water (for the rice)"]}, {"title": "Heat the Pan", "text": "Heat up your cast iron over medium-high heat and add 1 tbsp olive oil once heated.", "uses": ["1 tbsp olive oil"]}, {"title": "Cook the Chicken", "text": "Place chicken on the cast iron and cook each side for 6-8 minutes or until cooked through to an internal temperature of 165°F, adding 2-4 tbsp of water to the pan to deglaze when you flip.", "timer": 360, "uses": ["2-4 tbsp water"]}, {"title": "Rest", "text": "Remove chicken from heat and let rest for 5 minutes before slicing.", "timer": 300, "while": "While the chicken rests, make the sauce (next step)."}, {"title": "Cilantro Lime Sauce", "text": "Blend Greek yogurt, a handful of cilantro, and juice from 1 lime together, then season with garlic salt, salt, and pepper to taste.", "uses": ["1 cup Greek yogurt", "1/2 cup cilantro", "1 lime", "1/2 tsp garlic salt", "Salt, to taste", "Pepper, to taste"]}, {"title": "Serve", "text": "Shred 1 head of lettuce and serve the sliced chicken over rice and lettuce, drizzled with the yogurt sauce.", "uses": ["1 head lettuce"]}]};
+let R = {"title": "Chipotle Chicken Thighs with Rice and Cilantro Lime Sauce", "category": "Dinner", "description": "Smoky chipotle-marinated chicken thighs over rice and lettuce with a cilantro lime yogurt sauce", "serves": 4, "prep": 15, "cook": 20, "video": "https://www.tiktok.com/@bayleennicole/video/7559622203453574414", "slug": "chipotle-chicken-thighs-with-rice-and-cilantro-lime-sauce", "ingredients": ["1 cup rice", "2 cups water (for the rice)", "1 can chipotle peppers in adobo", "2 lbs chicken thighs", "1 tbsp olive oil", "2-4 tbsp water", "1 cup Greek yogurt", "1/2 cup cilantro", "1 lime", "1/2 tsp garlic salt", "Salt, to taste", "Pepper, to taste", "1 head lettuce"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["1 cup rice", "2 cups water (for the rice)", "1 can chipotle peppers in adobo", "2 lbs chicken thighs", "1 tbsp olive oil", "2-4 tbsp water", "1 cup Greek yogurt", "1/2 cup cilantro", "1 lime", "1/2 tsp garlic salt", "Salt, to taste", "Pepper, to taste", "1 head lettuce"]}, {"title": "Marinate", "text": "Blend the can of chipotle peppers, pour over your chicken thighs in a bag, and let marinate for at least 30 minutes.", "timer": 1800, "uses": ["1 can chipotle peppers in adobo", "2 lbs chicken thighs"], "while": "While the chicken marinates, cook the rice (next step)."}, {"title": "Cook the Rice", "text": "Cook 1 cup of rice with 2 cups of water according to package instructions.", "uses": ["1 cup rice", "2 cups water (for the rice)"]}, {"title": "Heat the Pan", "text": "Heat up your cast iron over medium-high heat and add 1 tbsp olive oil once heated.", "uses": ["1 tbsp olive oil"]}, {"title": "Cook the Chicken", "text": "Place chicken on the cast iron and cook each side for 6-8 minutes or until cooked through to an internal temperature of 165°F, adding 2-4 tbsp of water to the pan to deglaze when you flip.", "timer": 360, "uses": ["2-4 tbsp water"]}, {"title": "Rest", "text": "Remove chicken from heat and let rest for 5 minutes before slicing.", "timer": 300, "while": "While the chicken rests, make the sauce (next step)."}, {"title": "Cilantro Lime Sauce", "text": "Blend Greek yogurt, a handful of cilantro, and juice from 1 lime together, then season with garlic salt, salt, and pepper to taste.", "uses": ["1 cup Greek yogurt", "1/2 cup cilantro", "1 lime", "1/2 tsp garlic salt", "Salt, to taste", "Pepper, to taste"]}, {"title": "Serve", "text": "Shred 1 head of lettuce and serve the sliced chicken over rice and lettuce, drizzled with the yogurt sauce.", "uses": ["1 head lettuce"]}]};
 const $ = id => document.getElementById(id);
 // card text: no Celsius conversions, no period at the very end
 const tidy = t => (t||"").replace(/\s*\(\s*-?\d+\s*°?\s*C\s*\)/g,"").replace(/\s*\/\s*-?\d+\s*°\s*C\b/g,"").replace(/\.\s*$/,"");
@@ -139,7 +139,7 @@ if(R.video){$("watch").href=R.video;$("watch").hidden=false}
 $("desc").textContent=tidy(R.description); $("desc").hidden=!R.description;
 
 /* ---- steps ---- */
-const N=R.slides.length;
+let N=R.slides.length;
 function show(i){
   cur=Math.max(0,Math.min(N,i));
   $("intro").hidden=true; $("cook").hidden=false;
@@ -229,6 +229,17 @@ async function keepAwake(){if(!("wakeLock" in navigator)||lock||asking||document
 document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"){if(cur>=0)keepAwake();paintTimers()}});
 
 renderIntro();
+
+/* ---- edits published from the recipe planner (data/edits.json) ----
+   If this recipe was edited there, use the edited title, ingredients and the
+   cards the planner rebuilt from the new steps. Only before cooking starts. */
+fetch("../data/edits.json?t="+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.json():null).then(d=>{
+  const o=d&&d.recipes&&d.recipes[R.slug], c=o&&o.cook;
+  if(!c||cur!==-1) return;
+  if(c.title){ R.title=c.title; $("ttl").textContent=c.title; document.title=c.title; }
+  if(c.ingredients) R.ingredients=c.ingredients;
+  if(c.slides&&c.slides.length){ R.slides=c.slides; N=R.slides.length; }
+}).catch(()=>{});
 </script>
 
 </body></html>

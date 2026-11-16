@@ -95,7 +95,7 @@ ul.ing li{padding:5px 0}
 <div class="alarm" id="alarm" role="alert" hidden><span id="alarmTxt"></span><button id="alarmOk">OK</button></div>
 
 <script>
-const R = {"title": "Sheet Pan Roast Chicken with Crispy Smashed Potatoes", "category": "Dinner", "description": "Crispy-skinned chicken thighs with lemony smashed potatoes and roasted broccolini, topped with dill and Parmesan", "serves": 4, "prep": 15, "cook": 60, "video": "https://www.tiktok.com/@bayleennicole/video/7428281108443188511", "ingredients": ["1 lb mini golden potatoes", "2 tbsp olive oil, divided", "1 lemon, sliced", "Salt and pepper, to taste", "4 bone-in, skin-on chicken thighs", "Salt and pepper, to taste", "1 head broccolini", "2 tbsp fresh dill, chopped", "1/4 cup grated Parmesan, for topping"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["1 lb mini golden potatoes", "2 tbsp olive oil, divided", "1 lemon, sliced", "Salt and pepper, to taste", "4 bone-in, skin-on chicken thighs", "Salt and pepper, to taste", "1 head broccolini", "2 tbsp fresh dill, chopped", "1/4 cup grated Parmesan, for topping"]}, {"title": "Boil the Potatoes", "text": "Preheat oven to 425°F and boil the potatoes until fork-tender, then drain.", "uses": ["1 lb mini golden potatoes"]}, {"title": "Smash", "text": "Place the potatoes on a baking sheet, smash each one flat with a cup, drizzle with olive oil, add lemon slices, and season with salt and pepper.", "uses": ["1 tbsp olive oil", "1 lemon, sliced", "Salt and pepper, to taste"]}, {"title": "Season the Chicken", "text": "Season the chicken thighs with salt and pepper and place on a separate baking sheet.", "uses": ["4 bone-in, skin-on chicken thighs", "Salt and pepper, to taste"]}, {"title": "Roast", "text": "Roast both the chicken and potatoes for 30 minutes.", "timer": 1800, "while": "The broccolini goes in for the last 15 minutes (next step)."}, {"title": "Add the Broccolini", "text": "Add the seasoned broccolini (drizzled with olive oil, salt, and pepper) to roast alongside for the last 15 minutes.", "timer": 900, "uses": ["1 head broccolini", "1 tbsp olive oil"]}, {"title": "Top & Serve", "text": "Top the potatoes with fresh dill and grated Parmesan, and serve alongside the roasted chicken and broccolini.", "uses": ["2 tbsp fresh dill, chopped", "1/4 cup grated Parmesan, for topping"]}]};
+let R = {"title": "Sheet Pan Roast Chicken with Crispy Smashed Potatoes", "category": "Dinner", "description": "Crispy-skinned chicken thighs with lemony smashed potatoes and roasted broccolini, topped with dill and Parmesan", "serves": 4, "prep": 15, "cook": 60, "video": "https://www.tiktok.com/@bayleennicole/video/7428281108443188511", "slug": "sheet-pan-roast-chicken-with-crispy-smashed-potatoes", "ingredients": ["1 lb mini golden potatoes", "2 tbsp olive oil, divided", "1 lemon, sliced", "Salt and pepper, to taste", "4 bone-in, skin-on chicken thighs", "Salt and pepper, to taste", "1 head broccolini", "2 tbsp fresh dill, chopped", "1/4 cup grated Parmesan, for topping"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["1 lb mini golden potatoes", "2 tbsp olive oil, divided", "1 lemon, sliced", "Salt and pepper, to taste", "4 bone-in, skin-on chicken thighs", "Salt and pepper, to taste", "1 head broccolini", "2 tbsp fresh dill, chopped", "1/4 cup grated Parmesan, for topping"]}, {"title": "Boil the Potatoes", "text": "Preheat oven to 425°F and boil the potatoes until fork-tender, then drain.", "uses": ["1 lb mini golden potatoes"]}, {"title": "Smash", "text": "Place the potatoes on a baking sheet, smash each one flat with a cup, drizzle with olive oil, add lemon slices, and season with salt and pepper.", "uses": ["1 tbsp olive oil", "1 lemon, sliced", "Salt and pepper, to taste"]}, {"title": "Season the Chicken", "text": "Season the chicken thighs with salt and pepper and place on a separate baking sheet.", "uses": ["4 bone-in, skin-on chicken thighs", "Salt and pepper, to taste"]}, {"title": "Roast", "text": "Roast both the chicken and potatoes for 30 minutes.", "timer": 1800, "while": "The broccolini goes in for the last 15 minutes (next step)."}, {"title": "Add the Broccolini", "text": "Add the seasoned broccolini (drizzled with olive oil, salt, and pepper) to roast alongside for the last 15 minutes.", "timer": 900, "uses": ["1 head broccolini", "1 tbsp olive oil"]}, {"title": "Top & Serve", "text": "Top the potatoes with fresh dill and grated Parmesan, and serve alongside the roasted chicken and broccolini.", "uses": ["2 tbsp fresh dill, chopped", "1/4 cup grated Parmesan, for topping"]}]};
 const $ = id => document.getElementById(id);
 // card text: no Celsius conversions, no period at the very end
 const tidy = t => (t||"").replace(/\s*\(\s*-?\d+\s*°?\s*C\s*\)/g,"").replace(/\s*\/\s*-?\d+\s*°\s*C\b/g,"").replace(/\.\s*$/,"");
@@ -139,7 +139,7 @@ if(R.video){$("watch").href=R.video;$("watch").hidden=false}
 $("desc").textContent=tidy(R.description); $("desc").hidden=!R.description;
 
 /* ---- steps ---- */
-const N=R.slides.length;
+let N=R.slides.length;
 function show(i){
   cur=Math.max(0,Math.min(N,i));
   $("intro").hidden=true; $("cook").hidden=false;
@@ -229,6 +229,17 @@ async function keepAwake(){if(!("wakeLock" in navigator)||lock||asking||document
 document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"){if(cur>=0)keepAwake();paintTimers()}});
 
 renderIntro();
+
+/* ---- edits published from the recipe planner (data/edits.json) ----
+   If this recipe was edited there, use the edited title, ingredients and the
+   cards the planner rebuilt from the new steps. Only before cooking starts. */
+fetch("../data/edits.json?t="+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.json():null).then(d=>{
+  const o=d&&d.recipes&&d.recipes[R.slug], c=o&&o.cook;
+  if(!c||cur!==-1) return;
+  if(c.title){ R.title=c.title; $("ttl").textContent=c.title; document.title=c.title; }
+  if(c.ingredients) R.ingredients=c.ingredients;
+  if(c.slides&&c.slides.length){ R.slides=c.slides; N=R.slides.length; }
+}).catch(()=>{});
 </script>
 
 </body></html>

@@ -95,7 +95,7 @@ ul.ing li{padding:5px 0}
 <div class="alarm" id="alarm" role="alert" hidden><span id="alarmTxt"></span><button id="alarmOk">OK</button></div>
 
 <script>
-const R = {"title": "Pesto, Goat Cheese & Roasted Red Pepper Sandwich", "category": "Lunch", "description": "Toasted sourdough layered with pesto, goat cheese, turkey, prosciutto and roasted red peppers", "serves": 1, "prep": 5, "cook": 5, "video": "https://www.tiktok.com/@bayleennicole/video/7298060490616491306", "ingredients": ["2 slices sourdough bread, toasted", "2 tbsp pesto", "2 tbsp crumbled goat cheese", "3 slices roasted turkey breast", "1 slice prosciutto, torn", "1/4 cup roasted red peppers"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["2 slices sourdough bread, toasted", "2 tbsp pesto", "2 tbsp crumbled goat cheese", "3 slices roasted turkey breast", "1 slice prosciutto, torn", "1/4 cup roasted red peppers"]}, {"title": "Toast", "text": "Toast the sourdough bread.", "uses": ["2 slices sourdough bread, toasted"]}, {"title": "Pesto & Goat Cheese", "text": "Spread pesto on one side of each slice, then crumble the goat cheese onto the pesto.", "uses": ["2 tbsp pesto", "2 tbsp crumbled goat cheese"]}, {"title": "Turkey & Prosciutto", "text": "Layer the roasted turkey breast on top and add the torn prosciutto.", "uses": ["3 slices roasted turkey breast", "1 slice prosciutto, torn"]}, {"title": "Peppers & Serve", "text": "Top with roasted red peppers, patted dry, then close the sandwich, slice, and serve.", "uses": ["1/4 cup roasted red peppers"]}]};
+let R = {"title": "Pesto, Goat Cheese & Roasted Red Pepper Sandwich", "category": "Lunch", "description": "Toasted sourdough layered with pesto, goat cheese, turkey, prosciutto and roasted red peppers", "serves": 1, "prep": 5, "cook": 5, "video": "https://www.tiktok.com/@bayleennicole/video/7298060490616491306", "slug": "pesto-goat-cheese-and-roasted-red-pepper-sandwich", "ingredients": ["2 slices sourdough bread, toasted", "2 tbsp pesto", "2 tbsp crumbled goat cheese", "3 slices roasted turkey breast", "1 slice prosciutto, torn", "1/4 cup roasted red peppers"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["2 slices sourdough bread, toasted", "2 tbsp pesto", "2 tbsp crumbled goat cheese", "3 slices roasted turkey breast", "1 slice prosciutto, torn", "1/4 cup roasted red peppers"]}, {"title": "Toast", "text": "Toast the sourdough bread.", "uses": ["2 slices sourdough bread, toasted"]}, {"title": "Pesto & Goat Cheese", "text": "Spread pesto on one side of each slice, then crumble the goat cheese onto the pesto.", "uses": ["2 tbsp pesto", "2 tbsp crumbled goat cheese"]}, {"title": "Turkey & Prosciutto", "text": "Layer the roasted turkey breast on top and add the torn prosciutto.", "uses": ["3 slices roasted turkey breast", "1 slice prosciutto, torn"]}, {"title": "Peppers & Serve", "text": "Top with roasted red peppers, patted dry, then close the sandwich, slice, and serve.", "uses": ["1/4 cup roasted red peppers"]}]};
 const $ = id => document.getElementById(id);
 // card text: no Celsius conversions, no period at the very end
 const tidy = t => (t||"").replace(/\s*\(\s*-?\d+\s*°?\s*C\s*\)/g,"").replace(/\s*\/\s*-?\d+\s*°\s*C\b/g,"").replace(/\.\s*$/,"");
@@ -139,7 +139,7 @@ if(R.video){$("watch").href=R.video;$("watch").hidden=false}
 $("desc").textContent=tidy(R.description); $("desc").hidden=!R.description;
 
 /* ---- steps ---- */
-const N=R.slides.length;
+let N=R.slides.length;
 function show(i){
   cur=Math.max(0,Math.min(N,i));
   $("intro").hidden=true; $("cook").hidden=false;
@@ -229,6 +229,17 @@ async function keepAwake(){if(!("wakeLock" in navigator)||lock||asking||document
 document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"){if(cur>=0)keepAwake();paintTimers()}});
 
 renderIntro();
+
+/* ---- edits published from the recipe planner (data/edits.json) ----
+   If this recipe was edited there, use the edited title, ingredients and the
+   cards the planner rebuilt from the new steps. Only before cooking starts. */
+fetch("../data/edits.json?t="+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.json():null).then(d=>{
+  const o=d&&d.recipes&&d.recipes[R.slug], c=o&&o.cook;
+  if(!c||cur!==-1) return;
+  if(c.title){ R.title=c.title; $("ttl").textContent=c.title; document.title=c.title; }
+  if(c.ingredients) R.ingredients=c.ingredients;
+  if(c.slides&&c.slides.length){ R.slides=c.slides; N=R.slides.length; }
+}).catch(()=>{});
 </script>
 
 </body></html>

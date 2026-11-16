@@ -95,7 +95,7 @@ ul.ing li{padding:5px 0}
 <div class="alarm" id="alarm" role="alert" hidden><span id="alarmTxt"></span><button id="alarmOk">OK</button></div>
 
 <script>
-const R = {"title": "Honey Pistachio Walnut Granola", "category": "Breakfast", "description": "Clustery baked granola with pistachios, walnuts, oats and puffed cereal, sweetened with honey", "serves": 12, "prep": 10, "cook": 20, "video": "https://www.tiktok.com/@bayleennicole/video/7338907956379061550", "ingredients": ["1/3 cup pistachios", "1/3 cup walnuts", "1/4 cup flour", "1/4 cup melted butter", "1/3 cup honey", "1 tsp cinnamon", "1 tsp vanilla", "1 cup puff cereal", "1 cup oats"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["1/3 cup pistachios", "1/3 cup walnuts", "1/4 cup flour", "1/4 cup melted butter", "1/3 cup honey", "1 tsp cinnamon", "1 tsp vanilla", "1 cup puff cereal", "1 cup oats"]}, {"title": "Blend the Nuts", "text": "Blend 1/3 cup pistachios and 1/3 cup walnuts together.", "uses": ["1/3 cup pistachios", "1/3 cup walnuts"]}, {"title": "Mix", "text": "Preheat oven to 350F. Add the flour to a bowl with 1/4 cup melted butter, 1/3 cup honey, cinnamon, vanilla, 1 cup puff cereal, 1 cup oats, and the chopped nuts, then mix together and pour onto a 9x13 baking dish.", "uses": ["1/4 cup flour", "1/4 cup melted butter", "1/3 cup honey", "1 tsp cinnamon", "1 tsp vanilla", "1 cup puff cereal", "1 cup oats"]}, {"title": "Bake", "text": "Bake at 350F for 20 min or until golden on top.", "timer": 1200}, {"title": "Cool & Crumble", "text": "Let cool completely, then crumble up!"}]};
+let R = {"title": "Honey Pistachio Walnut Granola", "category": "Breakfast", "description": "Clustery baked granola with pistachios, walnuts, oats and puffed cereal, sweetened with honey", "serves": 12, "prep": 10, "cook": 20, "video": "https://www.tiktok.com/@bayleennicole/video/7338907956379061550", "slug": "honey-pistachio-walnut-granola", "ingredients": ["1/3 cup pistachios", "1/3 cup walnuts", "1/4 cup flour", "1/4 cup melted butter", "1/3 cup honey", "1 tsp cinnamon", "1 tsp vanilla", "1 cup puff cereal", "1 cup oats"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["1/3 cup pistachios", "1/3 cup walnuts", "1/4 cup flour", "1/4 cup melted butter", "1/3 cup honey", "1 tsp cinnamon", "1 tsp vanilla", "1 cup puff cereal", "1 cup oats"]}, {"title": "Blend the Nuts", "text": "Blend 1/3 cup pistachios and 1/3 cup walnuts together.", "uses": ["1/3 cup pistachios", "1/3 cup walnuts"]}, {"title": "Mix", "text": "Preheat oven to 350F. Add the flour to a bowl with 1/4 cup melted butter, 1/3 cup honey, cinnamon, vanilla, 1 cup puff cereal, 1 cup oats, and the chopped nuts, then mix together and pour onto a 9x13 baking dish.", "uses": ["1/4 cup flour", "1/4 cup melted butter", "1/3 cup honey", "1 tsp cinnamon", "1 tsp vanilla", "1 cup puff cereal", "1 cup oats"]}, {"title": "Bake", "text": "Bake at 350F for 20 min or until golden on top.", "timer": 1200}, {"title": "Cool & Crumble", "text": "Let cool completely, then crumble up!"}]};
 const $ = id => document.getElementById(id);
 // card text: no Celsius conversions, no period at the very end
 const tidy = t => (t||"").replace(/\s*\(\s*-?\d+\s*°?\s*C\s*\)/g,"").replace(/\s*\/\s*-?\d+\s*°\s*C\b/g,"").replace(/\.\s*$/,"");
@@ -139,7 +139,7 @@ if(R.video){$("watch").href=R.video;$("watch").hidden=false}
 $("desc").textContent=tidy(R.description); $("desc").hidden=!R.description;
 
 /* ---- steps ---- */
-const N=R.slides.length;
+let N=R.slides.length;
 function show(i){
   cur=Math.max(0,Math.min(N,i));
   $("intro").hidden=true; $("cook").hidden=false;
@@ -229,6 +229,17 @@ async function keepAwake(){if(!("wakeLock" in navigator)||lock||asking||document
 document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"){if(cur>=0)keepAwake();paintTimers()}});
 
 renderIntro();
+
+/* ---- edits published from the recipe planner (data/edits.json) ----
+   If this recipe was edited there, use the edited title, ingredients and the
+   cards the planner rebuilt from the new steps. Only before cooking starts. */
+fetch("../data/edits.json?t="+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.json():null).then(d=>{
+  const o=d&&d.recipes&&d.recipes[R.slug], c=o&&o.cook;
+  if(!c||cur!==-1) return;
+  if(c.title){ R.title=c.title; $("ttl").textContent=c.title; document.title=c.title; }
+  if(c.ingredients) R.ingredients=c.ingredients;
+  if(c.slides&&c.slides.length){ R.slides=c.slides; N=R.slides.length; }
+}).catch(()=>{});
 </script>
 
 </body></html>

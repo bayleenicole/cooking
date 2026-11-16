@@ -95,7 +95,7 @@ ul.ing li{padding:5px 0}
 <div class="alarm" id="alarm" role="alert" hidden><span id="alarmTxt"></span><button id="alarmOk">OK</button></div>
 
 <script>
-const R = {"title": "Blood Orange Olive Oil Cakes", "category": "Dessert", "description": "Two small olive oil cakes with lemon and vanilla yogurt, flipped and finished with powdered sugar and blood orange oil", "serves": 2, "prep": 10, "cook": 35, "video": "https://www.tiktok.com/@bayleennicole/video/7559736228506127630", "ingredients": ["1 egg yolk", "4 tbsp blood orange olive oil, plus more for drizzling", "1/4 cup granulated sugar", "1 tbsp milk", "3 tsp vanilla yogurt", "Zest and juice of 1/2 lemon", "1/2 cup all purpose flour", "1/2 tsp baking powder", "Pinch of salt", "1 tbsp powdered sugar, for dusting"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["1 egg yolk", "4 tbsp blood orange olive oil, plus more for drizzling", "1/4 cup granulated sugar", "1 tbsp milk", "3 tsp vanilla yogurt", "Zest and juice of 1/2 lemon", "1/2 cup all purpose flour", "1/2 tsp baking powder", "Pinch of salt", "1 tbsp powdered sugar, for dusting"]}, {"title": "Wet Ingredients", "text": "Preheat oven to 350°F. In a bowl, mix together the wet ingredients (egg yolk, blood orange olive oil, sugar, milk, vanilla yogurt, lemon juice, and lemon zest).", "uses": ["1 egg yolk", "4 tbsp blood orange olive oil, plus more for drizzling", "1/4 cup granulated sugar", "1 tbsp milk", "3 tsp vanilla yogurt", "Zest and juice of 1/2 lemon"]}, {"title": "Dry Ingredients", "text": "Continue to mix while slowly adding the flour, then stir in the baking powder and salt.", "uses": ["1/2 cup all purpose flour", "1/2 tsp baking powder", "Pinch of salt"]}, {"title": "Fill the Ramekins", "text": "Pour the mixture evenly into two 8-oz ramekins."}, {"title": "Bake", "text": "Bake at 350°F for 35 minutes or until cooked through.", "timer": 2100}, {"title": "Flip & Finish", "text": "Remove from the oven, flip the cakes over, then dust with powdered sugar and drizzle olive oil on top.", "uses": ["1 tbsp powdered sugar, for dusting", "Blood orange olive oil, for drizzling"]}]};
+let R = {"title": "Blood Orange Olive Oil Cakes", "category": "Dessert", "description": "Two small olive oil cakes with lemon and vanilla yogurt, flipped and finished with powdered sugar and blood orange oil", "serves": 2, "prep": 10, "cook": 35, "video": "https://www.tiktok.com/@bayleennicole/video/7559736228506127630", "slug": "blood-orange-olive-oil-cakes", "ingredients": ["1 egg yolk", "4 tbsp blood orange olive oil, plus more for drizzling", "1/4 cup granulated sugar", "1 tbsp milk", "3 tsp vanilla yogurt", "Zest and juice of 1/2 lemon", "1/2 cup all purpose flour", "1/2 tsp baking powder", "Pinch of salt", "1 tbsp powdered sugar, for dusting"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["1 egg yolk", "4 tbsp blood orange olive oil, plus more for drizzling", "1/4 cup granulated sugar", "1 tbsp milk", "3 tsp vanilla yogurt", "Zest and juice of 1/2 lemon", "1/2 cup all purpose flour", "1/2 tsp baking powder", "Pinch of salt", "1 tbsp powdered sugar, for dusting"]}, {"title": "Wet Ingredients", "text": "Preheat oven to 350°F. In a bowl, mix together the wet ingredients (egg yolk, blood orange olive oil, sugar, milk, vanilla yogurt, lemon juice, and lemon zest).", "uses": ["1 egg yolk", "4 tbsp blood orange olive oil, plus more for drizzling", "1/4 cup granulated sugar", "1 tbsp milk", "3 tsp vanilla yogurt", "Zest and juice of 1/2 lemon"]}, {"title": "Dry Ingredients", "text": "Continue to mix while slowly adding the flour, then stir in the baking powder and salt.", "uses": ["1/2 cup all purpose flour", "1/2 tsp baking powder", "Pinch of salt"]}, {"title": "Fill the Ramekins", "text": "Pour the mixture evenly into two 8-oz ramekins."}, {"title": "Bake", "text": "Bake at 350°F for 35 minutes or until cooked through.", "timer": 2100}, {"title": "Flip & Finish", "text": "Remove from the oven, flip the cakes over, then dust with powdered sugar and drizzle olive oil on top.", "uses": ["1 tbsp powdered sugar, for dusting", "Blood orange olive oil, for drizzling"]}]};
 const $ = id => document.getElementById(id);
 // card text: no Celsius conversions, no period at the very end
 const tidy = t => (t||"").replace(/\s*\(\s*-?\d+\s*°?\s*C\s*\)/g,"").replace(/\s*\/\s*-?\d+\s*°\s*C\b/g,"").replace(/\.\s*$/,"");
@@ -139,7 +139,7 @@ if(R.video){$("watch").href=R.video;$("watch").hidden=false}
 $("desc").textContent=tidy(R.description); $("desc").hidden=!R.description;
 
 /* ---- steps ---- */
-const N=R.slides.length;
+let N=R.slides.length;
 function show(i){
   cur=Math.max(0,Math.min(N,i));
   $("intro").hidden=true; $("cook").hidden=false;
@@ -229,6 +229,17 @@ async function keepAwake(){if(!("wakeLock" in navigator)||lock||asking||document
 document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"){if(cur>=0)keepAwake();paintTimers()}});
 
 renderIntro();
+
+/* ---- edits published from the recipe planner (data/edits.json) ----
+   If this recipe was edited there, use the edited title, ingredients and the
+   cards the planner rebuilt from the new steps. Only before cooking starts. */
+fetch("../data/edits.json?t="+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.json():null).then(d=>{
+  const o=d&&d.recipes&&d.recipes[R.slug], c=o&&o.cook;
+  if(!c||cur!==-1) return;
+  if(c.title){ R.title=c.title; $("ttl").textContent=c.title; document.title=c.title; }
+  if(c.ingredients) R.ingredients=c.ingredients;
+  if(c.slides&&c.slides.length){ R.slides=c.slides; N=R.slides.length; }
+}).catch(()=>{});
 </script>
 
 </body></html>

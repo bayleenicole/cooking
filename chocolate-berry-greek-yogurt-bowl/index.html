@@ -95,7 +95,7 @@ ul.ing li{padding:5px 0}
 <div class="alarm" id="alarm" role="alert" hidden><span id="alarmTxt"></span><button id="alarmOk">OK</button></div>
 
 <script>
-const R = {"title": "Chocolate Berry Greek Yogurt Bowl", "category": "Breakfast", "description": "Sweetened Greek yogurt layered with warm mashed berries under a crackly dark chocolate shell", "serves": 1, "prep": 5, "cook": 15, "video": "https://www.tiktok.com/@bayleennicole/video/7610266512003222798", "ingredients": ["3/4 cup Greek yogurt (0%)", "1 tsp stevia", "2-3 tbsp water", "1/4 cup dark chocolate baking chips", "1 tsp olive oil", "1/2 cup frozen berries", "Flaky salt, to taste"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["3/4 cup Greek yogurt (0%)", "1 tsp stevia", "2-3 tbsp water", "1/4 cup dark chocolate baking chips", "1 tsp olive oil", "1/2 cup frozen berries", "Flaky salt, to taste"]}, {"title": "Yogurt Base", "text": "Mix the Greek yogurt with stevia and water until smooth, and spoon into a bowl.", "uses": ["3/4 cup Greek yogurt (0%)", "1 tsp stevia", "2-3 tbsp water"]}, {"title": "Melt the Chocolate", "text": "In a separate bowl, melt the chocolate chips with olive oil in the microwave until smooth.", "uses": ["1/4 cup dark chocolate baking chips", "1 tsp olive oil"]}, {"title": "Mash the Berries", "text": "In another bowl, microwave the frozen berries until soft, then mash.", "uses": ["1/2 cup frozen berries"]}, {"title": "Layer", "text": "Layer the berries over the yogurt, drizzle the melted chocolate over the top, and sprinkle with flaky salt.", "uses": ["Flaky salt, to taste"]}, {"title": "Freeze", "text": "Freeze for about 15 minutes, until the chocolate hardens, and serve.", "timer": 900}]};
+let R = {"title": "Chocolate Berry Greek Yogurt Bowl", "category": "Breakfast", "description": "Sweetened Greek yogurt layered with warm mashed berries under a crackly dark chocolate shell", "serves": 1, "prep": 5, "cook": 15, "video": "https://www.tiktok.com/@bayleennicole/video/7610266512003222798", "slug": "chocolate-berry-greek-yogurt-bowl", "ingredients": ["3/4 cup Greek yogurt (0%)", "1 tsp stevia", "2-3 tbsp water", "1/4 cup dark chocolate baking chips", "1 tsp olive oil", "1/2 cup frozen berries", "Flaky salt, to taste"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["3/4 cup Greek yogurt (0%)", "1 tsp stevia", "2-3 tbsp water", "1/4 cup dark chocolate baking chips", "1 tsp olive oil", "1/2 cup frozen berries", "Flaky salt, to taste"]}, {"title": "Yogurt Base", "text": "Mix the Greek yogurt with stevia and water until smooth, and spoon into a bowl.", "uses": ["3/4 cup Greek yogurt (0%)", "1 tsp stevia", "2-3 tbsp water"]}, {"title": "Melt the Chocolate", "text": "In a separate bowl, melt the chocolate chips with olive oil in the microwave until smooth.", "uses": ["1/4 cup dark chocolate baking chips", "1 tsp olive oil"]}, {"title": "Mash the Berries", "text": "In another bowl, microwave the frozen berries until soft, then mash.", "uses": ["1/2 cup frozen berries"]}, {"title": "Layer", "text": "Layer the berries over the yogurt, drizzle the melted chocolate over the top, and sprinkle with flaky salt.", "uses": ["Flaky salt, to taste"]}, {"title": "Freeze", "text": "Freeze for about 15 minutes, until the chocolate hardens, and serve.", "timer": 900}]};
 const $ = id => document.getElementById(id);
 // card text: no Celsius conversions, no period at the very end
 const tidy = t => (t||"").replace(/\s*\(\s*-?\d+\s*°?\s*C\s*\)/g,"").replace(/\s*\/\s*-?\d+\s*°\s*C\b/g,"").replace(/\.\s*$/,"");
@@ -139,7 +139,7 @@ if(R.video){$("watch").href=R.video;$("watch").hidden=false}
 $("desc").textContent=tidy(R.description); $("desc").hidden=!R.description;
 
 /* ---- steps ---- */
-const N=R.slides.length;
+let N=R.slides.length;
 function show(i){
   cur=Math.max(0,Math.min(N,i));
   $("intro").hidden=true; $("cook").hidden=false;
@@ -229,6 +229,17 @@ async function keepAwake(){if(!("wakeLock" in navigator)||lock||asking||document
 document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"){if(cur>=0)keepAwake();paintTimers()}});
 
 renderIntro();
+
+/* ---- edits published from the recipe planner (data/edits.json) ----
+   If this recipe was edited there, use the edited title, ingredients and the
+   cards the planner rebuilt from the new steps. Only before cooking starts. */
+fetch("../data/edits.json?t="+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.json():null).then(d=>{
+  const o=d&&d.recipes&&d.recipes[R.slug], c=o&&o.cook;
+  if(!c||cur!==-1) return;
+  if(c.title){ R.title=c.title; $("ttl").textContent=c.title; document.title=c.title; }
+  if(c.ingredients) R.ingredients=c.ingredients;
+  if(c.slides&&c.slides.length){ R.slides=c.slides; N=R.slides.length; }
+}).catch(()=>{});
 </script>
 
 </body></html>

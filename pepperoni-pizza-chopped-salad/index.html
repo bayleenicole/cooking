@@ -95,7 +95,7 @@ ul.ing li{padding:5px 0}
 <div class="alarm" id="alarm" role="alert" hidden><span id="alarmTxt"></span><button id="alarmOk">OK</button></div>
 
 <script>
-const R = {"title": "Pepperoni Pizza Chopped Salad", "category": "Lunch", "description": "A pizza-inspired chopped salad with roasted red peppers, chicken, pepperoni, chickpeas and cheese in a tomato vinaigrette", "serves": 4, "prep": 15, "cook": 40, "video": "https://www.tiktok.com/@bayleennicole/video/7539584564105121079", "ingredients": ["2 red bell peppers", "4 cups mixed chopped lettuce", "1/4 red onion, chopped", "2 cups shredded chicken", "1/2 cup olives, chopped", "1 (15 oz) can chickpeas, drained", "1/2 cup pepperoni", "1 cup shredded pizza blend cheese", "3 tbsp olive oil", "1 tsp red pepper flakes", "1 tsp garlic salt", "2 tbsp red wine vinegar", "1/4 cup tomato sauce", "Salt and pepper, to taste"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["2 red bell peppers", "4 cups mixed chopped lettuce", "1/4 red onion, chopped", "2 cups shredded chicken", "1/2 cup olives, chopped", "1 (15 oz) can chickpeas, drained", "1/2 cup pepperoni", "1 cup shredded pizza blend cheese", "3 tbsp olive oil", "1 tsp red pepper flakes", "1 tsp garlic salt", "2 tbsp red wine vinegar", "1/4 cup tomato sauce", "Salt and pepper, to taste"]}, {"title": "Prep the Peppers", "text": "Preheat oven to 450°F. Cut the bell peppers in half, remove stems and seeds, and place face down on a foil-lined baking sheet.", "uses": ["2 red bell peppers"]}, {"title": "Roast", "text": "Roast for 30-40 minutes, until blistering.", "timer": 1800}, {"title": "Rest & Peel", "text": "Let the peppers sit for 15 minutes, then peel off the skins and slice thinly.", "timer": 900}, {"title": "Combine", "text": "In a large bowl, combine the chopped lettuce, onion, shredded chicken, olives, chickpeas, pepperoni, cheese, and roasted red peppers.", "uses": ["4 cups mixed chopped lettuce", "1/4 red onion, chopped", "2 cups shredded chicken", "1/2 cup olives, chopped", "1 (15 oz) can chickpeas, drained", "1/2 cup pepperoni", "1 cup shredded pizza blend cheese"]}, {"title": "Dress & Serve", "text": "Drizzle with olive oil, red pepper flakes, garlic salt, red wine vinegar, and tomato sauce, then season with salt and pepper to taste. Toss well and serve.", "uses": ["3 tbsp olive oil", "1 tsp red pepper flakes", "1 tsp garlic salt", "2 tbsp red wine vinegar", "1/4 cup tomato sauce", "Salt and pepper, to taste"]}]};
+let R = {"title": "Pepperoni Pizza Chopped Salad", "category": "Lunch", "description": "A pizza-inspired chopped salad with roasted red peppers, chicken, pepperoni, chickpeas and cheese in a tomato vinaigrette", "serves": 4, "prep": 15, "cook": 40, "video": "https://www.tiktok.com/@bayleennicole/video/7539584564105121079", "slug": "pepperoni-pizza-chopped-salad", "ingredients": ["2 red bell peppers", "4 cups mixed chopped lettuce", "1/4 red onion, chopped", "2 cups shredded chicken", "1/2 cup olives, chopped", "1 (15 oz) can chickpeas, drained", "1/2 cup pepperoni", "1 cup shredded pizza blend cheese", "3 tbsp olive oil", "1 tsp red pepper flakes", "1 tsp garlic salt", "2 tbsp red wine vinegar", "1/4 cup tomato sauce", "Salt and pepper, to taste"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["2 red bell peppers", "4 cups mixed chopped lettuce", "1/4 red onion, chopped", "2 cups shredded chicken", "1/2 cup olives, chopped", "1 (15 oz) can chickpeas, drained", "1/2 cup pepperoni", "1 cup shredded pizza blend cheese", "3 tbsp olive oil", "1 tsp red pepper flakes", "1 tsp garlic salt", "2 tbsp red wine vinegar", "1/4 cup tomato sauce", "Salt and pepper, to taste"]}, {"title": "Prep the Peppers", "text": "Preheat oven to 450°F. Cut the bell peppers in half, remove stems and seeds, and place face down on a foil-lined baking sheet.", "uses": ["2 red bell peppers"]}, {"title": "Roast", "text": "Roast for 30-40 minutes, until blistering.", "timer": 1800}, {"title": "Rest & Peel", "text": "Let the peppers sit for 15 minutes, then peel off the skins and slice thinly.", "timer": 900}, {"title": "Combine", "text": "In a large bowl, combine the chopped lettuce, onion, shredded chicken, olives, chickpeas, pepperoni, cheese, and roasted red peppers.", "uses": ["4 cups mixed chopped lettuce", "1/4 red onion, chopped", "2 cups shredded chicken", "1/2 cup olives, chopped", "1 (15 oz) can chickpeas, drained", "1/2 cup pepperoni", "1 cup shredded pizza blend cheese"]}, {"title": "Dress & Serve", "text": "Drizzle with olive oil, red pepper flakes, garlic salt, red wine vinegar, and tomato sauce, then season with salt and pepper to taste. Toss well and serve.", "uses": ["3 tbsp olive oil", "1 tsp red pepper flakes", "1 tsp garlic salt", "2 tbsp red wine vinegar", "1/4 cup tomato sauce", "Salt and pepper, to taste"]}]};
 const $ = id => document.getElementById(id);
 // card text: no Celsius conversions, no period at the very end
 const tidy = t => (t||"").replace(/\s*\(\s*-?\d+\s*°?\s*C\s*\)/g,"").replace(/\s*\/\s*-?\d+\s*°\s*C\b/g,"").replace(/\.\s*$/,"");
@@ -139,7 +139,7 @@ if(R.video){$("watch").href=R.video;$("watch").hidden=false}
 $("desc").textContent=tidy(R.description); $("desc").hidden=!R.description;
 
 /* ---- steps ---- */
-const N=R.slides.length;
+let N=R.slides.length;
 function show(i){
   cur=Math.max(0,Math.min(N,i));
   $("intro").hidden=true; $("cook").hidden=false;
@@ -229,6 +229,17 @@ async function keepAwake(){if(!("wakeLock" in navigator)||lock||asking||document
 document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"){if(cur>=0)keepAwake();paintTimers()}});
 
 renderIntro();
+
+/* ---- edits published from the recipe planner (data/edits.json) ----
+   If this recipe was edited there, use the edited title, ingredients and the
+   cards the planner rebuilt from the new steps. Only before cooking starts. */
+fetch("../data/edits.json?t="+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.json():null).then(d=>{
+  const o=d&&d.recipes&&d.recipes[R.slug], c=o&&o.cook;
+  if(!c||cur!==-1) return;
+  if(c.title){ R.title=c.title; $("ttl").textContent=c.title; document.title=c.title; }
+  if(c.ingredients) R.ingredients=c.ingredients;
+  if(c.slides&&c.slides.length){ R.slides=c.slides; N=R.slides.length; }
+}).catch(()=>{});
 </script>
 
 </body></html>

@@ -95,7 +95,7 @@ ul.ing li{padding:5px 0}
 <div class="alarm" id="alarm" role="alert" hidden><span id="alarmTxt"></span><button id="alarmOk">OK</button></div>
 
 <script>
-const R = {"title": "Chuck Roast Tacos with Corn Salsa", "category": "Dinner", "description": "Slow-roasted shredded chuck roast tacos with a creamy, smoky roasted corn salsa", "serves": 6, "prep": 15, "cook": 180, "video": "https://www.tiktok.com/@bayleennicole/video/7605423707716209933", "ingredients": ["3 lb chuck roast", "Salt and pepper, to taste", "1 cup roasted corn", "2 tbsp light mayo", "2 tbsp Greek yogurt", "1 clove garlic, minced", "1/2 tsp chili powder", "1/2 tsp paprika", "Juice of 1/2 lemon", "Juice of 1/2 lime", "1/4 cup chopped cilantro", "12 small flour tortillas"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["3 lb chuck roast", "Salt and pepper, to taste"]}, {"title": "Roast the Beef", "text": "Preheat oven to 325°F. Season the chuck roast with salt and pepper on all sides, then place in a baking dish, cover, and cook in the oven at 325°F for 3 hours, until tender.", "timer": 10800, "uses": ["3 lb chuck roast", "Salt and pepper, to taste"], "while": "While the beef roasts, make the corn salsa (next step)."}, {"title": "Gather Ingredients", "gather": true, "text": "While you wait, get these out for the next part", "uses": ["1 cup roasted corn", "2 tbsp light mayo", "2 tbsp Greek yogurt", "1 clove garlic, minced", "1/2 tsp chili powder", "1/2 tsp paprika", "Juice of 1/2 lemon", "Juice of 1/2 lime", "1/4 cup chopped cilantro", "12 small flour tortillas"]}, {"title": "Corn Salsa", "text": "In a bowl, combine the roasted corn, mayo, Greek yogurt, garlic, chili powder, paprika, salt, and pepper, then add the lemon juice, lime juice, and cilantro, mix well, and chill the corn salsa in the fridge.", "uses": ["1 cup roasted corn", "2 tbsp light mayo", "2 tbsp Greek yogurt", "1 clove garlic, minced", "1/2 tsp chili powder", "1/2 tsp paprika", "Juice of 1/2 lemon", "Juice of 1/2 lime", "1/4 cup chopped cilantro"]}, {"title": "Shred", "text": "Shred the cooked chuck roast."}, {"title": "Assemble & Serve", "text": "Warm the tortillas, assemble tacos with the shredded beef and corn salsa, and serve immediately.", "uses": ["12 small flour tortillas"]}]};
+let R = {"title": "Chuck Roast Tacos with Corn Salsa", "category": "Dinner", "description": "Slow-roasted shredded chuck roast tacos with a creamy, smoky roasted corn salsa", "serves": 6, "prep": 15, "cook": 180, "video": "https://www.tiktok.com/@bayleennicole/video/7605423707716209933", "slug": "chuck-roast-tacos-with-corn-salsa", "ingredients": ["3 lb chuck roast", "Salt and pepper, to taste", "1 cup roasted corn", "2 tbsp light mayo", "2 tbsp Greek yogurt", "1 clove garlic, minced", "1/2 tsp chili powder", "1/2 tsp paprika", "Juice of 1/2 lemon", "Juice of 1/2 lime", "1/4 cup chopped cilantro", "12 small flour tortillas"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["3 lb chuck roast", "Salt and pepper, to taste"]}, {"title": "Roast the Beef", "text": "Preheat oven to 325°F. Season the chuck roast with salt and pepper on all sides, then place in a baking dish, cover, and cook in the oven at 325°F for 3 hours, until tender.", "timer": 10800, "uses": ["3 lb chuck roast", "Salt and pepper, to taste"], "while": "While the beef roasts, make the corn salsa (next step)."}, {"title": "Gather Ingredients", "gather": true, "text": "While you wait, get these out for the next part", "uses": ["1 cup roasted corn", "2 tbsp light mayo", "2 tbsp Greek yogurt", "1 clove garlic, minced", "1/2 tsp chili powder", "1/2 tsp paprika", "Juice of 1/2 lemon", "Juice of 1/2 lime", "1/4 cup chopped cilantro", "12 small flour tortillas"]}, {"title": "Corn Salsa", "text": "In a bowl, combine the roasted corn, mayo, Greek yogurt, garlic, chili powder, paprika, salt, and pepper, then add the lemon juice, lime juice, and cilantro, mix well, and chill the corn salsa in the fridge.", "uses": ["1 cup roasted corn", "2 tbsp light mayo", "2 tbsp Greek yogurt", "1 clove garlic, minced", "1/2 tsp chili powder", "1/2 tsp paprika", "Juice of 1/2 lemon", "Juice of 1/2 lime", "1/4 cup chopped cilantro"]}, {"title": "Shred", "text": "Shred the cooked chuck roast."}, {"title": "Assemble & Serve", "text": "Warm the tortillas, assemble tacos with the shredded beef and corn salsa, and serve immediately.", "uses": ["12 small flour tortillas"]}]};
 const $ = id => document.getElementById(id);
 // card text: no Celsius conversions, no period at the very end
 const tidy = t => (t||"").replace(/\s*\(\s*-?\d+\s*°?\s*C\s*\)/g,"").replace(/\s*\/\s*-?\d+\s*°\s*C\b/g,"").replace(/\.\s*$/,"");
@@ -139,7 +139,7 @@ if(R.video){$("watch").href=R.video;$("watch").hidden=false}
 $("desc").textContent=tidy(R.description); $("desc").hidden=!R.description;
 
 /* ---- steps ---- */
-const N=R.slides.length;
+let N=R.slides.length;
 function show(i){
   cur=Math.max(0,Math.min(N,i));
   $("intro").hidden=true; $("cook").hidden=false;
@@ -229,6 +229,17 @@ async function keepAwake(){if(!("wakeLock" in navigator)||lock||asking||document
 document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"){if(cur>=0)keepAwake();paintTimers()}});
 
 renderIntro();
+
+/* ---- edits published from the recipe planner (data/edits.json) ----
+   If this recipe was edited there, use the edited title, ingredients and the
+   cards the planner rebuilt from the new steps. Only before cooking starts. */
+fetch("../data/edits.json?t="+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.json():null).then(d=>{
+  const o=d&&d.recipes&&d.recipes[R.slug], c=o&&o.cook;
+  if(!c||cur!==-1) return;
+  if(c.title){ R.title=c.title; $("ttl").textContent=c.title; document.title=c.title; }
+  if(c.ingredients) R.ingredients=c.ingredients;
+  if(c.slides&&c.slides.length){ R.slides=c.slides; N=R.slides.length; }
+}).catch(()=>{});
 </script>
 
 </body></html>

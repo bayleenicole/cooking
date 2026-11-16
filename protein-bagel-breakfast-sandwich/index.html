@@ -95,7 +95,7 @@ ul.ing li{padding:5px 0}
 <div class="alarm" id="alarm" role="alert" hidden><span id="alarmTxt"></span><button id="alarmOk">OK</button></div>
 
 <script>
-const R = {"title": "Protein Bagel Breakfast Sandwich", "category": "Breakfast", "description": "Homemade Greek yogurt bagels toasted crisp and stacked with egg, melted cheese, turkey, cream cheese and tomato", "serves": 2, "prep": 15, "cook": 30, "video": "https://www.tiktok.com/@bayleennicole/video/7433484820354796831", "ingredients": ["1 egg white", "1 cup plain Greek yogurt", "1 cup all-purpose flour", "1 tsp baking powder", "1 egg yolk (reserved for egg wash)", "Everything bagel seasoning, for topping", "2-3 slices deli turkey", "2 eggs", "1-2 slices cheese", "2 tbsp cream cheese", "1/4 red onion, sliced", "4 cherry tomatoes, sliced"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["1 egg white", "1 cup plain Greek yogurt", "1 cup all-purpose flour", "1 tsp baking powder", "1 egg yolk (reserved for egg wash)", "Everything bagel seasoning, for topping", "2-3 slices deli turkey", "2 eggs", "1-2 slices cheese", "2 tbsp cream cheese", "1/4 red onion, sliced", "4 cherry tomatoes, sliced"]}, {"title": "Bagels: Dough", "text": "Preheat oven to 375°F. Whisk the egg white until frothy, then add the Greek yogurt, flour, and baking powder and mix until a dough forms.", "uses": ["1 egg white", "1 cup plain Greek yogurt", "1 cup all-purpose flour", "1 tsp baking powder"]}, {"title": "Bagels: Shape", "text": "Turn the dough onto a floured surface, knead briefly, and divide into 2 large or 4 small bagels, shaping them into rounds with a hole in the center."}, {"title": "Bagels: Bake", "text": "Brush with the reserved egg yolk, sprinkle with everything bagel seasoning, and bake at 375°F for 20-25 minutes until golden.", "timer": 1200, "uses": ["1 egg yolk (reserved for egg wash)", "Everything bagel seasoning, for topping"]}, {"title": "Toast the Bagels", "text": "Slice the bagels in half and toast in a skillet until crisp."}, {"title": "Turkey & Eggs", "text": "Cook the turkey and eggs in the skillet, melting the cheese over the eggs.", "uses": ["2-3 slices deli turkey", "2 eggs", "1-2 slices cheese"]}, {"title": "Assemble & Serve", "text": "Spread cream cheese on the bottom half of each bagel, layer with red onion, tomatoes, eggs, and turkey, then top with the other bagel half and serve.", "uses": ["2 tbsp cream cheese", "1/4 red onion, sliced", "4 cherry tomatoes, sliced"]}]};
+let R = {"title": "Protein Bagel Breakfast Sandwich", "category": "Breakfast", "description": "Homemade Greek yogurt bagels toasted crisp and stacked with egg, melted cheese, turkey, cream cheese and tomato", "serves": 2, "prep": 15, "cook": 30, "video": "https://www.tiktok.com/@bayleennicole/video/7433484820354796831", "slug": "protein-bagel-breakfast-sandwich", "ingredients": ["1 egg white", "1 cup plain Greek yogurt", "1 cup all-purpose flour", "1 tsp baking powder", "1 egg yolk (reserved for egg wash)", "Everything bagel seasoning, for topping", "2-3 slices deli turkey", "2 eggs", "1-2 slices cheese", "2 tbsp cream cheese", "1/4 red onion, sliced", "4 cherry tomatoes, sliced"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["1 egg white", "1 cup plain Greek yogurt", "1 cup all-purpose flour", "1 tsp baking powder", "1 egg yolk (reserved for egg wash)", "Everything bagel seasoning, for topping", "2-3 slices deli turkey", "2 eggs", "1-2 slices cheese", "2 tbsp cream cheese", "1/4 red onion, sliced", "4 cherry tomatoes, sliced"]}, {"title": "Bagels: Dough", "text": "Preheat oven to 375°F. Whisk the egg white until frothy, then add the Greek yogurt, flour, and baking powder and mix until a dough forms.", "uses": ["1 egg white", "1 cup plain Greek yogurt", "1 cup all-purpose flour", "1 tsp baking powder"]}, {"title": "Bagels: Shape", "text": "Turn the dough onto a floured surface, knead briefly, and divide into 2 large or 4 small bagels, shaping them into rounds with a hole in the center."}, {"title": "Bagels: Bake", "text": "Brush with the reserved egg yolk, sprinkle with everything bagel seasoning, and bake at 375°F for 20-25 minutes until golden.", "timer": 1200, "uses": ["1 egg yolk (reserved for egg wash)", "Everything bagel seasoning, for topping"]}, {"title": "Toast the Bagels", "text": "Slice the bagels in half and toast in a skillet until crisp."}, {"title": "Turkey & Eggs", "text": "Cook the turkey and eggs in the skillet, melting the cheese over the eggs.", "uses": ["2-3 slices deli turkey", "2 eggs", "1-2 slices cheese"]}, {"title": "Assemble & Serve", "text": "Spread cream cheese on the bottom half of each bagel, layer with red onion, tomatoes, eggs, and turkey, then top with the other bagel half and serve.", "uses": ["2 tbsp cream cheese", "1/4 red onion, sliced", "4 cherry tomatoes, sliced"]}]};
 const $ = id => document.getElementById(id);
 // card text: no Celsius conversions, no period at the very end
 const tidy = t => (t||"").replace(/\s*\(\s*-?\d+\s*°?\s*C\s*\)/g,"").replace(/\s*\/\s*-?\d+\s*°\s*C\b/g,"").replace(/\.\s*$/,"");
@@ -139,7 +139,7 @@ if(R.video){$("watch").href=R.video;$("watch").hidden=false}
 $("desc").textContent=tidy(R.description); $("desc").hidden=!R.description;
 
 /* ---- steps ---- */
-const N=R.slides.length;
+let N=R.slides.length;
 function show(i){
   cur=Math.max(0,Math.min(N,i));
   $("intro").hidden=true; $("cook").hidden=false;
@@ -229,6 +229,17 @@ async function keepAwake(){if(!("wakeLock" in navigator)||lock||asking||document
 document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"){if(cur>=0)keepAwake();paintTimers()}});
 
 renderIntro();
+
+/* ---- edits published from the recipe planner (data/edits.json) ----
+   If this recipe was edited there, use the edited title, ingredients and the
+   cards the planner rebuilt from the new steps. Only before cooking starts. */
+fetch("../data/edits.json?t="+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.json():null).then(d=>{
+  const o=d&&d.recipes&&d.recipes[R.slug], c=o&&o.cook;
+  if(!c||cur!==-1) return;
+  if(c.title){ R.title=c.title; $("ttl").textContent=c.title; document.title=c.title; }
+  if(c.ingredients) R.ingredients=c.ingredients;
+  if(c.slides&&c.slides.length){ R.slides=c.slides; N=R.slides.length; }
+}).catch(()=>{});
 </script>
 
 </body></html>

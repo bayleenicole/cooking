@@ -95,7 +95,7 @@ ul.ing li{padding:5px 0}
 <div class="alarm" id="alarm" role="alert" hidden><span id="alarmTxt"></span><button id="alarmOk">OK</button></div>
 
 <script>
-const R = {"title": "Mediterranean Tuna Salad", "category": "Lunch", "description": "Tuna salad with olives, feta and red onion in a creamy Dijon dressing, on toast or with pita chips", "serves": 2, "prep": 10, "cook": 0, "video": "https://www.tiktok.com/@bayleennicole/video/7381977333827226911", "ingredients": ["1 can tuna, drained", "2 tbsp mayo", "1 tbsp Greek yogurt", "1/4 cup diced red onion", "1/4 cup chopped Kalamata olives", "2 tbsp crumbled feta", "1 tsp Dijon mustard", "1 tbsp red wine vinegar", "Salt and pepper, to taste", "2 slices toasted sourdough or 1 cup pita chips, for serving"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["1 can tuna, drained", "2 tbsp mayo", "1 tbsp Greek yogurt", "1/4 cup diced red onion", "1/4 cup chopped Kalamata olives", "2 tbsp crumbled feta", "1 tsp Dijon mustard", "1 tbsp red wine vinegar", "Salt and pepper, to taste", "2 slices toasted sourdough or 1 cup pita chips, for serving"]}, {"title": "Combine", "text": "In a bowl, combine the tuna, mayo, Greek yogurt, red onion, olives, and feta.", "uses": ["1 can tuna, drained", "2 tbsp mayo", "1 tbsp Greek yogurt", "1/4 cup diced red onion", "1/4 cup chopped Kalamata olives", "2 tbsp crumbled feta"]}, {"title": "Season", "text": "Stir in the Dijon mustard and red wine vinegar, then season with salt and pepper.", "uses": ["1 tsp Dijon mustard", "1 tbsp red wine vinegar", "Salt and pepper, to taste"]}, {"title": "Serve", "text": "Serve on toasted sourdough or with pita chips.", "uses": ["2 slices toasted sourdough or 1 cup pita chips, for serving"]}]};
+let R = {"title": "Mediterranean Tuna Salad", "category": "Lunch", "description": "Tuna salad with olives, feta and red onion in a creamy Dijon dressing, on toast or with pita chips", "serves": 2, "prep": 10, "cook": 0, "video": "https://www.tiktok.com/@bayleennicole/video/7381977333827226911", "slug": "mediterranean-tuna-salad", "ingredients": ["1 can tuna, drained", "2 tbsp mayo", "1 tbsp Greek yogurt", "1/4 cup diced red onion", "1/4 cup chopped Kalamata olives", "2 tbsp crumbled feta", "1 tsp Dijon mustard", "1 tbsp red wine vinegar", "Salt and pepper, to taste", "2 slices toasted sourdough or 1 cup pita chips, for serving"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["1 can tuna, drained", "2 tbsp mayo", "1 tbsp Greek yogurt", "1/4 cup diced red onion", "1/4 cup chopped Kalamata olives", "2 tbsp crumbled feta", "1 tsp Dijon mustard", "1 tbsp red wine vinegar", "Salt and pepper, to taste", "2 slices toasted sourdough or 1 cup pita chips, for serving"]}, {"title": "Combine", "text": "In a bowl, combine the tuna, mayo, Greek yogurt, red onion, olives, and feta.", "uses": ["1 can tuna, drained", "2 tbsp mayo", "1 tbsp Greek yogurt", "1/4 cup diced red onion", "1/4 cup chopped Kalamata olives", "2 tbsp crumbled feta"]}, {"title": "Season", "text": "Stir in the Dijon mustard and red wine vinegar, then season with salt and pepper.", "uses": ["1 tsp Dijon mustard", "1 tbsp red wine vinegar", "Salt and pepper, to taste"]}, {"title": "Serve", "text": "Serve on toasted sourdough or with pita chips.", "uses": ["2 slices toasted sourdough or 1 cup pita chips, for serving"]}]};
 const $ = id => document.getElementById(id);
 // card text: no Celsius conversions, no period at the very end
 const tidy = t => (t||"").replace(/\s*\(\s*-?\d+\s*°?\s*C\s*\)/g,"").replace(/\s*\/\s*-?\d+\s*°\s*C\b/g,"").replace(/\.\s*$/,"");
@@ -139,7 +139,7 @@ if(R.video){$("watch").href=R.video;$("watch").hidden=false}
 $("desc").textContent=tidy(R.description); $("desc").hidden=!R.description;
 
 /* ---- steps ---- */
-const N=R.slides.length;
+let N=R.slides.length;
 function show(i){
   cur=Math.max(0,Math.min(N,i));
   $("intro").hidden=true; $("cook").hidden=false;
@@ -229,6 +229,17 @@ async function keepAwake(){if(!("wakeLock" in navigator)||lock||asking||document
 document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"){if(cur>=0)keepAwake();paintTimers()}});
 
 renderIntro();
+
+/* ---- edits published from the recipe planner (data/edits.json) ----
+   If this recipe was edited there, use the edited title, ingredients and the
+   cards the planner rebuilt from the new steps. Only before cooking starts. */
+fetch("../data/edits.json?t="+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.json():null).then(d=>{
+  const o=d&&d.recipes&&d.recipes[R.slug], c=o&&o.cook;
+  if(!c||cur!==-1) return;
+  if(c.title){ R.title=c.title; $("ttl").textContent=c.title; document.title=c.title; }
+  if(c.ingredients) R.ingredients=c.ingredients;
+  if(c.slides&&c.slides.length){ R.slides=c.slides; N=R.slides.length; }
+}).catch(()=>{});
 </script>
 
 </body></html>

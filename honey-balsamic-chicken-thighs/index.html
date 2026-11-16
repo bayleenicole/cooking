@@ -95,7 +95,7 @@ ul.ing li{padding:5px 0}
 <div class="alarm" id="alarm" role="alert" hidden><span id="alarmTxt"></span><button id="alarmOk">OK</button></div>
 
 <script>
-const R = {"title": "Honey Balsamic Chicken Thighs", "category": "Dinner", "description": "Fig balsamic and honey marinated chicken thighs, seared with caramelized shallots and finished in the oven, over spinach", "serves": 4, "prep": 10, "cook": 25, "video": "https://www.tiktok.com/@bayleennicole/video/7579392153923685687", "ingredients": ["3 tbsp O Fig Balsamic Vinegar", "2 tbsp O Roasted Garlic Olive Oil", "2 tbsp honey", "1 tbsp Dijon mustard", "1 tsp dried or fresh thyme", "3 cloves garlic, minced", "Salt and pepper to taste", "1 lb chicken thighs", "1 tbsp olive oil, for searing", "2 shallots, thinly sliced", "4 cups spinach, for serving"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["3 tbsp O Fig Balsamic Vinegar", "2 tbsp O Roasted Garlic Olive Oil", "2 tbsp honey", "1 tbsp Dijon mustard", "1 tsp dried or fresh thyme", "3 cloves garlic, minced", "Salt and pepper to taste", "1 lb chicken thighs", "1 tbsp olive oil, for searing", "2 shallots, thinly sliced", "4 cups spinach, for serving"]}, {"title": "Marinade", "text": "Mix the balsamic vinegar, garlic olive oil, honey, mustard, thyme, garlic, salt, and pepper together in a bowl.", "uses": ["3 tbsp O Fig Balsamic Vinegar", "2 tbsp O Roasted Garlic Olive Oil", "2 tbsp honey", "1 tbsp Dijon mustard", "1 tsp dried or fresh thyme", "3 cloves garlic, minced", "Salt and pepper to taste"]}, {"title": "Marinate", "text": "Pour half of the marinade into a bag with the chicken thighs and let them marinate for at least 30 minutes, saving the remaining marinade for later.", "timer": 1800, "uses": ["1 lb chicken thighs"]}, {"title": "Sear", "text": "Heat a cast-iron skillet on the stove, drizzle with olive oil, and sear each side of the chicken thighs for 2-3 minutes, then remove them from the pan.", "timer": 120, "uses": ["1 tbsp olive oil, for searing"]}, {"title": "Shallots", "text": "Preheat oven to 425°F. In the same pan, add the shallots and let them caramelize, then add the chicken thighs back and pour the remaining marinade over the chicken.", "uses": ["2 shallots, thinly sliced"]}, {"title": "Bake", "text": "Put the cast iron in the oven at 425°F for 15 minutes.", "timer": 900}, {"title": "Serve", "text": "Once done, remove it from the oven and serve over a bed of spinach.", "uses": ["4 cups spinach, for serving"]}]};
+let R = {"title": "Honey Balsamic Chicken Thighs", "category": "Dinner", "description": "Fig balsamic and honey marinated chicken thighs, seared with caramelized shallots and finished in the oven, over spinach", "serves": 4, "prep": 10, "cook": 25, "video": "https://www.tiktok.com/@bayleennicole/video/7579392153923685687", "slug": "honey-balsamic-chicken-thighs", "ingredients": ["3 tbsp O Fig Balsamic Vinegar", "2 tbsp O Roasted Garlic Olive Oil", "2 tbsp honey", "1 tbsp Dijon mustard", "1 tsp dried or fresh thyme", "3 cloves garlic, minced", "Salt and pepper to taste", "1 lb chicken thighs", "1 tbsp olive oil, for searing", "2 shallots, thinly sliced", "4 cups spinach, for serving"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["3 tbsp O Fig Balsamic Vinegar", "2 tbsp O Roasted Garlic Olive Oil", "2 tbsp honey", "1 tbsp Dijon mustard", "1 tsp dried or fresh thyme", "3 cloves garlic, minced", "Salt and pepper to taste", "1 lb chicken thighs", "1 tbsp olive oil, for searing", "2 shallots, thinly sliced", "4 cups spinach, for serving"]}, {"title": "Marinade", "text": "Mix the balsamic vinegar, garlic olive oil, honey, mustard, thyme, garlic, salt, and pepper together in a bowl.", "uses": ["3 tbsp O Fig Balsamic Vinegar", "2 tbsp O Roasted Garlic Olive Oil", "2 tbsp honey", "1 tbsp Dijon mustard", "1 tsp dried or fresh thyme", "3 cloves garlic, minced", "Salt and pepper to taste"]}, {"title": "Marinate", "text": "Pour half of the marinade into a bag with the chicken thighs and let them marinate for at least 30 minutes, saving the remaining marinade for later.", "timer": 1800, "uses": ["1 lb chicken thighs"]}, {"title": "Sear", "text": "Heat a cast-iron skillet on the stove, drizzle with olive oil, and sear each side of the chicken thighs for 2-3 minutes, then remove them from the pan.", "timer": 120, "uses": ["1 tbsp olive oil, for searing"]}, {"title": "Shallots", "text": "Preheat oven to 425°F. In the same pan, add the shallots and let them caramelize, then add the chicken thighs back and pour the remaining marinade over the chicken.", "uses": ["2 shallots, thinly sliced"]}, {"title": "Bake", "text": "Put the cast iron in the oven at 425°F for 15 minutes.", "timer": 900}, {"title": "Serve", "text": "Once done, remove it from the oven and serve over a bed of spinach.", "uses": ["4 cups spinach, for serving"]}]};
 const $ = id => document.getElementById(id);
 // card text: no Celsius conversions, no period at the very end
 const tidy = t => (t||"").replace(/\s*\(\s*-?\d+\s*°?\s*C\s*\)/g,"").replace(/\s*\/\s*-?\d+\s*°\s*C\b/g,"").replace(/\.\s*$/,"");
@@ -139,7 +139,7 @@ if(R.video){$("watch").href=R.video;$("watch").hidden=false}
 $("desc").textContent=tidy(R.description); $("desc").hidden=!R.description;
 
 /* ---- steps ---- */
-const N=R.slides.length;
+let N=R.slides.length;
 function show(i){
   cur=Math.max(0,Math.min(N,i));
   $("intro").hidden=true; $("cook").hidden=false;
@@ -229,6 +229,17 @@ async function keepAwake(){if(!("wakeLock" in navigator)||lock||asking||document
 document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"){if(cur>=0)keepAwake();paintTimers()}});
 
 renderIntro();
+
+/* ---- edits published from the recipe planner (data/edits.json) ----
+   If this recipe was edited there, use the edited title, ingredients and the
+   cards the planner rebuilt from the new steps. Only before cooking starts. */
+fetch("../data/edits.json?t="+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.json():null).then(d=>{
+  const o=d&&d.recipes&&d.recipes[R.slug], c=o&&o.cook;
+  if(!c||cur!==-1) return;
+  if(c.title){ R.title=c.title; $("ttl").textContent=c.title; document.title=c.title; }
+  if(c.ingredients) R.ingredients=c.ingredients;
+  if(c.slides&&c.slides.length){ R.slides=c.slides; N=R.slides.length; }
+}).catch(()=>{});
 </script>
 
 </body></html>

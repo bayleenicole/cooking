@@ -95,7 +95,7 @@ ul.ing li{padding:5px 0}
 <div class="alarm" id="alarm" role="alert" hidden><span id="alarmTxt"></span><button id="alarmOk">OK</button></div>
 
 <script>
-const R = {"title": "Zucchini, White Onion, and Chicken Tortilla Skillet", "category": "Lunch", "description": "A cheesy one-skillet mix of rotisserie chicken, zucchini, salsa verde, green chiles and corn tortilla strips", "serves": 4, "prep": 15, "cook": 10, "video": "https://www.tiktok.com/@bayleennicole/video/7379671324286799134", "ingredients": ["2 medium zucchini, chopped", "1 medium white onion, chopped", "5-6 corn tortillas", "1 tbsp olive oil", "2 cloves garlic, minced", "1 tbsp taco seasoning", "2 cups rotisserie chicken, shredded", "1 can of salsa (green salsa from)", "1 can of chiles (green chiles from)", "1/2 cup Greek yogurt", "1 cup shredded cheese"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["2 medium zucchini, chopped", "1 medium white onion, chopped", "5-6 corn tortillas", "1 tbsp olive oil", "2 cloves garlic, minced", "1 tbsp taco seasoning", "2 cups rotisserie chicken, shredded", "1 can of salsa (green salsa from)", "1 can of chiles (green chiles from)", "1/2 cup Greek yogurt", "1 cup shredded cheese"]}, {"title": "Prep", "text": "Chop the zucchini and white onion, and slice 5-6 corn tortillas into 1-inch strips.", "uses": ["2 medium zucchini, chopped", "1 medium white onion, chopped", "5-6 corn tortillas"]}, {"title": "Sauté the Veggies", "text": "Heat 1 tbsp olive oil in a skillet over medium heat and sauté the veggies with 2 cloves minced garlic and 1 tbsp taco seasoning for 5-7 minutes, then remove the cooked veggies from the pan.", "timer": 300, "uses": ["1 tbsp olive oil", "2 cloves garlic, minced", "1 tbsp taco seasoning"]}, {"title": "Combine", "text": "Add 2 cups shredded rotisserie chicken, 1 can of salsa, 1 can of chiles, and 1/2 cup Greek yogurt to the skillet, mix everything together, then stir the tortilla strips and sautéed veggies back in.", "uses": ["2 cups rotisserie chicken, shredded", "1 can of salsa (green salsa from)", "1 can of chiles (green chiles from)", "1/2 cup Greek yogurt"]}, {"title": "Melt the Cheese", "text": "Top with 1 cup shredded cheese and let melt over low heat for 2-3 minutes.", "timer": 120, "uses": ["1 cup shredded cheese"]}]};
+let R = {"title": "Zucchini, White Onion, and Chicken Tortilla Skillet", "category": "Lunch", "description": "A cheesy one-skillet mix of rotisserie chicken, zucchini, salsa verde, green chiles and corn tortilla strips", "serves": 4, "prep": 15, "cook": 10, "video": "https://www.tiktok.com/@bayleennicole/video/7379671324286799134", "slug": "zucchini-white-onion-and-chicken-tortilla-skillet", "ingredients": ["2 medium zucchini, chopped", "1 medium white onion, chopped", "5-6 corn tortillas", "1 tbsp olive oil", "2 cloves garlic, minced", "1 tbsp taco seasoning", "2 cups rotisserie chicken, shredded", "1 can of salsa (green salsa from)", "1 can of chiles (green chiles from)", "1/2 cup Greek yogurt", "1 cup shredded cheese"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["2 medium zucchini, chopped", "1 medium white onion, chopped", "5-6 corn tortillas", "1 tbsp olive oil", "2 cloves garlic, minced", "1 tbsp taco seasoning", "2 cups rotisserie chicken, shredded", "1 can of salsa (green salsa from)", "1 can of chiles (green chiles from)", "1/2 cup Greek yogurt", "1 cup shredded cheese"]}, {"title": "Prep", "text": "Chop the zucchini and white onion, and slice 5-6 corn tortillas into 1-inch strips.", "uses": ["2 medium zucchini, chopped", "1 medium white onion, chopped", "5-6 corn tortillas"]}, {"title": "Sauté the Veggies", "text": "Heat 1 tbsp olive oil in a skillet over medium heat and sauté the veggies with 2 cloves minced garlic and 1 tbsp taco seasoning for 5-7 minutes, then remove the cooked veggies from the pan.", "timer": 300, "uses": ["1 tbsp olive oil", "2 cloves garlic, minced", "1 tbsp taco seasoning"]}, {"title": "Combine", "text": "Add 2 cups shredded rotisserie chicken, 1 can of salsa, 1 can of chiles, and 1/2 cup Greek yogurt to the skillet, mix everything together, then stir the tortilla strips and sautéed veggies back in.", "uses": ["2 cups rotisserie chicken, shredded", "1 can of salsa (green salsa from)", "1 can of chiles (green chiles from)", "1/2 cup Greek yogurt"]}, {"title": "Melt the Cheese", "text": "Top with 1 cup shredded cheese and let melt over low heat for 2-3 minutes.", "timer": 120, "uses": ["1 cup shredded cheese"]}]};
 const $ = id => document.getElementById(id);
 // card text: no Celsius conversions, no period at the very end
 const tidy = t => (t||"").replace(/\s*\(\s*-?\d+\s*°?\s*C\s*\)/g,"").replace(/\s*\/\s*-?\d+\s*°\s*C\b/g,"").replace(/\.\s*$/,"");
@@ -139,7 +139,7 @@ if(R.video){$("watch").href=R.video;$("watch").hidden=false}
 $("desc").textContent=tidy(R.description); $("desc").hidden=!R.description;
 
 /* ---- steps ---- */
-const N=R.slides.length;
+let N=R.slides.length;
 function show(i){
   cur=Math.max(0,Math.min(N,i));
   $("intro").hidden=true; $("cook").hidden=false;
@@ -229,6 +229,17 @@ async function keepAwake(){if(!("wakeLock" in navigator)||lock||asking||document
 document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"){if(cur>=0)keepAwake();paintTimers()}});
 
 renderIntro();
+
+/* ---- edits published from the recipe planner (data/edits.json) ----
+   If this recipe was edited there, use the edited title, ingredients and the
+   cards the planner rebuilt from the new steps. Only before cooking starts. */
+fetch("../data/edits.json?t="+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.json():null).then(d=>{
+  const o=d&&d.recipes&&d.recipes[R.slug], c=o&&o.cook;
+  if(!c||cur!==-1) return;
+  if(c.title){ R.title=c.title; $("ttl").textContent=c.title; document.title=c.title; }
+  if(c.ingredients) R.ingredients=c.ingredients;
+  if(c.slides&&c.slides.length){ R.slides=c.slides; N=R.slides.length; }
+}).catch(()=>{});
 </script>
 
 </body></html>

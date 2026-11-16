@@ -95,7 +95,7 @@ ul.ing li{padding:5px 0}
 <div class="alarm" id="alarm" role="alert" hidden><span id="alarmTxt"></span><button id="alarmOk">OK</button></div>
 
 <script>
-const R = {"title": "Tuna Salad with Cornichons", "category": "Lunch", "description": "A quick creamy Dijon tuna salad with flaky salt and cornichons on the side", "serves": 1, "prep": 5, "cook": 0, "video": "https://www.tiktok.com/@bayleennicole/video/7553368248280976695", "ingredients": ["1 can tuna in water, drained", "1 tbsp Greek yogurt", "1 tbsp mayo", "1 tsp Dijon mustard", "Pepper, to taste", "Flaky salt, to taste", "5 cornichons, for serving"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["1 can tuna in water, drained", "1 tbsp Greek yogurt", "1 tbsp mayo", "1 tsp Dijon mustard", "Pepper, to taste", "Flaky salt, to taste", "5 cornichons, for serving"]}, {"title": "Mix", "text": "Combine the tuna, Greek yogurt, mayo, and Dijon mustard in a bowl, season with pepper and flaky salt to taste, and mix well.", "uses": ["1 can tuna in water, drained", "1 tbsp Greek yogurt", "1 tbsp mayo", "1 tsp Dijon mustard", "Pepper, to taste", "Flaky salt, to taste"]}, {"title": "Serve", "text": "Serve with cornichons on the side or for dipping.", "uses": ["5 cornichons, for serving"]}]};
+let R = {"title": "Tuna Salad with Cornichons", "category": "Lunch", "description": "A quick creamy Dijon tuna salad with flaky salt and cornichons on the side", "serves": 1, "prep": 5, "cook": 0, "video": "https://www.tiktok.com/@bayleennicole/video/7553368248280976695", "slug": "tuna-salad-with-cornichons", "ingredients": ["1 can tuna in water, drained", "1 tbsp Greek yogurt", "1 tbsp mayo", "1 tsp Dijon mustard", "Pepper, to taste", "Flaky salt, to taste", "5 cornichons, for serving"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["1 can tuna in water, drained", "1 tbsp Greek yogurt", "1 tbsp mayo", "1 tsp Dijon mustard", "Pepper, to taste", "Flaky salt, to taste", "5 cornichons, for serving"]}, {"title": "Mix", "text": "Combine the tuna, Greek yogurt, mayo, and Dijon mustard in a bowl, season with pepper and flaky salt to taste, and mix well.", "uses": ["1 can tuna in water, drained", "1 tbsp Greek yogurt", "1 tbsp mayo", "1 tsp Dijon mustard", "Pepper, to taste", "Flaky salt, to taste"]}, {"title": "Serve", "text": "Serve with cornichons on the side or for dipping.", "uses": ["5 cornichons, for serving"]}]};
 const $ = id => document.getElementById(id);
 // card text: no Celsius conversions, no period at the very end
 const tidy = t => (t||"").replace(/\s*\(\s*-?\d+\s*°?\s*C\s*\)/g,"").replace(/\s*\/\s*-?\d+\s*°\s*C\b/g,"").replace(/\.\s*$/,"");
@@ -139,7 +139,7 @@ if(R.video){$("watch").href=R.video;$("watch").hidden=false}
 $("desc").textContent=tidy(R.description); $("desc").hidden=!R.description;
 
 /* ---- steps ---- */
-const N=R.slides.length;
+let N=R.slides.length;
 function show(i){
   cur=Math.max(0,Math.min(N,i));
   $("intro").hidden=true; $("cook").hidden=false;
@@ -229,6 +229,17 @@ async function keepAwake(){if(!("wakeLock" in navigator)||lock||asking||document
 document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"){if(cur>=0)keepAwake();paintTimers()}});
 
 renderIntro();
+
+/* ---- edits published from the recipe planner (data/edits.json) ----
+   If this recipe was edited there, use the edited title, ingredients and the
+   cards the planner rebuilt from the new steps. Only before cooking starts. */
+fetch("../data/edits.json?t="+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.json():null).then(d=>{
+  const o=d&&d.recipes&&d.recipes[R.slug], c=o&&o.cook;
+  if(!c||cur!==-1) return;
+  if(c.title){ R.title=c.title; $("ttl").textContent=c.title; document.title=c.title; }
+  if(c.ingredients) R.ingredients=c.ingredients;
+  if(c.slides&&c.slides.length){ R.slides=c.slides; N=R.slides.length; }
+}).catch(()=>{});
 </script>
 
 </body></html>

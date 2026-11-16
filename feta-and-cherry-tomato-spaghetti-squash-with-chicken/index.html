@@ -95,7 +95,7 @@ ul.ing li{padding:5px 0}
 <div class="alarm" id="alarm" role="alert" hidden><span id="alarmTxt"></span><button id="alarmOk">OK</button></div>
 
 <script>
-const R = {"title": "Feta & Cherry Tomato Spaghetti Squash with Chicken", "category": "Dinner", "description": "Spaghetti squash roasted with a block of feta and cherry tomatoes, tossed together and served with oregano chicken", "serves": 2, "prep": 15, "cook": 45, "video": "https://www.tiktok.com/@bayleennicole/video/7293631996843117870", "ingredients": ["4 oz block feta", "1 spaghetti squash, halved and seeded", "1 cup cherry tomatoes", "2 tbsp olive oil", "Salt and pepper, to taste", "2 chicken breasts", "1 tsp dried oregano", "Garlic salt, to taste", "Fresh basil, chopped, for garnish", "1 tbsp balsamic glaze, for drizzling"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["4 oz block feta", "1 spaghetti squash, halved and seeded", "1 cup cherry tomatoes", "2 tbsp olive oil", "Salt and pepper, to taste", "2 chicken breasts", "1 tsp dried oregano", "Garlic salt, to taste", "Fresh basil, chopped, for garnish", "1 tbsp balsamic glaze, for drizzling"]}, {"title": "Fill the Squash", "text": "Preheat oven to 425°F. Place the block of feta in the center of one spaghetti squash half, surrounded by the cherry tomatoes, then drizzle with olive oil and season with salt and pepper.", "uses": ["1 spaghetti squash, halved and seeded", "4 oz block feta", "1 cup cherry tomatoes", "2 tbsp olive oil", "Salt and pepper, to taste"]}, {"title": "Bake", "text": "Season the chicken breasts with oregano, garlic salt, salt, and pepper, and bake alongside the squash for 45 minutes until cooked through.", "timer": 2700, "uses": ["2 chicken breasts", "1 tsp dried oregano", "Garlic salt, to taste"]}, {"title": "Mix", "text": "Once done, mix the baked feta and tomatoes into the spaghetti squash strands."}, {"title": "Plate & Serve", "text": "Slice the chicken and plate with the spaghetti squash, then top with fresh basil and a drizzle of balsamic glaze.", "uses": ["Fresh basil, chopped, for garnish", "1 tbsp balsamic glaze, for drizzling"]}]};
+let R = {"title": "Feta & Cherry Tomato Spaghetti Squash with Chicken", "category": "Dinner", "description": "Spaghetti squash roasted with a block of feta and cherry tomatoes, tossed together and served with oregano chicken", "serves": 2, "prep": 15, "cook": 45, "video": "https://www.tiktok.com/@bayleennicole/video/7293631996843117870", "slug": "feta-and-cherry-tomato-spaghetti-squash-with-chicken", "ingredients": ["4 oz block feta", "1 spaghetti squash, halved and seeded", "1 cup cherry tomatoes", "2 tbsp olive oil", "Salt and pepper, to taste", "2 chicken breasts", "1 tsp dried oregano", "Garlic salt, to taste", "Fresh basil, chopped, for garnish", "1 tbsp balsamic glaze, for drizzling"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["4 oz block feta", "1 spaghetti squash, halved and seeded", "1 cup cherry tomatoes", "2 tbsp olive oil", "Salt and pepper, to taste", "2 chicken breasts", "1 tsp dried oregano", "Garlic salt, to taste", "Fresh basil, chopped, for garnish", "1 tbsp balsamic glaze, for drizzling"]}, {"title": "Fill the Squash", "text": "Preheat oven to 425°F. Place the block of feta in the center of one spaghetti squash half, surrounded by the cherry tomatoes, then drizzle with olive oil and season with salt and pepper.", "uses": ["1 spaghetti squash, halved and seeded", "4 oz block feta", "1 cup cherry tomatoes", "2 tbsp olive oil", "Salt and pepper, to taste"]}, {"title": "Bake", "text": "Season the chicken breasts with oregano, garlic salt, salt, and pepper, and bake alongside the squash for 45 minutes until cooked through.", "timer": 2700, "uses": ["2 chicken breasts", "1 tsp dried oregano", "Garlic salt, to taste"]}, {"title": "Mix", "text": "Once done, mix the baked feta and tomatoes into the spaghetti squash strands."}, {"title": "Plate & Serve", "text": "Slice the chicken and plate with the spaghetti squash, then top with fresh basil and a drizzle of balsamic glaze.", "uses": ["Fresh basil, chopped, for garnish", "1 tbsp balsamic glaze, for drizzling"]}]};
 const $ = id => document.getElementById(id);
 // card text: no Celsius conversions, no period at the very end
 const tidy = t => (t||"").replace(/\s*\(\s*-?\d+\s*°?\s*C\s*\)/g,"").replace(/\s*\/\s*-?\d+\s*°\s*C\b/g,"").replace(/\.\s*$/,"");
@@ -139,7 +139,7 @@ if(R.video){$("watch").href=R.video;$("watch").hidden=false}
 $("desc").textContent=tidy(R.description); $("desc").hidden=!R.description;
 
 /* ---- steps ---- */
-const N=R.slides.length;
+let N=R.slides.length;
 function show(i){
   cur=Math.max(0,Math.min(N,i));
   $("intro").hidden=true; $("cook").hidden=false;
@@ -229,6 +229,17 @@ async function keepAwake(){if(!("wakeLock" in navigator)||lock||asking||document
 document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"){if(cur>=0)keepAwake();paintTimers()}});
 
 renderIntro();
+
+/* ---- edits published from the recipe planner (data/edits.json) ----
+   If this recipe was edited there, use the edited title, ingredients and the
+   cards the planner rebuilt from the new steps. Only before cooking starts. */
+fetch("../data/edits.json?t="+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.json():null).then(d=>{
+  const o=d&&d.recipes&&d.recipes[R.slug], c=o&&o.cook;
+  if(!c||cur!==-1) return;
+  if(c.title){ R.title=c.title; $("ttl").textContent=c.title; document.title=c.title; }
+  if(c.ingredients) R.ingredients=c.ingredients;
+  if(c.slides&&c.slides.length){ R.slides=c.slides; N=R.slides.length; }
+}).catch(()=>{});
 </script>
 
 </body></html>

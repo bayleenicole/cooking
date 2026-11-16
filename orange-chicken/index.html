@@ -95,7 +95,7 @@ ul.ing li{padding:5px 0}
 <div class="alarm" id="alarm" role="alert" hidden><span id="alarmTxt"></span><button id="alarmOk">OK</button></div>
 
 <script>
-const R = {"title": "Orange Chicken", "category": "Lunch", "description": "A fresh-squeezed orange, ginger and sriracha glazed chicken with steamed broccoli", "serves": 2, "prep": 15, "cook": 10, "video": "https://www.tiktok.com/@bayleennicole/video/7498103891142118698", "ingredients": ["Zest of 1 orange", "Juice of 2 oranges", "1 tbsp fresh ginger, minced", "2 cloves garlic, minced", "2 tbsp rice vinegar", "3 tbsp soy sauce", "1 tbsp sriracha", "1 tbsp coconut sugar", "2 chicken breasts, cut into pieces", "Salt and pepper, to taste", "1 head broccoli, steamed"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["Zest of 1 orange", "Juice of 2 oranges", "1 tbsp fresh ginger, minced", "2 cloves garlic, minced", "2 tbsp rice vinegar", "3 tbsp soy sauce", "1 tbsp sriracha", "1 tbsp coconut sugar", "2 chicken breasts, cut into pieces", "Salt and pepper, to taste", "1 head broccoli, steamed"]}, {"title": "Sauce", "text": "Combine the orange zest, orange juice, ginger, garlic, rice vinegar, soy sauce, sriracha, and coconut sugar to make the sauce.", "uses": ["Zest of 1 orange", "Juice of 2 oranges", "1 tbsp fresh ginger, minced", "2 cloves garlic, minced", "2 tbsp rice vinegar", "3 tbsp soy sauce", "1 tbsp sriracha", "1 tbsp coconut sugar"]}, {"title": "Sear the Chicken", "text": "Pat the chicken dry, season with salt and pepper, and cook in a pan for 2 minutes on each side.", "timer": 120, "uses": ["2 chicken breasts, cut into pieces", "Salt and pepper, to taste"]}, {"title": "Glaze", "text": "Add the sauce to the pan and let simmer until the chicken is cooked through and coated."}, {"title": "Broccoli & Serve", "text": "Steam the broccoli and serve with the orange chicken.", "uses": ["1 head broccoli, steamed"]}]};
+let R = {"title": "Orange Chicken", "category": "Lunch", "description": "A fresh-squeezed orange, ginger and sriracha glazed chicken with steamed broccoli", "serves": 2, "prep": 15, "cook": 10, "video": "https://www.tiktok.com/@bayleennicole/video/7498103891142118698", "slug": "orange-chicken", "ingredients": ["Zest of 1 orange", "Juice of 2 oranges", "1 tbsp fresh ginger, minced", "2 cloves garlic, minced", "2 tbsp rice vinegar", "3 tbsp soy sauce", "1 tbsp sriracha", "1 tbsp coconut sugar", "2 chicken breasts, cut into pieces", "Salt and pepper, to taste", "1 head broccoli, steamed"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["Zest of 1 orange", "Juice of 2 oranges", "1 tbsp fresh ginger, minced", "2 cloves garlic, minced", "2 tbsp rice vinegar", "3 tbsp soy sauce", "1 tbsp sriracha", "1 tbsp coconut sugar", "2 chicken breasts, cut into pieces", "Salt and pepper, to taste", "1 head broccoli, steamed"]}, {"title": "Sauce", "text": "Combine the orange zest, orange juice, ginger, garlic, rice vinegar, soy sauce, sriracha, and coconut sugar to make the sauce.", "uses": ["Zest of 1 orange", "Juice of 2 oranges", "1 tbsp fresh ginger, minced", "2 cloves garlic, minced", "2 tbsp rice vinegar", "3 tbsp soy sauce", "1 tbsp sriracha", "1 tbsp coconut sugar"]}, {"title": "Sear the Chicken", "text": "Pat the chicken dry, season with salt and pepper, and cook in a pan for 2 minutes on each side.", "timer": 120, "uses": ["2 chicken breasts, cut into pieces", "Salt and pepper, to taste"]}, {"title": "Glaze", "text": "Add the sauce to the pan and let simmer until the chicken is cooked through and coated."}, {"title": "Broccoli & Serve", "text": "Steam the broccoli and serve with the orange chicken.", "uses": ["1 head broccoli, steamed"]}]};
 const $ = id => document.getElementById(id);
 // card text: no Celsius conversions, no period at the very end
 const tidy = t => (t||"").replace(/\s*\(\s*-?\d+\s*°?\s*C\s*\)/g,"").replace(/\s*\/\s*-?\d+\s*°\s*C\b/g,"").replace(/\.\s*$/,"");
@@ -139,7 +139,7 @@ if(R.video){$("watch").href=R.video;$("watch").hidden=false}
 $("desc").textContent=tidy(R.description); $("desc").hidden=!R.description;
 
 /* ---- steps ---- */
-const N=R.slides.length;
+let N=R.slides.length;
 function show(i){
   cur=Math.max(0,Math.min(N,i));
   $("intro").hidden=true; $("cook").hidden=false;
@@ -229,6 +229,17 @@ async function keepAwake(){if(!("wakeLock" in navigator)||lock||asking||document
 document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"){if(cur>=0)keepAwake();paintTimers()}});
 
 renderIntro();
+
+/* ---- edits published from the recipe planner (data/edits.json) ----
+   If this recipe was edited there, use the edited title, ingredients and the
+   cards the planner rebuilt from the new steps. Only before cooking starts. */
+fetch("../data/edits.json?t="+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.json():null).then(d=>{
+  const o=d&&d.recipes&&d.recipes[R.slug], c=o&&o.cook;
+  if(!c||cur!==-1) return;
+  if(c.title){ R.title=c.title; $("ttl").textContent=c.title; document.title=c.title; }
+  if(c.ingredients) R.ingredients=c.ingredients;
+  if(c.slides&&c.slides.length){ R.slides=c.slides; N=R.slides.length; }
+}).catch(()=>{});
 </script>
 
 </body></html>

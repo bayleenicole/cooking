@@ -95,7 +95,7 @@ ul.ing li{padding:5px 0}
 <div class="alarm" id="alarm" role="alert" hidden><span id="alarmTxt"></span><button id="alarmOk">OK</button></div>
 
 <script>
-const R = {"title": "Crockpot Taco Soup", "category": "Dinner", "description": "Set-and-forget chicken taco soup with salsa, green chilies and corn, finished with egg noodles and Greek yogurt", "serves": 4, "prep": 10, "cook": 510, "video": "https://www.tiktok.com/@bayleennicole/video/7301436424019037483", "ingredients": ["2 chicken breasts", "1 (16 oz) jar salsa", "1 (4 oz) can diced green chilies", "1 (15 oz) can corn", "3 cups chicken broth", "1 packet taco seasoning", "1 cup egg noodles", "1-2 cups Greek yogurt"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["2 chicken breasts", "1 (16 oz) jar salsa", "1 (4 oz) can diced green chilies", "1 (15 oz) can corn", "3 cups chicken broth", "1 packet taco seasoning"]}, {"title": "Load the Crockpot", "text": "Add the chicken breasts, salsa, green chilies, corn, chicken broth, and taco seasoning to a crockpot.", "uses": ["2 chicken breasts", "1 (16 oz) jar salsa", "1 (4 oz) can diced green chilies", "1 (15 oz) can corn", "3 cups chicken broth", "1 packet taco seasoning"]}, {"title": "Slow Cook", "text": "Cook on high for 4 hours or low for 8 hours.", "timer": 14400}, {"title": "Gather Ingredients", "gather": true, "text": "While you wait, get these out for the next part", "uses": ["1 cup egg noodles", "1-2 cups Greek yogurt"]}, {"title": "Shred & Stir", "text": "Shred the chicken directly in the crockpot, then stir in the egg noodles and Greek yogurt.", "uses": ["1 cup egg noodles", "1-2 cups Greek yogurt"]}, {"title": "Finish", "text": "Let cook for 30 more minutes, until the noodles are tender, then serve warm.", "timer": 1800}]};
+let R = {"title": "Crockpot Taco Soup", "category": "Dinner", "description": "Set-and-forget chicken taco soup with salsa, green chilies and corn, finished with egg noodles and Greek yogurt", "serves": 4, "prep": 10, "cook": 510, "video": "https://www.tiktok.com/@bayleennicole/video/7301436424019037483", "slug": "crockpot-taco-soup", "ingredients": ["2 chicken breasts", "1 (16 oz) jar salsa", "1 (4 oz) can diced green chilies", "1 (15 oz) can corn", "3 cups chicken broth", "1 packet taco seasoning", "1 cup egg noodles", "1-2 cups Greek yogurt"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["2 chicken breasts", "1 (16 oz) jar salsa", "1 (4 oz) can diced green chilies", "1 (15 oz) can corn", "3 cups chicken broth", "1 packet taco seasoning"]}, {"title": "Load the Crockpot", "text": "Add the chicken breasts, salsa, green chilies, corn, chicken broth, and taco seasoning to a crockpot.", "uses": ["2 chicken breasts", "1 (16 oz) jar salsa", "1 (4 oz) can diced green chilies", "1 (15 oz) can corn", "3 cups chicken broth", "1 packet taco seasoning"]}, {"title": "Slow Cook", "text": "Cook on high for 4 hours or low for 8 hours.", "timer": 14400}, {"title": "Gather Ingredients", "gather": true, "text": "While you wait, get these out for the next part", "uses": ["1 cup egg noodles", "1-2 cups Greek yogurt"]}, {"title": "Shred & Stir", "text": "Shred the chicken directly in the crockpot, then stir in the egg noodles and Greek yogurt.", "uses": ["1 cup egg noodles", "1-2 cups Greek yogurt"]}, {"title": "Finish", "text": "Let cook for 30 more minutes, until the noodles are tender, then serve warm.", "timer": 1800}]};
 const $ = id => document.getElementById(id);
 // card text: no Celsius conversions, no period at the very end
 const tidy = t => (t||"").replace(/\s*\(\s*-?\d+\s*°?\s*C\s*\)/g,"").replace(/\s*\/\s*-?\d+\s*°\s*C\b/g,"").replace(/\.\s*$/,"");
@@ -139,7 +139,7 @@ if(R.video){$("watch").href=R.video;$("watch").hidden=false}
 $("desc").textContent=tidy(R.description); $("desc").hidden=!R.description;
 
 /* ---- steps ---- */
-const N=R.slides.length;
+let N=R.slides.length;
 function show(i){
   cur=Math.max(0,Math.min(N,i));
   $("intro").hidden=true; $("cook").hidden=false;
@@ -229,6 +229,17 @@ async function keepAwake(){if(!("wakeLock" in navigator)||lock||asking||document
 document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"){if(cur>=0)keepAwake();paintTimers()}});
 
 renderIntro();
+
+/* ---- edits published from the recipe planner (data/edits.json) ----
+   If this recipe was edited there, use the edited title, ingredients and the
+   cards the planner rebuilt from the new steps. Only before cooking starts. */
+fetch("../data/edits.json?t="+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.json():null).then(d=>{
+  const o=d&&d.recipes&&d.recipes[R.slug], c=o&&o.cook;
+  if(!c||cur!==-1) return;
+  if(c.title){ R.title=c.title; $("ttl").textContent=c.title; document.title=c.title; }
+  if(c.ingredients) R.ingredients=c.ingredients;
+  if(c.slides&&c.slides.length){ R.slides=c.slides; N=R.slides.length; }
+}).catch(()=>{});
 </script>
 
 </body></html>

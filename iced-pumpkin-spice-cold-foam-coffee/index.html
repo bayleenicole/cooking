@@ -95,7 +95,7 @@ ul.ing li{padding:5px 0}
 <div class="alarm" id="alarm" role="alert" hidden><span id="alarmTxt"></span><button id="alarmOk">OK</button></div>
 
 <script>
-const R = {"title": "Iced Pumpkin Spice Cold Foam Coffee", "category": "Drinks & Coffee", "description": "Honey iced espresso topped with a homemade pumpkin spice cold foam", "serves": 1, "prep": 5, "cook": 0, "video": "https://www.tiktok.com/@bayleennicole/video/7419428082379001119", "ingredients": ["2 tbsp ground coffee beans", "1 tbsp honey", "Ice, to fill", "1/2 cup milk", "2 tbsp heavy cream", "Splash of 2% milk", "Splash of vanilla extract", "1/4 tsp pumpkin pie spice", "Sweetener, to taste"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["2 tbsp ground coffee beans", "1 tbsp honey", "Ice, to fill", "1/2 cup milk", "2 tbsp heavy cream", "Splash of 2% milk", "Splash of vanilla extract", "1/4 tsp pumpkin pie spice", "Sweetener, to taste"]}, {"title": "Brew", "text": "Fill a reusable Nespresso capsule with ground coffee beans, seal with the foil lid, and brew the espresso shot.", "uses": ["2 tbsp ground coffee beans"]}, {"title": "Honey", "text": "Stir the honey into the hot espresso.", "uses": ["1 tbsp honey"]}, {"title": "Ice & Milk", "text": "Fill a glass with ice and milk, then pour the espresso mixture over the ice and milk.", "uses": ["Ice, to fill", "1/2 cup milk"]}, {"title": "Cold Foam", "text": "Whip together the heavy cream, 2% milk, vanilla, pumpkin pie spice, and sweetener until frothy for the cold foam.", "uses": ["2 tbsp heavy cream", "Splash of 2% milk", "Splash of vanilla extract", "1/4 tsp pumpkin pie spice", "Sweetener, to taste"]}, {"title": "Top & Serve", "text": "Top the coffee with the cold foam and serve immediately."}]};
+let R = {"title": "Iced Pumpkin Spice Cold Foam Coffee", "category": "Drinks & Coffee", "description": "Honey iced espresso topped with a homemade pumpkin spice cold foam", "serves": 1, "prep": 5, "cook": 0, "video": "https://www.tiktok.com/@bayleennicole/video/7419428082379001119", "slug": "iced-pumpkin-spice-cold-foam-coffee", "ingredients": ["2 tbsp ground coffee beans", "1 tbsp honey", "Ice, to fill", "1/2 cup milk", "2 tbsp heavy cream", "Splash of 2% milk", "Splash of vanilla extract", "1/4 tsp pumpkin pie spice", "Sweetener, to taste"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["2 tbsp ground coffee beans", "1 tbsp honey", "Ice, to fill", "1/2 cup milk", "2 tbsp heavy cream", "Splash of 2% milk", "Splash of vanilla extract", "1/4 tsp pumpkin pie spice", "Sweetener, to taste"]}, {"title": "Brew", "text": "Fill a reusable Nespresso capsule with ground coffee beans, seal with the foil lid, and brew the espresso shot.", "uses": ["2 tbsp ground coffee beans"]}, {"title": "Honey", "text": "Stir the honey into the hot espresso.", "uses": ["1 tbsp honey"]}, {"title": "Ice & Milk", "text": "Fill a glass with ice and milk, then pour the espresso mixture over the ice and milk.", "uses": ["Ice, to fill", "1/2 cup milk"]}, {"title": "Cold Foam", "text": "Whip together the heavy cream, 2% milk, vanilla, pumpkin pie spice, and sweetener until frothy for the cold foam.", "uses": ["2 tbsp heavy cream", "Splash of 2% milk", "Splash of vanilla extract", "1/4 tsp pumpkin pie spice", "Sweetener, to taste"]}, {"title": "Top & Serve", "text": "Top the coffee with the cold foam and serve immediately."}]};
 const $ = id => document.getElementById(id);
 // card text: no Celsius conversions, no period at the very end
 const tidy = t => (t||"").replace(/\s*\(\s*-?\d+\s*°?\s*C\s*\)/g,"").replace(/\s*\/\s*-?\d+\s*°\s*C\b/g,"").replace(/\.\s*$/,"");
@@ -139,7 +139,7 @@ if(R.video){$("watch").href=R.video;$("watch").hidden=false}
 $("desc").textContent=tidy(R.description); $("desc").hidden=!R.description;
 
 /* ---- steps ---- */
-const N=R.slides.length;
+let N=R.slides.length;
 function show(i){
   cur=Math.max(0,Math.min(N,i));
   $("intro").hidden=true; $("cook").hidden=false;
@@ -229,6 +229,17 @@ async function keepAwake(){if(!("wakeLock" in navigator)||lock||asking||document
 document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"){if(cur>=0)keepAwake();paintTimers()}});
 
 renderIntro();
+
+/* ---- edits published from the recipe planner (data/edits.json) ----
+   If this recipe was edited there, use the edited title, ingredients and the
+   cards the planner rebuilt from the new steps. Only before cooking starts. */
+fetch("../data/edits.json?t="+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.json():null).then(d=>{
+  const o=d&&d.recipes&&d.recipes[R.slug], c=o&&o.cook;
+  if(!c||cur!==-1) return;
+  if(c.title){ R.title=c.title; $("ttl").textContent=c.title; document.title=c.title; }
+  if(c.ingredients) R.ingredients=c.ingredients;
+  if(c.slides&&c.slides.length){ R.slides=c.slides; N=R.slides.length; }
+}).catch(()=>{});
 </script>
 
 </body></html>

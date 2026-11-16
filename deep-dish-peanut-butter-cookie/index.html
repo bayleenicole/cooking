@@ -95,7 +95,7 @@ ul.ing li{padding:5px 0}
 <div class="alarm" id="alarm" role="alert" hidden><span id="alarmTxt"></span><button id="alarmOk">OK</button></div>
 
 <script>
-const R = {"title": "Deep Dish Peanut Butter Cookie", "category": "Dessert", "description": "Gooey almond flour peanut butter cookie baked in ramekins with chocolate chips, topped with ice cream and flaky salt", "serves": 2, "prep": 10, "cook": 10, "video": "https://www.tiktok.com/@bayleennicole/video/7355342114407845163", "ingredients": ["1/2 cup peanut butter", "1/4 cup brown sugar", "2 tbsp maple syrup", "Splash of vanilla extract", "2/3 cup almond flour", "1 tbsp tapioca flour", "1/2 tsp baking soda", "Pinch of salt", "1/2 cup chocolate chips, divided", "2 scoops vanilla ice cream, for topping", "Flaky salt, for topping"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["1/2 cup peanut butter", "1/4 cup brown sugar", "2 tbsp maple syrup", "Splash of vanilla extract", "2/3 cup almond flour", "1 tbsp tapioca flour", "1/2 tsp baking soda", "Pinch of salt", "1/2 cup chocolate chips, divided", "2 scoops vanilla ice cream, for topping", "Flaky salt, for topping"]}, {"title": "Dough", "text": "Preheat oven to 350°F. In a bowl, whisk together the peanut butter, brown sugar, maple syrup, and vanilla extract, then add the almond flour, tapioca flour, baking soda, and salt, mixing until combined.", "uses": ["1/2 cup peanut butter", "1/4 cup brown sugar", "2 tbsp maple syrup", "Splash of vanilla extract", "2/3 cup almond flour", "1 tbsp tapioca flour", "1/2 tsp baking soda", "Pinch of salt"]}, {"title": "Layer", "text": "Divide half of the dough between two ramekins, pressing it into the bottom of each, sprinkle chocolate chips over the dough, top with the remaining dough, and add another layer of chocolate chips on top.", "uses": ["1/2 cup chocolate chips, divided"]}, {"title": "Bake", "text": "Bake at 350°F for about 10 minutes.", "timer": 600}, {"title": "Top & Serve", "text": "Top with a scoop of vanilla ice cream and flaky salt, then serve warm.", "uses": ["2 scoops vanilla ice cream, for topping", "Flaky salt, for topping"]}]};
+let R = {"title": "Deep Dish Peanut Butter Cookie", "category": "Dessert", "description": "Gooey almond flour peanut butter cookie baked in ramekins with chocolate chips, topped with ice cream and flaky salt", "serves": 2, "prep": 10, "cook": 10, "video": "https://www.tiktok.com/@bayleennicole/video/7355342114407845163", "slug": "deep-dish-peanut-butter-cookie", "ingredients": ["1/2 cup peanut butter", "1/4 cup brown sugar", "2 tbsp maple syrup", "Splash of vanilla extract", "2/3 cup almond flour", "1 tbsp tapioca flour", "1/2 tsp baking soda", "Pinch of salt", "1/2 cup chocolate chips, divided", "2 scoops vanilla ice cream, for topping", "Flaky salt, for topping"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["1/2 cup peanut butter", "1/4 cup brown sugar", "2 tbsp maple syrup", "Splash of vanilla extract", "2/3 cup almond flour", "1 tbsp tapioca flour", "1/2 tsp baking soda", "Pinch of salt", "1/2 cup chocolate chips, divided", "2 scoops vanilla ice cream, for topping", "Flaky salt, for topping"]}, {"title": "Dough", "text": "Preheat oven to 350°F. In a bowl, whisk together the peanut butter, brown sugar, maple syrup, and vanilla extract, then add the almond flour, tapioca flour, baking soda, and salt, mixing until combined.", "uses": ["1/2 cup peanut butter", "1/4 cup brown sugar", "2 tbsp maple syrup", "Splash of vanilla extract", "2/3 cup almond flour", "1 tbsp tapioca flour", "1/2 tsp baking soda", "Pinch of salt"]}, {"title": "Layer", "text": "Divide half of the dough between two ramekins, pressing it into the bottom of each, sprinkle chocolate chips over the dough, top with the remaining dough, and add another layer of chocolate chips on top.", "uses": ["1/2 cup chocolate chips, divided"]}, {"title": "Bake", "text": "Bake at 350°F for about 10 minutes.", "timer": 600}, {"title": "Top & Serve", "text": "Top with a scoop of vanilla ice cream and flaky salt, then serve warm.", "uses": ["2 scoops vanilla ice cream, for topping", "Flaky salt, for topping"]}]};
 const $ = id => document.getElementById(id);
 // card text: no Celsius conversions, no period at the very end
 const tidy = t => (t||"").replace(/\s*\(\s*-?\d+\s*°?\s*C\s*\)/g,"").replace(/\s*\/\s*-?\d+\s*°\s*C\b/g,"").replace(/\.\s*$/,"");
@@ -139,7 +139,7 @@ if(R.video){$("watch").href=R.video;$("watch").hidden=false}
 $("desc").textContent=tidy(R.description); $("desc").hidden=!R.description;
 
 /* ---- steps ---- */
-const N=R.slides.length;
+let N=R.slides.length;
 function show(i){
   cur=Math.max(0,Math.min(N,i));
   $("intro").hidden=true; $("cook").hidden=false;
@@ -229,6 +229,17 @@ async function keepAwake(){if(!("wakeLock" in navigator)||lock||asking||document
 document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"){if(cur>=0)keepAwake();paintTimers()}});
 
 renderIntro();
+
+/* ---- edits published from the recipe planner (data/edits.json) ----
+   If this recipe was edited there, use the edited title, ingredients and the
+   cards the planner rebuilt from the new steps. Only before cooking starts. */
+fetch("../data/edits.json?t="+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.json():null).then(d=>{
+  const o=d&&d.recipes&&d.recipes[R.slug], c=o&&o.cook;
+  if(!c||cur!==-1) return;
+  if(c.title){ R.title=c.title; $("ttl").textContent=c.title; document.title=c.title; }
+  if(c.ingredients) R.ingredients=c.ingredients;
+  if(c.slides&&c.slides.length){ R.slides=c.slides; N=R.slides.length; }
+}).catch(()=>{});
 </script>
 
 </body></html>

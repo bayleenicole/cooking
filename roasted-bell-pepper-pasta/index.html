@@ -95,7 +95,7 @@ ul.ing li{padding:5px 0}
 <div class="alarm" id="alarm" role="alert" hidden><span id="alarmTxt"></span><button id="alarmOk">OK</button></div>
 
 <script>
-const R = {"title": "Roasted Bell Pepper Pasta", "category": "Dinner", "description": "Sweet roasted bell peppers tossed with cherry tomatoes, basil, garlic and mozzarella over pasta with sliced chicken", "serves": 4, "prep": 15, "cook": 50, "video": "https://www.tiktok.com/@bayleennicole/video/7303724469758020907", "ingredients": ["5 whole bell peppers (red and orange)", "1 cup cherry tomatoes, halved", "1/4 cup fresh basil, torn", "2 cloves garlic, minced", "1/4 cup olive oil", "Salt and pepper, to taste", "8 oz mozzarella balls", "12 oz pasta", "2 chicken breasts, cooked and sliced"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["5 whole bell peppers (red and orange)", "1 cup cherry tomatoes, halved", "1/4 cup fresh basil, torn", "2 cloves garlic, minced", "1/4 cup olive oil", "Salt and pepper, to taste", "8 oz mozzarella balls", "12 oz pasta", "2 chicken breasts, cooked and sliced"]}, {"title": "Roast the Peppers", "text": "Preheat oven to 400°F. Roast the whole bell peppers at 400°F for 40-50 minutes, until blistering.", "timer": 2400, "uses": ["5 whole bell peppers (red and orange)"]}, {"title": "Peel & Slice", "text": "Once cool enough to handle, remove the seeds and skins, place the bell peppers in a bowl for 5-10 minutes to let the juices collect, reserving the juices, then slice the bell peppers thinly.", "timer": 300}, {"title": "Toss the Peppers", "text": "Toss the sliced peppers with cherry tomatoes, basil, garlic, olive oil, salt, pepper, the reserved bell pepper juices, and mozzarella balls.", "uses": ["1 cup cherry tomatoes, halved", "1/4 cup fresh basil, torn", "2 cloves garlic, minced", "1/4 cup olive oil", "Salt and pepper, to taste", "8 oz mozzarella balls"]}, {"title": "Cook the Pasta", "text": "Cook the pasta in salted boiling water according to package directions, then drain.", "uses": ["12 oz pasta"]}, {"title": "Serve", "text": "Serve the bell pepper mixture over the pasta with the sliced chicken.", "uses": ["2 chicken breasts, cooked and sliced"]}]};
+let R = {"title": "Roasted Bell Pepper Pasta", "category": "Dinner", "description": "Sweet roasted bell peppers tossed with cherry tomatoes, basil, garlic and mozzarella over pasta with sliced chicken", "serves": 4, "prep": 15, "cook": 50, "video": "https://www.tiktok.com/@bayleennicole/video/7303724469758020907", "slug": "roasted-bell-pepper-pasta", "ingredients": ["5 whole bell peppers (red and orange)", "1 cup cherry tomatoes, halved", "1/4 cup fresh basil, torn", "2 cloves garlic, minced", "1/4 cup olive oil", "Salt and pepper, to taste", "8 oz mozzarella balls", "12 oz pasta", "2 chicken breasts, cooked and sliced"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["5 whole bell peppers (red and orange)", "1 cup cherry tomatoes, halved", "1/4 cup fresh basil, torn", "2 cloves garlic, minced", "1/4 cup olive oil", "Salt and pepper, to taste", "8 oz mozzarella balls", "12 oz pasta", "2 chicken breasts, cooked and sliced"]}, {"title": "Roast the Peppers", "text": "Preheat oven to 400°F. Roast the whole bell peppers at 400°F for 40-50 minutes, until blistering.", "timer": 2400, "uses": ["5 whole bell peppers (red and orange)"]}, {"title": "Peel & Slice", "text": "Once cool enough to handle, remove the seeds and skins, place the bell peppers in a bowl for 5-10 minutes to let the juices collect, reserving the juices, then slice the bell peppers thinly.", "timer": 300}, {"title": "Toss the Peppers", "text": "Toss the sliced peppers with cherry tomatoes, basil, garlic, olive oil, salt, pepper, the reserved bell pepper juices, and mozzarella balls.", "uses": ["1 cup cherry tomatoes, halved", "1/4 cup fresh basil, torn", "2 cloves garlic, minced", "1/4 cup olive oil", "Salt and pepper, to taste", "8 oz mozzarella balls"]}, {"title": "Cook the Pasta", "text": "Cook the pasta in salted boiling water according to package directions, then drain.", "uses": ["12 oz pasta"]}, {"title": "Serve", "text": "Serve the bell pepper mixture over the pasta with the sliced chicken.", "uses": ["2 chicken breasts, cooked and sliced"]}]};
 const $ = id => document.getElementById(id);
 // card text: no Celsius conversions, no period at the very end
 const tidy = t => (t||"").replace(/\s*\(\s*-?\d+\s*°?\s*C\s*\)/g,"").replace(/\s*\/\s*-?\d+\s*°\s*C\b/g,"").replace(/\.\s*$/,"");
@@ -139,7 +139,7 @@ if(R.video){$("watch").href=R.video;$("watch").hidden=false}
 $("desc").textContent=tidy(R.description); $("desc").hidden=!R.description;
 
 /* ---- steps ---- */
-const N=R.slides.length;
+let N=R.slides.length;
 function show(i){
   cur=Math.max(0,Math.min(N,i));
   $("intro").hidden=true; $("cook").hidden=false;
@@ -229,6 +229,17 @@ async function keepAwake(){if(!("wakeLock" in navigator)||lock||asking||document
 document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"){if(cur>=0)keepAwake();paintTimers()}});
 
 renderIntro();
+
+/* ---- edits published from the recipe planner (data/edits.json) ----
+   If this recipe was edited there, use the edited title, ingredients and the
+   cards the planner rebuilt from the new steps. Only before cooking starts. */
+fetch("../data/edits.json?t="+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.json():null).then(d=>{
+  const o=d&&d.recipes&&d.recipes[R.slug], c=o&&o.cook;
+  if(!c||cur!==-1) return;
+  if(c.title){ R.title=c.title; $("ttl").textContent=c.title; document.title=c.title; }
+  if(c.ingredients) R.ingredients=c.ingredients;
+  if(c.slides&&c.slides.length){ R.slides=c.slides; N=R.slides.length; }
+}).catch(()=>{});
 </script>
 
 </body></html>

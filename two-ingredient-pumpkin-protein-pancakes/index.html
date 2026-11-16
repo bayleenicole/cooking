@@ -95,7 +95,7 @@ ul.ing li{padding:5px 0}
 <div class="alarm" id="alarm" role="alert" hidden><span id="alarmTxt"></span><button id="alarmOk">OK</button></div>
 
 <script>
-const R = {"title": "Two-Ingredient Pumpkin Protein Pancakes", "category": "Breakfast", "description": "Simple pumpkin protein pancakes with warm spices and maple syrup", "serves": 1, "prep": 5, "cook": 10, "video": "https://www.tiktok.com/@bayleennicole/video/7421943524821683486", "ingredients": ["1 1/2 scoops pumpkin pie protein powder", "1/2 tsp cinnamon", "1/2 tsp pumpkin pie spice", "1/2 cup pumpkin puree", "1 egg", "2 tbsp maple syrup, warmed, for serving"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["1 1/2 scoops pumpkin pie protein powder", "1/2 tsp cinnamon", "1/2 tsp pumpkin pie spice", "1/2 cup pumpkin puree", "1 egg", "2 tbsp maple syrup, warmed, for serving"]}, {"title": "Batter", "text": "Whisk together the protein powder, cinnamon, pumpkin pie spice, pumpkin puree, and egg until combined.", "uses": ["1 1/2 scoops pumpkin pie protein powder", "1/2 tsp cinnamon", "1/2 tsp pumpkin pie spice", "1/2 cup pumpkin puree", "1 egg"]}, {"title": "Cook", "text": "Cook the pancakes on a griddle over medium heat until set, flipping once."}, {"title": "Serve", "text": "Serve with warmed maple syrup.", "uses": ["2 tbsp maple syrup, warmed, for serving"]}]};
+let R = {"title": "Two-Ingredient Pumpkin Protein Pancakes", "category": "Breakfast", "description": "Simple pumpkin protein pancakes with warm spices and maple syrup", "serves": 1, "prep": 5, "cook": 10, "video": "https://www.tiktok.com/@bayleennicole/video/7421943524821683486", "slug": "two-ingredient-pumpkin-protein-pancakes", "ingredients": ["1 1/2 scoops pumpkin pie protein powder", "1/2 tsp cinnamon", "1/2 tsp pumpkin pie spice", "1/2 cup pumpkin puree", "1 egg", "2 tbsp maple syrup, warmed, for serving"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["1 1/2 scoops pumpkin pie protein powder", "1/2 tsp cinnamon", "1/2 tsp pumpkin pie spice", "1/2 cup pumpkin puree", "1 egg", "2 tbsp maple syrup, warmed, for serving"]}, {"title": "Batter", "text": "Whisk together the protein powder, cinnamon, pumpkin pie spice, pumpkin puree, and egg until combined.", "uses": ["1 1/2 scoops pumpkin pie protein powder", "1/2 tsp cinnamon", "1/2 tsp pumpkin pie spice", "1/2 cup pumpkin puree", "1 egg"]}, {"title": "Cook", "text": "Cook the pancakes on a griddle over medium heat until set, flipping once."}, {"title": "Serve", "text": "Serve with warmed maple syrup.", "uses": ["2 tbsp maple syrup, warmed, for serving"]}]};
 const $ = id => document.getElementById(id);
 // card text: no Celsius conversions, no period at the very end
 const tidy = t => (t||"").replace(/\s*\(\s*-?\d+\s*°?\s*C\s*\)/g,"").replace(/\s*\/\s*-?\d+\s*°\s*C\b/g,"").replace(/\.\s*$/,"");
@@ -139,7 +139,7 @@ if(R.video){$("watch").href=R.video;$("watch").hidden=false}
 $("desc").textContent=tidy(R.description); $("desc").hidden=!R.description;
 
 /* ---- steps ---- */
-const N=R.slides.length;
+let N=R.slides.length;
 function show(i){
   cur=Math.max(0,Math.min(N,i));
   $("intro").hidden=true; $("cook").hidden=false;
@@ -229,6 +229,17 @@ async function keepAwake(){if(!("wakeLock" in navigator)||lock||asking||document
 document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"){if(cur>=0)keepAwake();paintTimers()}});
 
 renderIntro();
+
+/* ---- edits published from the recipe planner (data/edits.json) ----
+   If this recipe was edited there, use the edited title, ingredients and the
+   cards the planner rebuilt from the new steps. Only before cooking starts. */
+fetch("../data/edits.json?t="+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.json():null).then(d=>{
+  const o=d&&d.recipes&&d.recipes[R.slug], c=o&&o.cook;
+  if(!c||cur!==-1) return;
+  if(c.title){ R.title=c.title; $("ttl").textContent=c.title; document.title=c.title; }
+  if(c.ingredients) R.ingredients=c.ingredients;
+  if(c.slides&&c.slides.length){ R.slides=c.slides; N=R.slides.length; }
+}).catch(()=>{});
 </script>
 
 </body></html>

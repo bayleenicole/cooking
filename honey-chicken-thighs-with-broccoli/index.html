@@ -95,7 +95,7 @@ ul.ing li{padding:5px 0}
 <div class="alarm" id="alarm" role="alert" hidden><span id="alarmTxt"></span><button id="alarmOk">OK</button></div>
 
 <script>
-const R = {"title": "Honey Chicken Thighs with Broccoli", "category": "Dinner", "description": "Cast iron chicken thighs cooked in a simple honey broth glaze, with roasted broccoli", "serves": 4, "prep": 15, "cook": 20, "video": "https://www.tiktok.com/@bayleennicole/video/7359655595466657066", "ingredients": ["4 chicken thighs", "Salt and pepper, to taste", "1/2 cup chicken broth", "2 tbsp honey", "1 head broccoli, cut into florets", "1 tbsp olive oil, for the broccoli"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["4 chicken thighs", "Salt and pepper, to taste", "1/2 cup chicken broth", "2 tbsp honey", "1 head broccoli, cut into florets", "1 tbsp olive oil, for the broccoli"]}, {"title": "Sear the Chicken", "text": "If roasting the broccoli, preheat oven to 425°F. Season the chicken thighs with salt and pepper and cook in a cast iron pan.", "uses": ["4 chicken thighs", "Salt and pepper, to taste"]}, {"title": "Honey Glaze", "text": "Add the chicken broth and honey to the pan and let the chicken cook in the glaze until done.", "uses": ["1/2 cup chicken broth", "2 tbsp honey"]}, {"title": "Broccoli", "text": "Toss the broccoli florets with olive oil, salt, and pepper, and roast or pan-cook for about 8 minutes.", "timer": 480, "uses": ["1 head broccoli, cut into florets", "1 tbsp olive oil, for the broccoli"]}, {"title": "Serve", "text": "Serve the glazed chicken and broccoli together."}]};
+let R = {"title": "Honey Chicken Thighs with Broccoli", "category": "Dinner", "description": "Cast iron chicken thighs cooked in a simple honey broth glaze, with roasted broccoli", "serves": 4, "prep": 15, "cook": 20, "video": "https://www.tiktok.com/@bayleennicole/video/7359655595466657066", "slug": "honey-chicken-thighs-with-broccoli", "ingredients": ["4 chicken thighs", "Salt and pepper, to taste", "1/2 cup chicken broth", "2 tbsp honey", "1 head broccoli, cut into florets", "1 tbsp olive oil, for the broccoli"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["4 chicken thighs", "Salt and pepper, to taste", "1/2 cup chicken broth", "2 tbsp honey", "1 head broccoli, cut into florets", "1 tbsp olive oil, for the broccoli"]}, {"title": "Sear the Chicken", "text": "If roasting the broccoli, preheat oven to 425°F. Season the chicken thighs with salt and pepper and cook in a cast iron pan.", "uses": ["4 chicken thighs", "Salt and pepper, to taste"]}, {"title": "Honey Glaze", "text": "Add the chicken broth and honey to the pan and let the chicken cook in the glaze until done.", "uses": ["1/2 cup chicken broth", "2 tbsp honey"]}, {"title": "Broccoli", "text": "Toss the broccoli florets with olive oil, salt, and pepper, and roast or pan-cook for about 8 minutes.", "timer": 480, "uses": ["1 head broccoli, cut into florets", "1 tbsp olive oil, for the broccoli"]}, {"title": "Serve", "text": "Serve the glazed chicken and broccoli together."}]};
 const $ = id => document.getElementById(id);
 // card text: no Celsius conversions, no period at the very end
 const tidy = t => (t||"").replace(/\s*\(\s*-?\d+\s*°?\s*C\s*\)/g,"").replace(/\s*\/\s*-?\d+\s*°\s*C\b/g,"").replace(/\.\s*$/,"");
@@ -139,7 +139,7 @@ if(R.video){$("watch").href=R.video;$("watch").hidden=false}
 $("desc").textContent=tidy(R.description); $("desc").hidden=!R.description;
 
 /* ---- steps ---- */
-const N=R.slides.length;
+let N=R.slides.length;
 function show(i){
   cur=Math.max(0,Math.min(N,i));
   $("intro").hidden=true; $("cook").hidden=false;
@@ -229,6 +229,17 @@ async function keepAwake(){if(!("wakeLock" in navigator)||lock||asking||document
 document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"){if(cur>=0)keepAwake();paintTimers()}});
 
 renderIntro();
+
+/* ---- edits published from the recipe planner (data/edits.json) ----
+   If this recipe was edited there, use the edited title, ingredients and the
+   cards the planner rebuilt from the new steps. Only before cooking starts. */
+fetch("../data/edits.json?t="+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.json():null).then(d=>{
+  const o=d&&d.recipes&&d.recipes[R.slug], c=o&&o.cook;
+  if(!c||cur!==-1) return;
+  if(c.title){ R.title=c.title; $("ttl").textContent=c.title; document.title=c.title; }
+  if(c.ingredients) R.ingredients=c.ingredients;
+  if(c.slides&&c.slides.length){ R.slides=c.slides; N=R.slides.length; }
+}).catch(()=>{});
 </script>
 
 </body></html>

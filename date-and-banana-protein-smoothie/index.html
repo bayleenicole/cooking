@@ -95,7 +95,7 @@ ul.ing li{padding:5px 0}
 <div class="alarm" id="alarm" role="alert" hidden><span id="alarmTxt"></span><button id="alarmOk">OK</button></div>
 
 <script>
-const R = {"title": "Date & Banana Protein Smoothie", "category": "Drinks & Coffee", "description": "A frozen banana and date protein smoothie with coconut water and a swirl of Cool Whip", "serves": 1, "prep": 5, "cook": 0, "video": "https://www.tiktok.com/@bayleennicole/video/7480300968211418410", "ingredients": ["3/4 to 1 cup ice", "1 frozen banana", "1/2 cup coconut water", "1 scoop vanilla protein powder", "5 dates, pitted", "2 tbsp Cool Whip"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["3/4 to 1 cup ice", "1 frozen banana", "1/2 cup coconut water", "1 scoop vanilla protein powder", "5 dates, pitted", "2 tbsp Cool Whip"]}, {"title": "Blend", "text": "Add the ice, frozen banana, coconut water, protein powder, and dates to a blender and blend until smooth.", "uses": ["3/4 to 1 cup ice", "1 frozen banana", "1/2 cup coconut water", "1 scoop vanilla protein powder", "5 dates, pitted"]}, {"title": "Finish & Serve", "text": "Stir in the Cool Whip for extra texture, then pour into a glass and serve.", "uses": ["2 tbsp Cool Whip"]}]};
+let R = {"title": "Date & Banana Protein Smoothie", "category": "Drinks & Coffee", "description": "A frozen banana and date protein smoothie with coconut water and a swirl of Cool Whip", "serves": 1, "prep": 5, "cook": 0, "video": "https://www.tiktok.com/@bayleennicole/video/7480300968211418410", "slug": "date-and-banana-protein-smoothie", "ingredients": ["3/4 to 1 cup ice", "1 frozen banana", "1/2 cup coconut water", "1 scoop vanilla protein powder", "5 dates, pitted", "2 tbsp Cool Whip"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["3/4 to 1 cup ice", "1 frozen banana", "1/2 cup coconut water", "1 scoop vanilla protein powder", "5 dates, pitted", "2 tbsp Cool Whip"]}, {"title": "Blend", "text": "Add the ice, frozen banana, coconut water, protein powder, and dates to a blender and blend until smooth.", "uses": ["3/4 to 1 cup ice", "1 frozen banana", "1/2 cup coconut water", "1 scoop vanilla protein powder", "5 dates, pitted"]}, {"title": "Finish & Serve", "text": "Stir in the Cool Whip for extra texture, then pour into a glass and serve.", "uses": ["2 tbsp Cool Whip"]}]};
 const $ = id => document.getElementById(id);
 // card text: no Celsius conversions, no period at the very end
 const tidy = t => (t||"").replace(/\s*\(\s*-?\d+\s*°?\s*C\s*\)/g,"").replace(/\s*\/\s*-?\d+\s*°\s*C\b/g,"").replace(/\.\s*$/,"");
@@ -139,7 +139,7 @@ if(R.video){$("watch").href=R.video;$("watch").hidden=false}
 $("desc").textContent=tidy(R.description); $("desc").hidden=!R.description;
 
 /* ---- steps ---- */
-const N=R.slides.length;
+let N=R.slides.length;
 function show(i){
   cur=Math.max(0,Math.min(N,i));
   $("intro").hidden=true; $("cook").hidden=false;
@@ -229,6 +229,17 @@ async function keepAwake(){if(!("wakeLock" in navigator)||lock||asking||document
 document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"){if(cur>=0)keepAwake();paintTimers()}});
 
 renderIntro();
+
+/* ---- edits published from the recipe planner (data/edits.json) ----
+   If this recipe was edited there, use the edited title, ingredients and the
+   cards the planner rebuilt from the new steps. Only before cooking starts. */
+fetch("../data/edits.json?t="+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.json():null).then(d=>{
+  const o=d&&d.recipes&&d.recipes[R.slug], c=o&&o.cook;
+  if(!c||cur!==-1) return;
+  if(c.title){ R.title=c.title; $("ttl").textContent=c.title; document.title=c.title; }
+  if(c.ingredients) R.ingredients=c.ingredients;
+  if(c.slides&&c.slides.length){ R.slides=c.slides; N=R.slides.length; }
+}).catch(()=>{});
 </script>
 
 </body></html>

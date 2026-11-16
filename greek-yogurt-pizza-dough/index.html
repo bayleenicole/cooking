@@ -95,7 +95,7 @@ ul.ing li{padding:5px 0}
 <div class="alarm" id="alarm" role="alert" hidden><span id="alarmTxt"></span><button id="alarmOk">OK</button></div>
 
 <script>
-const R = {"title": "Greek Yogurt Pizza Dough", "category": "Dinner", "description": "A no-yeast, two-main-ingredient Greek yogurt pizza dough", "serves": 4, "prep": 10, "cook": 12, "video": "https://www.tiktok.com/@bayleennicole/video/7439087706941967647", "ingredients": ["2 cups all-purpose flour", "2 cups Greek yogurt", "1 tsp baking soda"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["2 cups all-purpose flour", "2 cups Greek yogurt", "1 tsp baking soda"]}, {"title": "Make the Dough", "text": "Combine the flour, Greek yogurt, and baking soda, and knead into a smooth dough.", "uses": ["2 cups all-purpose flour", "2 cups Greek yogurt", "1 tsp baking soda"]}, {"title": "Shape", "text": "Divide the dough into two rounds; when ready to eat, preheat oven to 450°F, roll out and add desired toppings."}, {"title": "Bake", "text": "Bake at 450°F for 10-12 minutes.", "timer": 600}]};
+let R = {"title": "Greek Yogurt Pizza Dough", "category": "Dinner", "description": "A no-yeast, two-main-ingredient Greek yogurt pizza dough", "serves": 4, "prep": 10, "cook": 12, "video": "https://www.tiktok.com/@bayleennicole/video/7439087706941967647", "slug": "greek-yogurt-pizza-dough", "ingredients": ["2 cups all-purpose flour", "2 cups Greek yogurt", "1 tsp baking soda"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["2 cups all-purpose flour", "2 cups Greek yogurt", "1 tsp baking soda"]}, {"title": "Make the Dough", "text": "Combine the flour, Greek yogurt, and baking soda, and knead into a smooth dough.", "uses": ["2 cups all-purpose flour", "2 cups Greek yogurt", "1 tsp baking soda"]}, {"title": "Shape", "text": "Divide the dough into two rounds; when ready to eat, preheat oven to 450°F, roll out and add desired toppings."}, {"title": "Bake", "text": "Bake at 450°F for 10-12 minutes.", "timer": 600}]};
 const $ = id => document.getElementById(id);
 // card text: no Celsius conversions, no period at the very end
 const tidy = t => (t||"").replace(/\s*\(\s*-?\d+\s*°?\s*C\s*\)/g,"").replace(/\s*\/\s*-?\d+\s*°\s*C\b/g,"").replace(/\.\s*$/,"");
@@ -139,7 +139,7 @@ if(R.video){$("watch").href=R.video;$("watch").hidden=false}
 $("desc").textContent=tidy(R.description); $("desc").hidden=!R.description;
 
 /* ---- steps ---- */
-const N=R.slides.length;
+let N=R.slides.length;
 function show(i){
   cur=Math.max(0,Math.min(N,i));
   $("intro").hidden=true; $("cook").hidden=false;
@@ -229,6 +229,17 @@ async function keepAwake(){if(!("wakeLock" in navigator)||lock||asking||document
 document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"){if(cur>=0)keepAwake();paintTimers()}});
 
 renderIntro();
+
+/* ---- edits published from the recipe planner (data/edits.json) ----
+   If this recipe was edited there, use the edited title, ingredients and the
+   cards the planner rebuilt from the new steps. Only before cooking starts. */
+fetch("../data/edits.json?t="+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.json():null).then(d=>{
+  const o=d&&d.recipes&&d.recipes[R.slug], c=o&&o.cook;
+  if(!c||cur!==-1) return;
+  if(c.title){ R.title=c.title; $("ttl").textContent=c.title; document.title=c.title; }
+  if(c.ingredients) R.ingredients=c.ingredients;
+  if(c.slides&&c.slides.length){ R.slides=c.slides; N=R.slides.length; }
+}).catch(()=>{});
 </script>
 
 </body></html>

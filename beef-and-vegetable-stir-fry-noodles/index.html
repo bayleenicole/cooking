@@ -95,7 +95,7 @@ ul.ing li{padding:5px 0}
 <div class="alarm" id="alarm" role="alert" hidden><span id="alarmTxt"></span><button id="alarmOk">OK</button></div>
 
 <script>
-const R = {"title": "Beef and Vegetable Stir-Fry Noodles", "category": "Lunch", "description": "Sweet soy-garlic beef stir-fried with vegetables and noodles, with egg ribbons, sesame oil and green onion", "serves": 4, "prep": 15, "cook": 15, "video": "https://www.tiktok.com/@bayleennicole/video/7605332051046255886", "ingredients": ["For the marinade:", "1/2 cup soy sauce", "1/3 cup agave, honey, or maple syrup", "3 garlic cloves chopped", "1 lb sliced beef", "1 cup carrots, chopped", "1/2 onion, chopped", "1 cup mushrooms, chopped", "2 cups spinach, chopped", "2 eggs", "8 oz cooked noodles", "2 tbsp sesame oil", "2 green onions, chopped", "1 tbsp sesame seeds"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["§Marinade", "1/2 cup soy sauce", "1/3 cup agave, honey, or maple syrup", "3 garlic cloves chopped", "1 lb sliced beef", "1 cup carrots, chopped", "1/2 onion, chopped", "1 cup mushrooms, chopped", "2 cups spinach, chopped", "2 eggs", "8 oz cooked noodles", "2 tbsp sesame oil", "2 green onions, chopped", "1 tbsp sesame seeds"]}, {"title": "Marinate & Chop", "text": "Mix together the soy sauce, agave (or honey/maple syrup), and chopped garlic, then add the sliced beef and let marinate for 15 minutes while chopping the carrots, onion, mushrooms, and spinach.", "timer": 900, "uses": ["1/2 cup soy sauce", "1/3 cup agave, honey, or maple syrup", "3 garlic cloves chopped", "1 lb sliced beef", "1 cup carrots, chopped", "1/2 onion, chopped", "1 cup mushrooms, chopped", "2 cups spinach, chopped"]}, {"title": "Egg Ribbons", "text": "Whisk the 2 eggs and cook on low heat in a pan until set, then remove from heat, roll up, and slice lengthwise into ribbons.", "uses": ["2 eggs"]}, {"title": "Vegetables", "text": "Add the chopped veggies to the pan and sauté for 5 minutes until tender, then remove from the stove.", "timer": 300}, {"title": "Beef", "text": "Cook the beef over medium-high heat for 5 minutes.", "timer": 300}, {"title": "Noodles", "text": "Once the beef is cooked, add the cooked noodles, sautéed veggies, 2 tbsp sesame oil, and remaining marinade, then cook everything together for 2-3 minutes.", "timer": 120, "uses": ["8 oz cooked noodles", "2 tbsp sesame oil"]}, {"title": "Finish", "text": "Stir in the egg ribbons and green onion, then remove from heat and top with sesame seeds.", "uses": ["2 green onions, chopped", "1 tbsp sesame seeds"]}]};
+let R = {"title": "Beef and Vegetable Stir-Fry Noodles", "category": "Lunch", "description": "Sweet soy-garlic beef stir-fried with vegetables and noodles, with egg ribbons, sesame oil and green onion", "serves": 4, "prep": 15, "cook": 15, "video": "https://www.tiktok.com/@bayleennicole/video/7605332051046255886", "slug": "beef-and-vegetable-stir-fry-noodles", "ingredients": ["For the marinade:", "1/2 cup soy sauce", "1/3 cup agave, honey, or maple syrup", "3 garlic cloves chopped", "1 lb sliced beef", "1 cup carrots, chopped", "1/2 onion, chopped", "1 cup mushrooms, chopped", "2 cups spinach, chopped", "2 eggs", "8 oz cooked noodles", "2 tbsp sesame oil", "2 green onions, chopped", "1 tbsp sesame seeds"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["§Marinade", "1/2 cup soy sauce", "1/3 cup agave, honey, or maple syrup", "3 garlic cloves chopped", "1 lb sliced beef", "1 cup carrots, chopped", "1/2 onion, chopped", "1 cup mushrooms, chopped", "2 cups spinach, chopped", "2 eggs", "8 oz cooked noodles", "2 tbsp sesame oil", "2 green onions, chopped", "1 tbsp sesame seeds"]}, {"title": "Marinate & Chop", "text": "Mix together the soy sauce, agave (or honey/maple syrup), and chopped garlic, then add the sliced beef and let marinate for 15 minutes while chopping the carrots, onion, mushrooms, and spinach.", "timer": 900, "uses": ["1/2 cup soy sauce", "1/3 cup agave, honey, or maple syrup", "3 garlic cloves chopped", "1 lb sliced beef", "1 cup carrots, chopped", "1/2 onion, chopped", "1 cup mushrooms, chopped", "2 cups spinach, chopped"]}, {"title": "Egg Ribbons", "text": "Whisk the 2 eggs and cook on low heat in a pan until set, then remove from heat, roll up, and slice lengthwise into ribbons.", "uses": ["2 eggs"]}, {"title": "Vegetables", "text": "Add the chopped veggies to the pan and sauté for 5 minutes until tender, then remove from the stove.", "timer": 300}, {"title": "Beef", "text": "Cook the beef over medium-high heat for 5 minutes.", "timer": 300}, {"title": "Noodles", "text": "Once the beef is cooked, add the cooked noodles, sautéed veggies, 2 tbsp sesame oil, and remaining marinade, then cook everything together for 2-3 minutes.", "timer": 120, "uses": ["8 oz cooked noodles", "2 tbsp sesame oil"]}, {"title": "Finish", "text": "Stir in the egg ribbons and green onion, then remove from heat and top with sesame seeds.", "uses": ["2 green onions, chopped", "1 tbsp sesame seeds"]}]};
 const $ = id => document.getElementById(id);
 // card text: no Celsius conversions, no period at the very end
 const tidy = t => (t||"").replace(/\s*\(\s*-?\d+\s*°?\s*C\s*\)/g,"").replace(/\s*\/\s*-?\d+\s*°\s*C\b/g,"").replace(/\.\s*$/,"");
@@ -139,7 +139,7 @@ if(R.video){$("watch").href=R.video;$("watch").hidden=false}
 $("desc").textContent=tidy(R.description); $("desc").hidden=!R.description;
 
 /* ---- steps ---- */
-const N=R.slides.length;
+let N=R.slides.length;
 function show(i){
   cur=Math.max(0,Math.min(N,i));
   $("intro").hidden=true; $("cook").hidden=false;
@@ -229,6 +229,17 @@ async function keepAwake(){if(!("wakeLock" in navigator)||lock||asking||document
 document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"){if(cur>=0)keepAwake();paintTimers()}});
 
 renderIntro();
+
+/* ---- edits published from the recipe planner (data/edits.json) ----
+   If this recipe was edited there, use the edited title, ingredients and the
+   cards the planner rebuilt from the new steps. Only before cooking starts. */
+fetch("../data/edits.json?t="+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.json():null).then(d=>{
+  const o=d&&d.recipes&&d.recipes[R.slug], c=o&&o.cook;
+  if(!c||cur!==-1) return;
+  if(c.title){ R.title=c.title; $("ttl").textContent=c.title; document.title=c.title; }
+  if(c.ingredients) R.ingredients=c.ingredients;
+  if(c.slides&&c.slides.length){ R.slides=c.slides; N=R.slides.length; }
+}).catch(()=>{});
 </script>
 
 </body></html>

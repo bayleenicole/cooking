@@ -95,7 +95,7 @@ ul.ing li{padding:5px 0}
 <div class="alarm" id="alarm" role="alert" hidden><span id="alarmTxt"></span><button id="alarmOk">OK</button></div>
 
 <script>
-const R = {"title": "Cornflake Chicken with Potatoes & Green Beans", "category": "Dinner", "description": "Ranch-Parmesan cornflake chicken baked on one pan with mini potatoes, with ranch green beans added near the end", "serves": 4, "prep": 15, "cook": 25, "video": "https://www.tiktok.com/@bayleennicole/video/7483660200767999278", "ingredients": ["1 lb mini potatoes, halved or quartered", "2 tbsp olive oil", "Salt and pepper, to taste", "2 cups cornflakes, crushed", "1/4 cup grated Parmesan", "1 tbsp ranch seasoning", "4 chicken breasts or tenders", "1 egg, whisked", "1 lb green beans", "1 tbsp olive oil", "1 tbsp ranch seasoning"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["1 lb mini potatoes, halved or quartered", "2 tbsp olive oil", "Salt and pepper, to taste", "2 cups cornflakes, crushed", "1/4 cup grated Parmesan", "1 tbsp ranch seasoning", "4 chicken breasts or tenders", "1 egg, whisked", "1 lb green beans", "1 tbsp olive oil", "1 tbsp ranch seasoning"]}, {"title": "Preheat & Potatoes", "text": "Preheat the oven to 400°F. Toss the potatoes with olive oil, salt, and pepper, then place on a baking sheet.", "uses": ["1 lb mini potatoes, halved or quartered", "2 tbsp olive oil", "Salt and pepper, to taste"]}, {"title": "Coat the Chicken", "text": "In a shallow dish, combine the crushed cornflakes, Parmesan, and ranch seasoning. Dip the chicken in the whisked egg, then coat in the cornflake mixture.", "uses": ["2 cups cornflakes, crushed", "1/4 cup grated Parmesan", "1 tbsp ranch seasoning", "1 egg, whisked", "4 chicken breasts or tenders"]}, {"title": "Bake", "text": "Place the chicken and potatoes in the oven and bake for 20-25 minutes total.", "timer": 300, "while": "The green beans go in for the last 15 minutes, so this timer is set for the first 5-10."}, {"title": "Add the Green Beans", "text": "Toss the green beans with olive oil and ranch seasoning, then add them to the oven for the last 15 minutes of baking.", "timer": 900, "uses": ["1 lb green beans", "1 tbsp olive oil", "1 tbsp ranch seasoning"]}, {"title": "Serve", "text": "Bake everything until the chicken is cooked through and the potatoes are tender, then serve together."}]};
+let R = {"title": "Cornflake Chicken with Potatoes & Green Beans", "category": "Dinner", "description": "Ranch-Parmesan cornflake chicken baked on one pan with mini potatoes, with ranch green beans added near the end", "serves": 4, "prep": 15, "cook": 25, "video": "https://www.tiktok.com/@bayleennicole/video/7483660200767999278", "slug": "cornflake-chicken-with-potatoes-and-green-beans", "ingredients": ["1 lb mini potatoes, halved or quartered", "2 tbsp olive oil", "Salt and pepper, to taste", "2 cups cornflakes, crushed", "1/4 cup grated Parmesan", "1 tbsp ranch seasoning", "4 chicken breasts or tenders", "1 egg, whisked", "1 lb green beans", "1 tbsp olive oil", "1 tbsp ranch seasoning"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["1 lb mini potatoes, halved or quartered", "2 tbsp olive oil", "Salt and pepper, to taste", "2 cups cornflakes, crushed", "1/4 cup grated Parmesan", "1 tbsp ranch seasoning", "4 chicken breasts or tenders", "1 egg, whisked", "1 lb green beans", "1 tbsp olive oil", "1 tbsp ranch seasoning"]}, {"title": "Preheat & Potatoes", "text": "Preheat the oven to 400°F. Toss the potatoes with olive oil, salt, and pepper, then place on a baking sheet.", "uses": ["1 lb mini potatoes, halved or quartered", "2 tbsp olive oil", "Salt and pepper, to taste"]}, {"title": "Coat the Chicken", "text": "In a shallow dish, combine the crushed cornflakes, Parmesan, and ranch seasoning. Dip the chicken in the whisked egg, then coat in the cornflake mixture.", "uses": ["2 cups cornflakes, crushed", "1/4 cup grated Parmesan", "1 tbsp ranch seasoning", "1 egg, whisked", "4 chicken breasts or tenders"]}, {"title": "Bake", "text": "Place the chicken and potatoes in the oven and bake for 20-25 minutes total.", "timer": 300, "while": "The green beans go in for the last 15 minutes, so this timer is set for the first 5-10."}, {"title": "Add the Green Beans", "text": "Toss the green beans with olive oil and ranch seasoning, then add them to the oven for the last 15 minutes of baking.", "timer": 900, "uses": ["1 lb green beans", "1 tbsp olive oil", "1 tbsp ranch seasoning"]}, {"title": "Serve", "text": "Bake everything until the chicken is cooked through and the potatoes are tender, then serve together."}]};
 const $ = id => document.getElementById(id);
 // card text: no Celsius conversions, no period at the very end
 const tidy = t => (t||"").replace(/\s*\(\s*-?\d+\s*°?\s*C\s*\)/g,"").replace(/\s*\/\s*-?\d+\s*°\s*C\b/g,"").replace(/\.\s*$/,"");
@@ -139,7 +139,7 @@ if(R.video){$("watch").href=R.video;$("watch").hidden=false}
 $("desc").textContent=tidy(R.description); $("desc").hidden=!R.description;
 
 /* ---- steps ---- */
-const N=R.slides.length;
+let N=R.slides.length;
 function show(i){
   cur=Math.max(0,Math.min(N,i));
   $("intro").hidden=true; $("cook").hidden=false;
@@ -229,6 +229,17 @@ async function keepAwake(){if(!("wakeLock" in navigator)||lock||asking||document
 document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"){if(cur>=0)keepAwake();paintTimers()}});
 
 renderIntro();
+
+/* ---- edits published from the recipe planner (data/edits.json) ----
+   If this recipe was edited there, use the edited title, ingredients and the
+   cards the planner rebuilt from the new steps. Only before cooking starts. */
+fetch("../data/edits.json?t="+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.json():null).then(d=>{
+  const o=d&&d.recipes&&d.recipes[R.slug], c=o&&o.cook;
+  if(!c||cur!==-1) return;
+  if(c.title){ R.title=c.title; $("ttl").textContent=c.title; document.title=c.title; }
+  if(c.ingredients) R.ingredients=c.ingredients;
+  if(c.slides&&c.slides.length){ R.slides=c.slides; N=R.slides.length; }
+}).catch(()=>{});
 </script>
 
 </body></html>

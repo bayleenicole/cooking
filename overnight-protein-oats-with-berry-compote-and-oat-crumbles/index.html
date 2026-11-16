@@ -95,7 +95,7 @@ ul.ing li{padding:5px 0}
 <div class="alarm" id="alarm" role="alert" hidden><span id="alarmTxt"></span><button id="alarmOk">OK</button></div>
 
 <script>
-const R = {"title": "Overnight Protein Oats with Berry Compote and Oat Crumbles", "category": "Breakfast", "description": "Creamy protein overnight oats layered with warm berry compote and honey oat crumbles", "serves": 1, "prep": 10, "cook": 240, "video": "https://www.tiktok.com/@bayleennicole/video/7278787129839193386", "ingredients": ["For the oats:", "1/4 cup oats", "1 scoop protein powder", "1/4 cup Greek yogurt", "1 tbsp chia seeds", "1/3 cup milk of choice", "Dash of honey or maple syrup", "For the berry compote:", "1/4 cup frozen berries", "Dash of chia seeds", "Squeeze of lemon", "For the crumbles:", "2 tbsp oats", "Dash of honey", "1/2 tbsp nut butter", "Dash of cinnamon"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["§Oats", "1/4 cup oats", "1 scoop protein powder", "1/4 cup Greek yogurt", "1 tbsp chia seeds", "1/3 cup milk of choice", "Dash of honey or maple syrup", "§Berry compote", "1/4 cup frozen berries", "Dash of chia seeds", "Squeeze of lemon", "§Crumbles", "2 tbsp oats", "Dash of honey", "1/2 tbsp nut butter", "Dash of cinnamon"]}, {"title": "Oats: Mix", "text": "In a jar, mix together 1/4 cup oats, 1 scoop protein powder, 1/4 cup Greek yogurt, 1 tbsp chia seeds, 1/3 cup milk of choice, and a dash of honey or maple syrup until well combined.", "uses": ["1/4 cup oats", "1 scoop protein powder", "1/4 cup Greek yogurt", "1 tbsp chia seeds", "1/3 cup milk of choice", "Dash of honey or maple syrup"]}, {"title": "Berry Compote", "text": "Microwave 1/4 cup frozen berries for 30 seconds or add to a saucepan to warm up and mash the berries, then stir in a dash of chia seeds and a squeeze of lemon.", "uses": ["1/4 cup frozen berries", "Dash of chia seeds", "Squeeze of lemon"]}, {"title": "Crumbles", "text": "In a small bowl, stir together 2 tbsp oats, a dash of honey, 1/2 tbsp nut butter, and a dash of cinnamon until small crumble clusters form.", "uses": ["2 tbsp oats", "Dash of honey", "1/2 tbsp nut butter", "Dash of cinnamon"]}, {"title": "Layer & Chill", "text": "Add the warm berry compote to the jar on top of the oat mixture, top with the crumbles, cover, and refrigerate for at least 4 hours or overnight.", "timer": 14400}]};
+let R = {"title": "Overnight Protein Oats with Berry Compote and Oat Crumbles", "category": "Breakfast", "description": "Creamy protein overnight oats layered with warm berry compote and honey oat crumbles", "serves": 1, "prep": 10, "cook": 240, "video": "https://www.tiktok.com/@bayleennicole/video/7278787129839193386", "slug": "overnight-protein-oats-with-berry-compote-and-oat-crumbles", "ingredients": ["For the oats:", "1/4 cup oats", "1 scoop protein powder", "1/4 cup Greek yogurt", "1 tbsp chia seeds", "1/3 cup milk of choice", "Dash of honey or maple syrup", "For the berry compote:", "1/4 cup frozen berries", "Dash of chia seeds", "Squeeze of lemon", "For the crumbles:", "2 tbsp oats", "Dash of honey", "1/2 tbsp nut butter", "Dash of cinnamon"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["§Oats", "1/4 cup oats", "1 scoop protein powder", "1/4 cup Greek yogurt", "1 tbsp chia seeds", "1/3 cup milk of choice", "Dash of honey or maple syrup", "§Berry compote", "1/4 cup frozen berries", "Dash of chia seeds", "Squeeze of lemon", "§Crumbles", "2 tbsp oats", "Dash of honey", "1/2 tbsp nut butter", "Dash of cinnamon"]}, {"title": "Oats: Mix", "text": "In a jar, mix together 1/4 cup oats, 1 scoop protein powder, 1/4 cup Greek yogurt, 1 tbsp chia seeds, 1/3 cup milk of choice, and a dash of honey or maple syrup until well combined.", "uses": ["1/4 cup oats", "1 scoop protein powder", "1/4 cup Greek yogurt", "1 tbsp chia seeds", "1/3 cup milk of choice", "Dash of honey or maple syrup"]}, {"title": "Berry Compote", "text": "Microwave 1/4 cup frozen berries for 30 seconds or add to a saucepan to warm up and mash the berries, then stir in a dash of chia seeds and a squeeze of lemon.", "uses": ["1/4 cup frozen berries", "Dash of chia seeds", "Squeeze of lemon"]}, {"title": "Crumbles", "text": "In a small bowl, stir together 2 tbsp oats, a dash of honey, 1/2 tbsp nut butter, and a dash of cinnamon until small crumble clusters form.", "uses": ["2 tbsp oats", "Dash of honey", "1/2 tbsp nut butter", "Dash of cinnamon"]}, {"title": "Layer & Chill", "text": "Add the warm berry compote to the jar on top of the oat mixture, top with the crumbles, cover, and refrigerate for at least 4 hours or overnight.", "timer": 14400}]};
 const $ = id => document.getElementById(id);
 // card text: no Celsius conversions, no period at the very end
 const tidy = t => (t||"").replace(/\s*\(\s*-?\d+\s*°?\s*C\s*\)/g,"").replace(/\s*\/\s*-?\d+\s*°\s*C\b/g,"").replace(/\.\s*$/,"");
@@ -139,7 +139,7 @@ if(R.video){$("watch").href=R.video;$("watch").hidden=false}
 $("desc").textContent=tidy(R.description); $("desc").hidden=!R.description;
 
 /* ---- steps ---- */
-const N=R.slides.length;
+let N=R.slides.length;
 function show(i){
   cur=Math.max(0,Math.min(N,i));
   $("intro").hidden=true; $("cook").hidden=false;
@@ -229,6 +229,17 @@ async function keepAwake(){if(!("wakeLock" in navigator)||lock||asking||document
 document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"){if(cur>=0)keepAwake();paintTimers()}});
 
 renderIntro();
+
+/* ---- edits published from the recipe planner (data/edits.json) ----
+   If this recipe was edited there, use the edited title, ingredients and the
+   cards the planner rebuilt from the new steps. Only before cooking starts. */
+fetch("../data/edits.json?t="+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.json():null).then(d=>{
+  const o=d&&d.recipes&&d.recipes[R.slug], c=o&&o.cook;
+  if(!c||cur!==-1) return;
+  if(c.title){ R.title=c.title; $("ttl").textContent=c.title; document.title=c.title; }
+  if(c.ingredients) R.ingredients=c.ingredients;
+  if(c.slides&&c.slides.length){ R.slides=c.slides; N=R.slides.length; }
+}).catch(()=>{});
 </script>
 
 </body></html>

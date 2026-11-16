@@ -95,7 +95,7 @@ ul.ing li{padding:5px 0}
 <div class="alarm" id="alarm" role="alert" hidden><span id="alarmTxt"></span><button id="alarmOk">OK</button></div>
 
 <script>
-const R = {"title": "Sheet Pan Chicken, Feta & Chickpea Pasta", "category": "Dinner", "description": "Chicken, zucchini, cherry tomatoes and a block of feta roasted on one pan and tossed with chickpea pasta", "serves": 4, "prep": 15, "cook": 20, "video": "https://www.tiktok.com/@bayleennicole/video/7530702500396059918", "ingredients": ["1 zucchini, cubed", "1 pint cherry tomatoes", "1 block feta, cubed", "2 chicken breasts", "3-4 tbsp olive oil", "1 tsp garlic salt", "1 tsp onion powder", "1 tsp dried oregano", "Salt and pepper, to taste", "8 oz chickpea pasta"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["1 zucchini, cubed", "1 pint cherry tomatoes", "1 block feta, cubed", "2 chicken breasts", "3-4 tbsp olive oil", "1 tsp garlic salt", "1 tsp onion powder", "1 tsp dried oregano", "Salt and pepper, to taste", "8 oz chickpea pasta"]}, {"title": "Sheet Pan", "text": "Preheat oven to 400°F. Add the zucchini, cherry tomatoes, feta, and chicken breast to a sheet pan, drizzle with olive oil, and season with garlic salt, onion powder, oregano, salt, and pepper.", "uses": ["1 zucchini, cubed", "1 pint cherry tomatoes", "1 block feta, cubed", "2 chicken breasts", "3-4 tbsp olive oil", "1 tsp garlic salt", "1 tsp onion powder", "1 tsp dried oregano", "Salt and pepper, to taste"]}, {"title": "Bake", "text": "Bake for 20 minutes, or until the chicken is cooked through.", "timer": 1200, "while": "While it bakes, cook the pasta (next step)."}, {"title": "Cook the Pasta", "text": "Cook the chickpea pasta according to package directions, then drain.", "uses": ["8 oz chickpea pasta"]}, {"title": "Toss & Serve", "text": "Add the cooked pasta to the sheet pan, mix everything together, and serve immediately."}]};
+let R = {"title": "Sheet Pan Chicken, Feta & Chickpea Pasta", "category": "Dinner", "description": "Chicken, zucchini, cherry tomatoes and a block of feta roasted on one pan and tossed with chickpea pasta", "serves": 4, "prep": 15, "cook": 20, "video": "https://www.tiktok.com/@bayleennicole/video/7530702500396059918", "slug": "sheet-pan-chicken-feta-and-chickpea-pasta", "ingredients": ["1 zucchini, cubed", "1 pint cherry tomatoes", "1 block feta, cubed", "2 chicken breasts", "3-4 tbsp olive oil", "1 tsp garlic salt", "1 tsp onion powder", "1 tsp dried oregano", "Salt and pepper, to taste", "8 oz chickpea pasta"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["1 zucchini, cubed", "1 pint cherry tomatoes", "1 block feta, cubed", "2 chicken breasts", "3-4 tbsp olive oil", "1 tsp garlic salt", "1 tsp onion powder", "1 tsp dried oregano", "Salt and pepper, to taste", "8 oz chickpea pasta"]}, {"title": "Sheet Pan", "text": "Preheat oven to 400°F. Add the zucchini, cherry tomatoes, feta, and chicken breast to a sheet pan, drizzle with olive oil, and season with garlic salt, onion powder, oregano, salt, and pepper.", "uses": ["1 zucchini, cubed", "1 pint cherry tomatoes", "1 block feta, cubed", "2 chicken breasts", "3-4 tbsp olive oil", "1 tsp garlic salt", "1 tsp onion powder", "1 tsp dried oregano", "Salt and pepper, to taste"]}, {"title": "Bake", "text": "Bake for 20 minutes, or until the chicken is cooked through.", "timer": 1200, "while": "While it bakes, cook the pasta (next step)."}, {"title": "Cook the Pasta", "text": "Cook the chickpea pasta according to package directions, then drain.", "uses": ["8 oz chickpea pasta"]}, {"title": "Toss & Serve", "text": "Add the cooked pasta to the sheet pan, mix everything together, and serve immediately."}]};
 const $ = id => document.getElementById(id);
 // card text: no Celsius conversions, no period at the very end
 const tidy = t => (t||"").replace(/\s*\(\s*-?\d+\s*°?\s*C\s*\)/g,"").replace(/\s*\/\s*-?\d+\s*°\s*C\b/g,"").replace(/\.\s*$/,"");
@@ -139,7 +139,7 @@ if(R.video){$("watch").href=R.video;$("watch").hidden=false}
 $("desc").textContent=tidy(R.description); $("desc").hidden=!R.description;
 
 /* ---- steps ---- */
-const N=R.slides.length;
+let N=R.slides.length;
 function show(i){
   cur=Math.max(0,Math.min(N,i));
   $("intro").hidden=true; $("cook").hidden=false;
@@ -229,6 +229,17 @@ async function keepAwake(){if(!("wakeLock" in navigator)||lock||asking||document
 document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"){if(cur>=0)keepAwake();paintTimers()}});
 
 renderIntro();
+
+/* ---- edits published from the recipe planner (data/edits.json) ----
+   If this recipe was edited there, use the edited title, ingredients and the
+   cards the planner rebuilt from the new steps. Only before cooking starts. */
+fetch("../data/edits.json?t="+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.json():null).then(d=>{
+  const o=d&&d.recipes&&d.recipes[R.slug], c=o&&o.cook;
+  if(!c||cur!==-1) return;
+  if(c.title){ R.title=c.title; $("ttl").textContent=c.title; document.title=c.title; }
+  if(c.ingredients) R.ingredients=c.ingredients;
+  if(c.slides&&c.slides.length){ R.slides=c.slides; N=R.slides.length; }
+}).catch(()=>{});
 </script>
 
 </body></html>

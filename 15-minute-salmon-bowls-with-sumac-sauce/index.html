@@ -95,7 +95,7 @@ ul.ing li{padding:5px 0}
 <div class="alarm" id="alarm" role="alert" hidden><span id="alarmTxt"></span><button id="alarmOk">OK</button></div>
 
 <script>
-const R = {"title": "15-Minute Salmon Bowls with Sumac Sauce", "category": "Lunch", "description": "Roasted salmon bites over hummus with a minty cucumber tomato salad and a turmeric sumac yogurt sauce", "serves": 4, "prep": 10, "cook": 10, "video": "https://www.tiktok.com/@bayleennicole/video/7642520313833606413", "ingredients": ["1 lb salmon, cubed", "2 tbsp roasted garlic olive oil", "Salt and pepper, to taste", "Juice of 1/2 lemon", "1 cucumber, chopped", "1 cup cherry tomatoes, chopped", "2 tbsp chopped fresh basil", "2 tbsp olive oil", "1 tbsp red wine vinegar", "Salt and pepper, to taste", "1/2 tsp dried mint", "1/2 cup Greek yogurt", "2 tbsp mayo", "1/2 tsp turmeric", "1 tsp sumac", "Salt and pepper, to taste", "1/4 cup hummus"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["1 lb salmon, cubed", "2 tbsp roasted garlic olive oil", "Salt and pepper, to taste", "Juice of 1/2 lemon", "1 cucumber, chopped", "1 cup cherry tomatoes, chopped", "2 tbsp chopped fresh basil", "2 tbsp olive oil", "1 tbsp red wine vinegar", "Salt and pepper, to taste", "1/2 tsp dried mint", "1/2 cup Greek yogurt", "2 tbsp mayo", "1/2 tsp turmeric", "1 tsp sumac", "Salt and pepper, to taste", "1/4 cup hummus"]}, {"title": "Salmon: Bake", "text": "Preheat oven to 425°F. Toss the cubed salmon with roasted garlic olive oil, salt, pepper, and lemon juice, then bake for 8-10 minutes, until cooked through.", "timer": 480, "uses": ["1 lb salmon, cubed", "2 tbsp roasted garlic olive oil", "Salt and pepper, to taste", "Juice of 1/2 lemon"], "while": "While the salmon bakes, make the salad and sauce (next two steps)."}, {"title": "Cucumber Salad", "text": "Combine the cucumber, tomatoes, and basil with olive oil, red wine vinegar, salt, pepper, and dried mint for the salad.", "uses": ["1 cucumber, chopped", "1 cup cherry tomatoes, chopped", "2 tbsp chopped fresh basil", "2 tbsp olive oil", "1 tbsp red wine vinegar", "Salt and pepper, to taste", "1/2 tsp dried mint"]}, {"title": "Sumac Sauce", "text": "Whisk together the Greek yogurt, mayo, turmeric, sumac, salt, and pepper for the sumac sauce.", "uses": ["1/2 cup Greek yogurt", "2 tbsp mayo", "1/2 tsp turmeric", "1 tsp sumac", "Salt and pepper, to taste"]}, {"title": "Assemble & Serve", "text": "Assemble bowls with hummus, the salmon, the cucumber salad, and a drizzle of sumac sauce, then serve immediately.", "uses": ["1/4 cup hummus"]}]};
+let R = {"title": "15-Minute Salmon Bowls with Sumac Sauce", "category": "Lunch", "description": "Roasted salmon bites over hummus with a minty cucumber tomato salad and a turmeric sumac yogurt sauce", "serves": 4, "prep": 10, "cook": 10, "video": "https://www.tiktok.com/@bayleennicole/video/7642520313833606413", "slug": "15-minute-salmon-bowls-with-sumac-sauce", "ingredients": ["1 lb salmon, cubed", "2 tbsp roasted garlic olive oil", "Salt and pepper, to taste", "Juice of 1/2 lemon", "1 cucumber, chopped", "1 cup cherry tomatoes, chopped", "2 tbsp chopped fresh basil", "2 tbsp olive oil", "1 tbsp red wine vinegar", "Salt and pepper, to taste", "1/2 tsp dried mint", "1/2 cup Greek yogurt", "2 tbsp mayo", "1/2 tsp turmeric", "1 tsp sumac", "Salt and pepper, to taste", "1/4 cup hummus"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["1 lb salmon, cubed", "2 tbsp roasted garlic olive oil", "Salt and pepper, to taste", "Juice of 1/2 lemon", "1 cucumber, chopped", "1 cup cherry tomatoes, chopped", "2 tbsp chopped fresh basil", "2 tbsp olive oil", "1 tbsp red wine vinegar", "Salt and pepper, to taste", "1/2 tsp dried mint", "1/2 cup Greek yogurt", "2 tbsp mayo", "1/2 tsp turmeric", "1 tsp sumac", "Salt and pepper, to taste", "1/4 cup hummus"]}, {"title": "Salmon: Bake", "text": "Preheat oven to 425°F. Toss the cubed salmon with roasted garlic olive oil, salt, pepper, and lemon juice, then bake for 8-10 minutes, until cooked through.", "timer": 480, "uses": ["1 lb salmon, cubed", "2 tbsp roasted garlic olive oil", "Salt and pepper, to taste", "Juice of 1/2 lemon"], "while": "While the salmon bakes, make the salad and sauce (next two steps)."}, {"title": "Cucumber Salad", "text": "Combine the cucumber, tomatoes, and basil with olive oil, red wine vinegar, salt, pepper, and dried mint for the salad.", "uses": ["1 cucumber, chopped", "1 cup cherry tomatoes, chopped", "2 tbsp chopped fresh basil", "2 tbsp olive oil", "1 tbsp red wine vinegar", "Salt and pepper, to taste", "1/2 tsp dried mint"]}, {"title": "Sumac Sauce", "text": "Whisk together the Greek yogurt, mayo, turmeric, sumac, salt, and pepper for the sumac sauce.", "uses": ["1/2 cup Greek yogurt", "2 tbsp mayo", "1/2 tsp turmeric", "1 tsp sumac", "Salt and pepper, to taste"]}, {"title": "Assemble & Serve", "text": "Assemble bowls with hummus, the salmon, the cucumber salad, and a drizzle of sumac sauce, then serve immediately.", "uses": ["1/4 cup hummus"]}]};
 const $ = id => document.getElementById(id);
 // card text: no Celsius conversions, no period at the very end
 const tidy = t => (t||"").replace(/\s*\(\s*-?\d+\s*°?\s*C\s*\)/g,"").replace(/\s*\/\s*-?\d+\s*°\s*C\b/g,"").replace(/\.\s*$/,"");
@@ -139,7 +139,7 @@ if(R.video){$("watch").href=R.video;$("watch").hidden=false}
 $("desc").textContent=tidy(R.description); $("desc").hidden=!R.description;
 
 /* ---- steps ---- */
-const N=R.slides.length;
+let N=R.slides.length;
 function show(i){
   cur=Math.max(0,Math.min(N,i));
   $("intro").hidden=true; $("cook").hidden=false;
@@ -229,6 +229,17 @@ async function keepAwake(){if(!("wakeLock" in navigator)||lock||asking||document
 document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"){if(cur>=0)keepAwake();paintTimers()}});
 
 renderIntro();
+
+/* ---- edits published from the recipe planner (data/edits.json) ----
+   If this recipe was edited there, use the edited title, ingredients and the
+   cards the planner rebuilt from the new steps. Only before cooking starts. */
+fetch("../data/edits.json?t="+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.json():null).then(d=>{
+  const o=d&&d.recipes&&d.recipes[R.slug], c=o&&o.cook;
+  if(!c||cur!==-1) return;
+  if(c.title){ R.title=c.title; $("ttl").textContent=c.title; document.title=c.title; }
+  if(c.ingredients) R.ingredients=c.ingredients;
+  if(c.slides&&c.slides.length){ R.slides=c.slides; N=R.slides.length; }
+}).catch(()=>{});
 </script>
 
 </body></html>

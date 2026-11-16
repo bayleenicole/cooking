@@ -95,7 +95,7 @@ ul.ing li{padding:5px 0}
 <div class="alarm" id="alarm" role="alert" hidden><span id="alarmTxt"></span><button id="alarmOk">OK</button></div>
 
 <script>
-const R = {"title": "Buffalo Chicken Dip", "category": "Lunch", "description": "Three-ingredient baked buffalo chicken dip with cream cheese, served warm", "serves": 6, "prep": 10, "cook": 20, "video": "https://www.tiktok.com/@bayleennicole/video/7464719971596160299", "ingredients": ["1 lb chicken breast", "8 oz cream cheese, softened", "1 cup buffalo sauce"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["1 lb chicken breast", "8 oz cream cheese, softened", "1 cup buffalo sauce"]}, {"title": "Poach the Chicken", "text": "Preheat oven to 375°F. Bring a pot of water to a light boil and cook the chicken for 8-10 minutes, until cooked through.", "timer": 480, "uses": ["1 lb chicken breast"]}, {"title": "Mix", "text": "Whisk together the softened cream cheese and buffalo sauce in a baking dish, then shred the cooked chicken and mix it into the cream cheese mixture.", "uses": ["8 oz cream cheese, softened", "1 cup buffalo sauce"]}, {"title": "Bake", "text": "Bake for 10 minutes, until warmed through and bubbly, then serve warm.", "timer": 600}]};
+let R = {"title": "Buffalo Chicken Dip", "category": "Lunch", "description": "Three-ingredient baked buffalo chicken dip with cream cheese, served warm", "serves": 6, "prep": 10, "cook": 20, "video": "https://www.tiktok.com/@bayleennicole/video/7464719971596160299", "slug": "buffalo-chicken-dip", "ingredients": ["1 lb chicken breast", "8 oz cream cheese, softened", "1 cup buffalo sauce"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["1 lb chicken breast", "8 oz cream cheese, softened", "1 cup buffalo sauce"]}, {"title": "Poach the Chicken", "text": "Preheat oven to 375°F. Bring a pot of water to a light boil and cook the chicken for 8-10 minutes, until cooked through.", "timer": 480, "uses": ["1 lb chicken breast"]}, {"title": "Mix", "text": "Whisk together the softened cream cheese and buffalo sauce in a baking dish, then shred the cooked chicken and mix it into the cream cheese mixture.", "uses": ["8 oz cream cheese, softened", "1 cup buffalo sauce"]}, {"title": "Bake", "text": "Bake for 10 minutes, until warmed through and bubbly, then serve warm.", "timer": 600}]};
 const $ = id => document.getElementById(id);
 // card text: no Celsius conversions, no period at the very end
 const tidy = t => (t||"").replace(/\s*\(\s*-?\d+\s*°?\s*C\s*\)/g,"").replace(/\s*\/\s*-?\d+\s*°\s*C\b/g,"").replace(/\.\s*$/,"");
@@ -139,7 +139,7 @@ if(R.video){$("watch").href=R.video;$("watch").hidden=false}
 $("desc").textContent=tidy(R.description); $("desc").hidden=!R.description;
 
 /* ---- steps ---- */
-const N=R.slides.length;
+let N=R.slides.length;
 function show(i){
   cur=Math.max(0,Math.min(N,i));
   $("intro").hidden=true; $("cook").hidden=false;
@@ -229,6 +229,17 @@ async function keepAwake(){if(!("wakeLock" in navigator)||lock||asking||document
 document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"){if(cur>=0)keepAwake();paintTimers()}});
 
 renderIntro();
+
+/* ---- edits published from the recipe planner (data/edits.json) ----
+   If this recipe was edited there, use the edited title, ingredients and the
+   cards the planner rebuilt from the new steps. Only before cooking starts. */
+fetch("../data/edits.json?t="+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.json():null).then(d=>{
+  const o=d&&d.recipes&&d.recipes[R.slug], c=o&&o.cook;
+  if(!c||cur!==-1) return;
+  if(c.title){ R.title=c.title; $("ttl").textContent=c.title; document.title=c.title; }
+  if(c.ingredients) R.ingredients=c.ingredients;
+  if(c.slides&&c.slides.length){ R.slides=c.slides; N=R.slides.length; }
+}).catch(()=>{});
 </script>
 
 </body></html>

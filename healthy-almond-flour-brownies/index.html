@@ -95,7 +95,7 @@ ul.ing li{padding:5px 0}
 <div class="alarm" id="alarm" role="alert" hidden><span id="alarmTxt"></span><button id="alarmOk">OK</button></div>
 
 <script>
-const R = {"title": "Healthy Almond Flour Brownies", "category": "Dessert", "description": "Fudgy almond flour cacao brownies topped with Cool Whip and fresh strawberries", "serves": 4, "prep": 10, "cook": 15, "video": "https://www.tiktok.com/@bayleennicole/video/7376425008731737386", "ingredients": ["1 cup almond flour", "1/2 cup coconut sugar", "1 egg", "1/2 tsp baking powder", "1/4 cup cacao powder", "1/2 cup Cool Whip, for topping", "1/2 cup fresh strawberries, sliced, for topping"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["1 cup almond flour", "1/2 cup coconut sugar", "1 egg", "1/2 tsp baking powder", "1/4 cup cacao powder", "1/2 cup Cool Whip, for topping", "1/2 cup fresh strawberries, sliced, for topping"]}, {"title": "Preheat", "text": "Preheat oven to 350°F and grease a small baking dish."}, {"title": "Batter", "text": "Mix the almond flour, coconut sugar, egg, baking powder, and cacao powder until combined, then pour the batter into the prepared dish.", "uses": ["1 cup almond flour", "1/2 cup coconut sugar", "1 egg", "1/2 tsp baking powder", "1/4 cup cacao powder"]}, {"title": "Bake", "text": "Bake for about 15 minutes, until set (bake less for a gooier, pudding-like texture).", "timer": 900}, {"title": "Top & Serve", "text": "Top with Cool Whip and fresh strawberries, then serve warm or cooled.", "uses": ["1/2 cup Cool Whip, for topping", "1/2 cup fresh strawberries, sliced, for topping"]}]};
+let R = {"title": "Healthy Almond Flour Brownies", "category": "Dessert", "description": "Fudgy almond flour cacao brownies topped with Cool Whip and fresh strawberries", "serves": 4, "prep": 10, "cook": 15, "video": "https://www.tiktok.com/@bayleennicole/video/7376425008731737386", "slug": "healthy-almond-flour-brownies", "ingredients": ["1 cup almond flour", "1/2 cup coconut sugar", "1 egg", "1/2 tsp baking powder", "1/4 cup cacao powder", "1/2 cup Cool Whip, for topping", "1/2 cup fresh strawberries, sliced, for topping"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["1 cup almond flour", "1/2 cup coconut sugar", "1 egg", "1/2 tsp baking powder", "1/4 cup cacao powder", "1/2 cup Cool Whip, for topping", "1/2 cup fresh strawberries, sliced, for topping"]}, {"title": "Preheat", "text": "Preheat oven to 350°F and grease a small baking dish."}, {"title": "Batter", "text": "Mix the almond flour, coconut sugar, egg, baking powder, and cacao powder until combined, then pour the batter into the prepared dish.", "uses": ["1 cup almond flour", "1/2 cup coconut sugar", "1 egg", "1/2 tsp baking powder", "1/4 cup cacao powder"]}, {"title": "Bake", "text": "Bake for about 15 minutes, until set (bake less for a gooier, pudding-like texture).", "timer": 900}, {"title": "Top & Serve", "text": "Top with Cool Whip and fresh strawberries, then serve warm or cooled.", "uses": ["1/2 cup Cool Whip, for topping", "1/2 cup fresh strawberries, sliced, for topping"]}]};
 const $ = id => document.getElementById(id);
 // card text: no Celsius conversions, no period at the very end
 const tidy = t => (t||"").replace(/\s*\(\s*-?\d+\s*°?\s*C\s*\)/g,"").replace(/\s*\/\s*-?\d+\s*°\s*C\b/g,"").replace(/\.\s*$/,"");
@@ -139,7 +139,7 @@ if(R.video){$("watch").href=R.video;$("watch").hidden=false}
 $("desc").textContent=tidy(R.description); $("desc").hidden=!R.description;
 
 /* ---- steps ---- */
-const N=R.slides.length;
+let N=R.slides.length;
 function show(i){
   cur=Math.max(0,Math.min(N,i));
   $("intro").hidden=true; $("cook").hidden=false;
@@ -229,6 +229,17 @@ async function keepAwake(){if(!("wakeLock" in navigator)||lock||asking||document
 document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"){if(cur>=0)keepAwake();paintTimers()}});
 
 renderIntro();
+
+/* ---- edits published from the recipe planner (data/edits.json) ----
+   If this recipe was edited there, use the edited title, ingredients and the
+   cards the planner rebuilt from the new steps. Only before cooking starts. */
+fetch("../data/edits.json?t="+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.json():null).then(d=>{
+  const o=d&&d.recipes&&d.recipes[R.slug], c=o&&o.cook;
+  if(!c||cur!==-1) return;
+  if(c.title){ R.title=c.title; $("ttl").textContent=c.title; document.title=c.title; }
+  if(c.ingredients) R.ingredients=c.ingredients;
+  if(c.slides&&c.slides.length){ R.slides=c.slides; N=R.slides.length; }
+}).catch(()=>{});
 </script>
 
 </body></html>

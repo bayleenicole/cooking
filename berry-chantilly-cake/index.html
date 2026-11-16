@@ -95,7 +95,7 @@ ul.ing li{padding:5px 0}
 <div class="alarm" id="alarm" role="alert" hidden><span id="alarmTxt"></span><button id="alarmOk">OK</button></div>
 
 <script>
-const R = {"title": "Berry Chantilly Cake", "category": "Dessert", "description": "A three-layer almond vanilla cake soaked in simple syrup, layered with mascarpone cream cheese frosting and fresh berries", "serves": 12, "prep": 45, "cook": 30, "video": "https://www.tiktok.com/@bayleennicole/video/7460276127635017006", "ingredients": ["1 cup butter, softened", "2 cups sugar", "6 egg whites", "3 cups all-purpose flour", "1 tbsp baking powder", "1 cup milk", "1 tsp almond extract", "1 cup sugar (simple syrup)", "1 cup water (simple syrup)", "8 oz cream cheese, softened", "1 cup mascarpone", "1 1/2 cups heavy cream", "3 cups mixed fresh berries, chopped"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["1 cup butter, softened", "2 cups sugar", "6 egg whites", "3 cups all-purpose flour", "1 tbsp baking powder", "1 cup milk", "1 tsp almond extract", "1 cup sugar (simple syrup)", "1 cup water (simple syrup)", "8 oz cream cheese, softened", "1 cup mascarpone", "1 1/2 cups heavy cream", "3 cups mixed fresh berries, chopped"]}, {"title": "Preheat & Pans", "text": "Preheat oven to 350°F and grease three 8-inch cake pans."}, {"title": "Butter, Sugar & Whites", "text": "Cream together the butter and sugar until fluffy, whip the egg whites in a separate bowl, then fold into the butter mixture.", "uses": ["1 cup butter, softened", "2 cups sugar", "6 egg whites"]}, {"title": "Finish the Batter", "text": "In another bowl, combine the flour and baking powder, then alternately add the dry ingredients and milk to the batter, mixing until combined, and stir in the almond extract.", "uses": ["3 cups all-purpose flour", "1 tbsp baking powder", "1 cup milk", "1 tsp almond extract"]}, {"title": "Bake", "text": "Divide the batter among the three pans and bake for about 30 minutes, until a toothpick comes out clean, then let the cakes cool completely.", "timer": 1800, "while": "While the cakes bake and cool, make the syrup and frosting (next two steps)."}, {"title": "Simple Syrup", "text": "For the simple syrup, combine the sugar and water, heat until dissolved, and let cool.", "uses": ["1 cup sugar (simple syrup)", "1 cup water (simple syrup)"]}, {"title": "Frosting", "text": "For the frosting, beat the cream cheese, mascarpone, and heavy cream together until fluffy.", "uses": ["8 oz cream cheese, softened", "1 cup mascarpone", "1 1/2 cups heavy cream"]}, {"title": "Assemble", "text": "Brush each cake layer with simple syrup, assemble the cake by layering frosting and chopped berries between each layer, frost the outside of the cake, top with more berries, and refrigerate until ready to serve.", "uses": ["3 cups mixed fresh berries, chopped"]}]};
+let R = {"title": "Berry Chantilly Cake", "category": "Dessert", "description": "A three-layer almond vanilla cake soaked in simple syrup, layered with mascarpone cream cheese frosting and fresh berries", "serves": 12, "prep": 45, "cook": 30, "video": "https://www.tiktok.com/@bayleennicole/video/7460276127635017006", "slug": "berry-chantilly-cake", "ingredients": ["1 cup butter, softened", "2 cups sugar", "6 egg whites", "3 cups all-purpose flour", "1 tbsp baking powder", "1 cup milk", "1 tsp almond extract", "1 cup sugar (simple syrup)", "1 cup water (simple syrup)", "8 oz cream cheese, softened", "1 cup mascarpone", "1 1/2 cups heavy cream", "3 cups mixed fresh berries, chopped"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["1 cup butter, softened", "2 cups sugar", "6 egg whites", "3 cups all-purpose flour", "1 tbsp baking powder", "1 cup milk", "1 tsp almond extract", "1 cup sugar (simple syrup)", "1 cup water (simple syrup)", "8 oz cream cheese, softened", "1 cup mascarpone", "1 1/2 cups heavy cream", "3 cups mixed fresh berries, chopped"]}, {"title": "Preheat & Pans", "text": "Preheat oven to 350°F and grease three 8-inch cake pans."}, {"title": "Butter, Sugar & Whites", "text": "Cream together the butter and sugar until fluffy, whip the egg whites in a separate bowl, then fold into the butter mixture.", "uses": ["1 cup butter, softened", "2 cups sugar", "6 egg whites"]}, {"title": "Finish the Batter", "text": "In another bowl, combine the flour and baking powder, then alternately add the dry ingredients and milk to the batter, mixing until combined, and stir in the almond extract.", "uses": ["3 cups all-purpose flour", "1 tbsp baking powder", "1 cup milk", "1 tsp almond extract"]}, {"title": "Bake", "text": "Divide the batter among the three pans and bake for about 30 minutes, until a toothpick comes out clean, then let the cakes cool completely.", "timer": 1800, "while": "While the cakes bake and cool, make the syrup and frosting (next two steps)."}, {"title": "Simple Syrup", "text": "For the simple syrup, combine the sugar and water, heat until dissolved, and let cool.", "uses": ["1 cup sugar (simple syrup)", "1 cup water (simple syrup)"]}, {"title": "Frosting", "text": "For the frosting, beat the cream cheese, mascarpone, and heavy cream together until fluffy.", "uses": ["8 oz cream cheese, softened", "1 cup mascarpone", "1 1/2 cups heavy cream"]}, {"title": "Assemble", "text": "Brush each cake layer with simple syrup, assemble the cake by layering frosting and chopped berries between each layer, frost the outside of the cake, top with more berries, and refrigerate until ready to serve.", "uses": ["3 cups mixed fresh berries, chopped"]}]};
 const $ = id => document.getElementById(id);
 // card text: no Celsius conversions, no period at the very end
 const tidy = t => (t||"").replace(/\s*\(\s*-?\d+\s*°?\s*C\s*\)/g,"").replace(/\s*\/\s*-?\d+\s*°\s*C\b/g,"").replace(/\.\s*$/,"");
@@ -139,7 +139,7 @@ if(R.video){$("watch").href=R.video;$("watch").hidden=false}
 $("desc").textContent=tidy(R.description); $("desc").hidden=!R.description;
 
 /* ---- steps ---- */
-const N=R.slides.length;
+let N=R.slides.length;
 function show(i){
   cur=Math.max(0,Math.min(N,i));
   $("intro").hidden=true; $("cook").hidden=false;
@@ -229,6 +229,17 @@ async function keepAwake(){if(!("wakeLock" in navigator)||lock||asking||document
 document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"){if(cur>=0)keepAwake();paintTimers()}});
 
 renderIntro();
+
+/* ---- edits published from the recipe planner (data/edits.json) ----
+   If this recipe was edited there, use the edited title, ingredients and the
+   cards the planner rebuilt from the new steps. Only before cooking starts. */
+fetch("../data/edits.json?t="+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.json():null).then(d=>{
+  const o=d&&d.recipes&&d.recipes[R.slug], c=o&&o.cook;
+  if(!c||cur!==-1) return;
+  if(c.title){ R.title=c.title; $("ttl").textContent=c.title; document.title=c.title; }
+  if(c.ingredients) R.ingredients=c.ingredients;
+  if(c.slides&&c.slides.length){ R.slides=c.slides; N=R.slides.length; }
+}).catch(()=>{});
 </script>
 
 </body></html>

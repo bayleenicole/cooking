@@ -95,7 +95,7 @@ ul.ing li{padding:5px 0}
 <div class="alarm" id="alarm" role="alert" hidden><span id="alarmTxt"></span><button id="alarmOk">OK</button></div>
 
 <script>
-const R = {"title": "Chickpea Salad with Roasted Sweet Potatoes", "category": "Dinner", "description": "A chicken and chickpea salad with avocado and Parmesan in a cilantro lime yogurt dressing, with roasted sweet potatoes", "serves": 4, "prep": 15, "cook": 30, "video": "https://www.tiktok.com/@bayleennicole/video/7499921674947579179", "ingredients": ["2 sweet potatoes, chopped", "2 tbsp olive oil", "Salt and pepper, to taste", "1 cucumber, chopped", "1 cup cherry tomatoes, chopped", "1/4 red onion, chopped", "1 avocado, diced", "2 cups shredded rotisserie chicken", "1 (15 oz) can chickpeas, drained", "1/4 cup grated Parmesan", "1/4 cup chopped cilantro", "Juice of 1 lime", "1/4 cup Greek yogurt", "Salt, to taste"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["2 sweet potatoes, chopped", "2 tbsp olive oil", "Salt and pepper, to taste", "1 cucumber, chopped", "1 cup cherry tomatoes, chopped", "1/4 red onion, chopped", "1 avocado, diced", "2 cups shredded rotisserie chicken", "1 (15 oz) can chickpeas, drained", "1/4 cup grated Parmesan", "1/4 cup chopped cilantro", "Juice of 1 lime", "1/4 cup Greek yogurt", "Salt, to taste"]}, {"title": "Roast the Sweet Potatoes", "text": "Preheat oven to 425°F. Toss the sweet potatoes with olive oil, salt, and pepper, and roast for 25-30 minutes, until tender.", "timer": 1500, "uses": ["2 sweet potatoes, chopped", "2 tbsp olive oil", "Salt and pepper, to taste"], "while": "While they roast, make the salad and dressing (next two steps)."}, {"title": "Salad", "text": "In a large bowl, combine the cucumber, cherry tomatoes, red onion, avocado, chicken, chickpeas, and Parmesan.", "uses": ["1 cucumber, chopped", "1 cup cherry tomatoes, chopped", "1/4 red onion, chopped", "1 avocado, diced", "2 cups shredded rotisserie chicken", "1 (15 oz) can chickpeas, drained", "1/4 cup grated Parmesan"]}, {"title": "Dressing", "text": "Blend the cilantro, lime juice, Greek yogurt, and salt for the dressing.", "uses": ["1/4 cup chopped cilantro", "Juice of 1 lime", "1/4 cup Greek yogurt", "Salt, to taste"]}, {"title": "Toss & Serve", "text": "Toss the salad with the dressing and serve with the roasted sweet potatoes on the side."}]};
+let R = {"title": "Chickpea Salad with Roasted Sweet Potatoes", "category": "Dinner", "description": "A chicken and chickpea salad with avocado and Parmesan in a cilantro lime yogurt dressing, with roasted sweet potatoes", "serves": 4, "prep": 15, "cook": 30, "video": "https://www.tiktok.com/@bayleennicole/video/7499921674947579179", "slug": "chickpea-salad-with-roasted-sweet-potatoes", "ingredients": ["2 sweet potatoes, chopped", "2 tbsp olive oil", "Salt and pepper, to taste", "1 cucumber, chopped", "1 cup cherry tomatoes, chopped", "1/4 red onion, chopped", "1 avocado, diced", "2 cups shredded rotisserie chicken", "1 (15 oz) can chickpeas, drained", "1/4 cup grated Parmesan", "1/4 cup chopped cilantro", "Juice of 1 lime", "1/4 cup Greek yogurt", "Salt, to taste"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["2 sweet potatoes, chopped", "2 tbsp olive oil", "Salt and pepper, to taste", "1 cucumber, chopped", "1 cup cherry tomatoes, chopped", "1/4 red onion, chopped", "1 avocado, diced", "2 cups shredded rotisserie chicken", "1 (15 oz) can chickpeas, drained", "1/4 cup grated Parmesan", "1/4 cup chopped cilantro", "Juice of 1 lime", "1/4 cup Greek yogurt", "Salt, to taste"]}, {"title": "Roast the Sweet Potatoes", "text": "Preheat oven to 425°F. Toss the sweet potatoes with olive oil, salt, and pepper, and roast for 25-30 minutes, until tender.", "timer": 1500, "uses": ["2 sweet potatoes, chopped", "2 tbsp olive oil", "Salt and pepper, to taste"], "while": "While they roast, make the salad and dressing (next two steps)."}, {"title": "Salad", "text": "In a large bowl, combine the cucumber, cherry tomatoes, red onion, avocado, chicken, chickpeas, and Parmesan.", "uses": ["1 cucumber, chopped", "1 cup cherry tomatoes, chopped", "1/4 red onion, chopped", "1 avocado, diced", "2 cups shredded rotisserie chicken", "1 (15 oz) can chickpeas, drained", "1/4 cup grated Parmesan"]}, {"title": "Dressing", "text": "Blend the cilantro, lime juice, Greek yogurt, and salt for the dressing.", "uses": ["1/4 cup chopped cilantro", "Juice of 1 lime", "1/4 cup Greek yogurt", "Salt, to taste"]}, {"title": "Toss & Serve", "text": "Toss the salad with the dressing and serve with the roasted sweet potatoes on the side."}]};
 const $ = id => document.getElementById(id);
 // card text: no Celsius conversions, no period at the very end
 const tidy = t => (t||"").replace(/\s*\(\s*-?\d+\s*°?\s*C\s*\)/g,"").replace(/\s*\/\s*-?\d+\s*°\s*C\b/g,"").replace(/\.\s*$/,"");
@@ -139,7 +139,7 @@ if(R.video){$("watch").href=R.video;$("watch").hidden=false}
 $("desc").textContent=tidy(R.description); $("desc").hidden=!R.description;
 
 /* ---- steps ---- */
-const N=R.slides.length;
+let N=R.slides.length;
 function show(i){
   cur=Math.max(0,Math.min(N,i));
   $("intro").hidden=true; $("cook").hidden=false;
@@ -229,6 +229,17 @@ async function keepAwake(){if(!("wakeLock" in navigator)||lock||asking||document
 document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"){if(cur>=0)keepAwake();paintTimers()}});
 
 renderIntro();
+
+/* ---- edits published from the recipe planner (data/edits.json) ----
+   If this recipe was edited there, use the edited title, ingredients and the
+   cards the planner rebuilt from the new steps. Only before cooking starts. */
+fetch("../data/edits.json?t="+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.json():null).then(d=>{
+  const o=d&&d.recipes&&d.recipes[R.slug], c=o&&o.cook;
+  if(!c||cur!==-1) return;
+  if(c.title){ R.title=c.title; $("ttl").textContent=c.title; document.title=c.title; }
+  if(c.ingredients) R.ingredients=c.ingredients;
+  if(c.slides&&c.slides.length){ R.slides=c.slides; N=R.slides.length; }
+}).catch(()=>{});
 </script>
 
 </body></html>

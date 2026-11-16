@@ -95,7 +95,7 @@ ul.ing li{padding:5px 0}
 <div class="alarm" id="alarm" role="alert" hidden><span id="alarmTxt"></span><button id="alarmOk">OK</button></div>
 
 <script>
-const R = {"title": "Mediterranean Wrap with Feta Potatoes", "category": "Lunch", "description": "Turkey, hummus and lemon yogurt sauce in a toasted lavash, with crispy feta potato wedges on the side", "serves": 2, "prep": 15, "cook": 20, "video": "https://www.tiktok.com/@bayleennicole/video/7283675841823804715", "ingredients": ["2 russet potatoes, cut into wedges", "2 tbsp olive oil", "1 tbsp olive oil", "1/4 cup crumbled feta", "1/2 tsp dried oregano", "1/2 cup Greek yogurt", "Juice of 1/2 lemon", "1/2 tsp dried oregano", "Salt, pepper, and garlic salt, to taste", "2 lavash wraps", "2 tbsp hummus", "4 oz sliced turkey", "1/2 cucumber, sliced", "1 cup arugula", "1/4 red onion, sliced", "1/4 cup crumbled feta"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["2 russet potatoes, cut into wedges", "2 tbsp olive oil", "1 tbsp olive oil", "1/4 cup crumbled feta", "1/2 tsp dried oregano", "1/2 cup Greek yogurt", "Juice of 1/2 lemon", "1/2 tsp dried oregano", "Salt, pepper, and garlic salt, to taste", "2 lavash wraps", "2 tbsp hummus", "4 oz sliced turkey", "1/2 cucumber, sliced", "1 cup arugula", "1/4 red onion, sliced", "1/4 cup crumbled feta"]}, {"title": "Potatoes: Cook", "text": "Cook the potato wedges in olive oil on the stove for 5-7 minutes per side, then cover and let steam for a few minutes to finish cooking through.", "timer": 300, "uses": ["2 russet potatoes, cut into wedges", "2 tbsp olive oil"]}, {"title": "Potatoes: Season", "text": "Toss the potatoes with olive oil, feta, and oregano.", "uses": ["1/4 cup crumbled feta", "1/2 tsp dried oregano"]}, {"title": "Yogurt Sauce", "text": "To make the yogurt sauce, mix the Greek yogurt, lemon juice, olive oil, oregano, salt, pepper, and garlic salt.", "uses": ["1/2 cup Greek yogurt", "Juice of 1/2 lemon", "1 tbsp olive oil", "1/2 tsp dried oregano", "Salt, pepper, and garlic salt, to taste"]}, {"title": "Fill the Wraps", "text": "Spread the yogurt sauce on half of each lavash wrap and hummus on the other half, then layer with turkey, cucumber, arugula, red onion, and feta.", "uses": ["2 lavash wraps", "2 tbsp hummus", "4 oz sliced turkey", "1/2 cucumber, sliced", "1 cup arugula", "1/4 red onion, sliced", "1/4 cup crumbled feta"]}, {"title": "Toast & Serve", "text": "Roll up the wraps and toast on a pan for a few minutes on each side, then serve with the feta potatoes."}]};
+let R = {"title": "Mediterranean Wrap with Feta Potatoes", "category": "Lunch", "description": "Turkey, hummus and lemon yogurt sauce in a toasted lavash, with crispy feta potato wedges on the side", "serves": 2, "prep": 15, "cook": 20, "video": "https://www.tiktok.com/@bayleennicole/video/7283675841823804715", "slug": "mediterranean-wrap-with-feta-potatoes", "ingredients": ["2 russet potatoes, cut into wedges", "2 tbsp olive oil", "1 tbsp olive oil", "1/4 cup crumbled feta", "1/2 tsp dried oregano", "1/2 cup Greek yogurt", "Juice of 1/2 lemon", "1/2 tsp dried oregano", "Salt, pepper, and garlic salt, to taste", "2 lavash wraps", "2 tbsp hummus", "4 oz sliced turkey", "1/2 cucumber, sliced", "1 cup arugula", "1/4 red onion, sliced", "1/4 cup crumbled feta"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["2 russet potatoes, cut into wedges", "2 tbsp olive oil", "1 tbsp olive oil", "1/4 cup crumbled feta", "1/2 tsp dried oregano", "1/2 cup Greek yogurt", "Juice of 1/2 lemon", "1/2 tsp dried oregano", "Salt, pepper, and garlic salt, to taste", "2 lavash wraps", "2 tbsp hummus", "4 oz sliced turkey", "1/2 cucumber, sliced", "1 cup arugula", "1/4 red onion, sliced", "1/4 cup crumbled feta"]}, {"title": "Potatoes: Cook", "text": "Cook the potato wedges in olive oil on the stove for 5-7 minutes per side, then cover and let steam for a few minutes to finish cooking through.", "timer": 300, "uses": ["2 russet potatoes, cut into wedges", "2 tbsp olive oil"]}, {"title": "Potatoes: Season", "text": "Toss the potatoes with olive oil, feta, and oregano.", "uses": ["1/4 cup crumbled feta", "1/2 tsp dried oregano"]}, {"title": "Yogurt Sauce", "text": "To make the yogurt sauce, mix the Greek yogurt, lemon juice, olive oil, oregano, salt, pepper, and garlic salt.", "uses": ["1/2 cup Greek yogurt", "Juice of 1/2 lemon", "1 tbsp olive oil", "1/2 tsp dried oregano", "Salt, pepper, and garlic salt, to taste"]}, {"title": "Fill the Wraps", "text": "Spread the yogurt sauce on half of each lavash wrap and hummus on the other half, then layer with turkey, cucumber, arugula, red onion, and feta.", "uses": ["2 lavash wraps", "2 tbsp hummus", "4 oz sliced turkey", "1/2 cucumber, sliced", "1 cup arugula", "1/4 red onion, sliced", "1/4 cup crumbled feta"]}, {"title": "Toast & Serve", "text": "Roll up the wraps and toast on a pan for a few minutes on each side, then serve with the feta potatoes."}]};
 const $ = id => document.getElementById(id);
 // card text: no Celsius conversions, no period at the very end
 const tidy = t => (t||"").replace(/\s*\(\s*-?\d+\s*°?\s*C\s*\)/g,"").replace(/\s*\/\s*-?\d+\s*°\s*C\b/g,"").replace(/\.\s*$/,"");
@@ -139,7 +139,7 @@ if(R.video){$("watch").href=R.video;$("watch").hidden=false}
 $("desc").textContent=tidy(R.description); $("desc").hidden=!R.description;
 
 /* ---- steps ---- */
-const N=R.slides.length;
+let N=R.slides.length;
 function show(i){
   cur=Math.max(0,Math.min(N,i));
   $("intro").hidden=true; $("cook").hidden=false;
@@ -229,6 +229,17 @@ async function keepAwake(){if(!("wakeLock" in navigator)||lock||asking||document
 document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"){if(cur>=0)keepAwake();paintTimers()}});
 
 renderIntro();
+
+/* ---- edits published from the recipe planner (data/edits.json) ----
+   If this recipe was edited there, use the edited title, ingredients and the
+   cards the planner rebuilt from the new steps. Only before cooking starts. */
+fetch("../data/edits.json?t="+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.json():null).then(d=>{
+  const o=d&&d.recipes&&d.recipes[R.slug], c=o&&o.cook;
+  if(!c||cur!==-1) return;
+  if(c.title){ R.title=c.title; $("ttl").textContent=c.title; document.title=c.title; }
+  if(c.ingredients) R.ingredients=c.ingredients;
+  if(c.slides&&c.slides.length){ R.slides=c.slides; N=R.slides.length; }
+}).catch(()=>{});
 </script>
 
 </body></html>

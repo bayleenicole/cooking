@@ -95,7 +95,7 @@ ul.ing li{padding:5px 0}
 <div class="alarm" id="alarm" role="alert" hidden><span id="alarmTxt"></span><button id="alarmOk">OK</button></div>
 
 <script>
-const R = {"title": "Shrimp and Cabbage Noodle Salad with Tahini Dressing", "category": "Lunch", "description": "A crunchy cabbage, romaine and rice noodle salad with shrimp in a tahini ginger dressing", "serves": 4, "prep": 20, "cook": 10, "video": "https://www.tiktok.com/@bayleennicole/video/7275811286804352302", "ingredients": ["4 oz rice noodles", "1 lb shrimp", "4 cups cabbage", "2 heads romaine", "1/2 cup cilantro", "4 green onion", "1 cup shredded carrots", "1 lemon or lime", "For the dressing:", "1/2 cup tahini or peanut butter", "1/4 cup water", "2 tablespoons rice vinegar", "3 tablespoons coconut aminos", "1 tablespoon ginger, grated"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["4 oz rice noodles", "1 lb shrimp", "4 cups cabbage", "2 heads romaine", "1/2 cup cilantro", "4 green onion", "1 cup shredded carrots", "1 lemon or lime", "§Dressing", "1/2 cup tahini or peanut butter", "1/4 cup water", "2 tablespoons rice vinegar", "3 tablespoons coconut aminos", "1 tablespoon ginger, grated"]}, {"title": "Noodles", "text": "Cook rice noodles in boiling water for 3-5 minutes, drain, and rinse under cold water.", "timer": 180, "uses": ["4 oz rice noodles"]}, {"title": "Shrimp", "text": "If using raw shrimp, cook shrimp in a skillet over medium heat for 2-3 minutes per side until pink and cooked through, then set aside to cool.", "timer": 120, "uses": ["1 lb shrimp"]}, {"title": "Tahini Dressing", "text": "In a small bowl, whisk together 1/2 cup tahini or peanut butter, 1/4 cup water, 2 tablespoons rice vinegar, 3 tablespoons coconut aminos, and grated ginger until smooth to make the dressing.", "uses": ["1/2 cup tahini or peanut butter", "1/4 cup water", "2 tablespoons rice vinegar", "3 tablespoons coconut aminos", "1 tablespoon ginger, grated"]}, {"title": "Chop", "text": "Chop cabbage, romaine, cilantro, and green onion.", "uses": ["4 cups cabbage", "2 heads romaine", "1/2 cup cilantro", "4 green onion"]}, {"title": "Combine", "text": "In a large serving bowl, combine the chopped vegetables, shredded carrots, rice noodles, and shrimp.", "uses": ["1 cup shredded carrots"]}, {"title": "Dress & Serve", "text": "Pour the prepared dressing over the salad, toss to combine, and finish with lemon or lime on top.", "uses": ["1 lemon or lime"]}]};
+let R = {"title": "Shrimp and Cabbage Noodle Salad with Tahini Dressing", "category": "Lunch", "description": "A crunchy cabbage, romaine and rice noodle salad with shrimp in a tahini ginger dressing", "serves": 4, "prep": 20, "cook": 10, "video": "https://www.tiktok.com/@bayleennicole/video/7275811286804352302", "slug": "shrimp-and-cabbage-noodle-salad-with-tahini-dressing", "ingredients": ["4 oz rice noodles", "1 lb shrimp", "4 cups cabbage", "2 heads romaine", "1/2 cup cilantro", "4 green onion", "1 cup shredded carrots", "1 lemon or lime", "For the dressing:", "1/2 cup tahini or peanut butter", "1/4 cup water", "2 tablespoons rice vinegar", "3 tablespoons coconut aminos", "1 tablespoon ginger, grated"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["4 oz rice noodles", "1 lb shrimp", "4 cups cabbage", "2 heads romaine", "1/2 cup cilantro", "4 green onion", "1 cup shredded carrots", "1 lemon or lime", "§Dressing", "1/2 cup tahini or peanut butter", "1/4 cup water", "2 tablespoons rice vinegar", "3 tablespoons coconut aminos", "1 tablespoon ginger, grated"]}, {"title": "Noodles", "text": "Cook rice noodles in boiling water for 3-5 minutes, drain, and rinse under cold water.", "timer": 180, "uses": ["4 oz rice noodles"]}, {"title": "Shrimp", "text": "If using raw shrimp, cook shrimp in a skillet over medium heat for 2-3 minutes per side until pink and cooked through, then set aside to cool.", "timer": 120, "uses": ["1 lb shrimp"]}, {"title": "Tahini Dressing", "text": "In a small bowl, whisk together 1/2 cup tahini or peanut butter, 1/4 cup water, 2 tablespoons rice vinegar, 3 tablespoons coconut aminos, and grated ginger until smooth to make the dressing.", "uses": ["1/2 cup tahini or peanut butter", "1/4 cup water", "2 tablespoons rice vinegar", "3 tablespoons coconut aminos", "1 tablespoon ginger, grated"]}, {"title": "Chop", "text": "Chop cabbage, romaine, cilantro, and green onion.", "uses": ["4 cups cabbage", "2 heads romaine", "1/2 cup cilantro", "4 green onion"]}, {"title": "Combine", "text": "In a large serving bowl, combine the chopped vegetables, shredded carrots, rice noodles, and shrimp.", "uses": ["1 cup shredded carrots"]}, {"title": "Dress & Serve", "text": "Pour the prepared dressing over the salad, toss to combine, and finish with lemon or lime on top.", "uses": ["1 lemon or lime"]}]};
 const $ = id => document.getElementById(id);
 // card text: no Celsius conversions, no period at the very end
 const tidy = t => (t||"").replace(/\s*\(\s*-?\d+\s*°?\s*C\s*\)/g,"").replace(/\s*\/\s*-?\d+\s*°\s*C\b/g,"").replace(/\.\s*$/,"");
@@ -139,7 +139,7 @@ if(R.video){$("watch").href=R.video;$("watch").hidden=false}
 $("desc").textContent=tidy(R.description); $("desc").hidden=!R.description;
 
 /* ---- steps ---- */
-const N=R.slides.length;
+let N=R.slides.length;
 function show(i){
   cur=Math.max(0,Math.min(N,i));
   $("intro").hidden=true; $("cook").hidden=false;
@@ -229,6 +229,17 @@ async function keepAwake(){if(!("wakeLock" in navigator)||lock||asking||document
 document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"){if(cur>=0)keepAwake();paintTimers()}});
 
 renderIntro();
+
+/* ---- edits published from the recipe planner (data/edits.json) ----
+   If this recipe was edited there, use the edited title, ingredients and the
+   cards the planner rebuilt from the new steps. Only before cooking starts. */
+fetch("../data/edits.json?t="+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.json():null).then(d=>{
+  const o=d&&d.recipes&&d.recipes[R.slug], c=o&&o.cook;
+  if(!c||cur!==-1) return;
+  if(c.title){ R.title=c.title; $("ttl").textContent=c.title; document.title=c.title; }
+  if(c.ingredients) R.ingredients=c.ingredients;
+  if(c.slides&&c.slides.length){ R.slides=c.slides; N=R.slides.length; }
+}).catch(()=>{});
 </script>
 
 </body></html>

@@ -95,7 +95,7 @@ ul.ing li{padding:5px 0}
 <div class="alarm" id="alarm" role="alert" hidden><span id="alarmTxt"></span><button id="alarmOk">OK</button></div>
 
 <script>
-const R = {"title": "Cottage Cheese Tomato Toast", "category": "Breakfast", "description": "Toasted bread spread with cottage cheese, topped with tomato and basil and drizzled with balsamic glaze", "serves": 1, "prep": 5, "cook": 5, "video": "https://www.tiktok.com/@bayleennicole/video/7276552617260633387", "ingredients": ["2 slices bread", "1/2 cup low-fat cottage cheese", "1 tomato, sliced", "4 fresh basil leaves", "1 tsp olive oil, for drizzling", "1 tsp balsamic glaze, for drizzling", "Salt and pepper, to taste"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["2 slices bread", "1/2 cup low-fat cottage cheese", "1 tomato, sliced", "4 fresh basil leaves", "1 tsp olive oil, for drizzling", "1 tsp balsamic glaze, for drizzling", "Salt and pepper, to taste"]}, {"title": "Toast", "text": "Toast the bread until golden.", "uses": ["2 slices bread"]}, {"title": "Top", "text": "Spread cottage cheese over each slice, then top with sliced tomato and fresh basil leaves.", "uses": ["1/2 cup low-fat cottage cheese", "1 tomato, sliced", "4 fresh basil leaves"]}, {"title": "Drizzle & Serve", "text": "Drizzle with olive oil and balsamic glaze, season with salt and pepper to taste, and serve immediately.", "uses": ["1 tsp olive oil, for drizzling", "1 tsp balsamic glaze, for drizzling", "Salt and pepper, to taste"]}]};
+let R = {"title": "Cottage Cheese Tomato Toast", "category": "Breakfast", "description": "Toasted bread spread with cottage cheese, topped with tomato and basil and drizzled with balsamic glaze", "serves": 1, "prep": 5, "cook": 5, "video": "https://www.tiktok.com/@bayleennicole/video/7276552617260633387", "slug": "cottage-cheese-tomato-toast", "ingredients": ["2 slices bread", "1/2 cup low-fat cottage cheese", "1 tomato, sliced", "4 fresh basil leaves", "1 tsp olive oil, for drizzling", "1 tsp balsamic glaze, for drizzling", "Salt and pepper, to taste"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["2 slices bread", "1/2 cup low-fat cottage cheese", "1 tomato, sliced", "4 fresh basil leaves", "1 tsp olive oil, for drizzling", "1 tsp balsamic glaze, for drizzling", "Salt and pepper, to taste"]}, {"title": "Toast", "text": "Toast the bread until golden.", "uses": ["2 slices bread"]}, {"title": "Top", "text": "Spread cottage cheese over each slice, then top with sliced tomato and fresh basil leaves.", "uses": ["1/2 cup low-fat cottage cheese", "1 tomato, sliced", "4 fresh basil leaves"]}, {"title": "Drizzle & Serve", "text": "Drizzle with olive oil and balsamic glaze, season with salt and pepper to taste, and serve immediately.", "uses": ["1 tsp olive oil, for drizzling", "1 tsp balsamic glaze, for drizzling", "Salt and pepper, to taste"]}]};
 const $ = id => document.getElementById(id);
 // card text: no Celsius conversions, no period at the very end
 const tidy = t => (t||"").replace(/\s*\(\s*-?\d+\s*°?\s*C\s*\)/g,"").replace(/\s*\/\s*-?\d+\s*°\s*C\b/g,"").replace(/\.\s*$/,"");
@@ -139,7 +139,7 @@ if(R.video){$("watch").href=R.video;$("watch").hidden=false}
 $("desc").textContent=tidy(R.description); $("desc").hidden=!R.description;
 
 /* ---- steps ---- */
-const N=R.slides.length;
+let N=R.slides.length;
 function show(i){
   cur=Math.max(0,Math.min(N,i));
   $("intro").hidden=true; $("cook").hidden=false;
@@ -229,6 +229,17 @@ async function keepAwake(){if(!("wakeLock" in navigator)||lock||asking||document
 document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"){if(cur>=0)keepAwake();paintTimers()}});
 
 renderIntro();
+
+/* ---- edits published from the recipe planner (data/edits.json) ----
+   If this recipe was edited there, use the edited title, ingredients and the
+   cards the planner rebuilt from the new steps. Only before cooking starts. */
+fetch("../data/edits.json?t="+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.json():null).then(d=>{
+  const o=d&&d.recipes&&d.recipes[R.slug], c=o&&o.cook;
+  if(!c||cur!==-1) return;
+  if(c.title){ R.title=c.title; $("ttl").textContent=c.title; document.title=c.title; }
+  if(c.ingredients) R.ingredients=c.ingredients;
+  if(c.slides&&c.slides.length){ R.slides=c.slides; N=R.slides.length; }
+}).catch(()=>{});
 </script>
 
 </body></html>

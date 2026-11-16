@@ -95,7 +95,7 @@ ul.ing li{padding:5px 0}
 <div class="alarm" id="alarm" role="alert" hidden><span id="alarmTxt"></span><button id="alarmOk">OK</button></div>
 
 <script>
-const R = {"title": "Spicy Vodka Pasta", "category": "Dinner", "description": "Rigatoni in a rich, spicy Calabrian chili vodka sauce with cream, butter and Parmesan", "serves": 4, "prep": 10, "cook": 20, "video": "https://www.tiktok.com/@bayleennicole/video/7340329458030759214", "ingredients": ["12 oz pasta (shape that holds sauce, like rigatoni)", "1/2 cup pasta water, divided", "1 tbsp olive oil", "1 white onion, chopped", "2 cloves garlic, minced", "1-2 Calabrian chilies, chopped", "1 (6 oz) can tomato paste", "2-3 tbsp vodka", "1/4 cup heavy cream", "2 tbsp butter", "1/4 cup grated Parmesan"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["12 oz pasta (shape that holds sauce, like rigatoni)", "1/2 cup pasta water, divided", "1 tbsp olive oil", "1 white onion, chopped", "2 cloves garlic, minced", "1-2 Calabrian chilies, chopped", "1 (6 oz) can tomato paste", "2-3 tbsp vodka", "1/4 cup heavy cream", "2 tbsp butter", "1/4 cup grated Parmesan"]}, {"title": "Cook the Pasta", "text": "Bring a large pot of salted water to a boil. Cook the pasta until al dente, about 10-12 minutes, reserving pasta water, then drain.", "timer": 600, "uses": ["12 oz pasta (shape that holds sauce, like rigatoni)"], "while": "While the pasta cooks, start the sauce (next steps)."}, {"title": "Onion", "text": "Heat 1 tbsp olive oil in a Dutch oven over medium heat. Cook the white onion until softened, about 5-7 minutes.", "timer": 300, "uses": ["1 tbsp olive oil", "1 white onion, chopped"]}, {"title": "Garlic & Chilies", "text": "Add the garlic and Calabrian chilies and cook for 1-2 minutes until fragrant.", "timer": 60, "uses": ["2 cloves garlic, minced", "1-2 Calabrian chilies, chopped"]}, {"title": "Tomato Paste", "text": "Stir in the tomato paste and let cook for about 7 minutes.", "timer": 420, "uses": ["1 (6 oz) can tomato paste"]}, {"title": "Vodka & Cream", "text": "Add 2-3 tbsp vodka and let it cook off for 1-2 minutes, then add a splash of pasta water to deglaze the pan and stir in the heavy cream, butter, Parmesan, and more pasta water.", "timer": 60, "uses": ["2-3 tbsp vodka", "1/2 cup pasta water, divided", "1/4 cup heavy cream", "2 tbsp butter", "1/4 cup grated Parmesan"]}, {"title": "Toss & Serve", "text": "Add the cooked pasta to the sauce and toss until well coated."}]};
+let R = {"title": "Spicy Vodka Pasta", "category": "Dinner", "description": "Rigatoni in a rich, spicy Calabrian chili vodka sauce with cream, butter and Parmesan", "serves": 4, "prep": 10, "cook": 20, "video": "https://www.tiktok.com/@bayleennicole/video/7340329458030759214", "slug": "spicy-vodka-pasta", "ingredients": ["12 oz pasta (shape that holds sauce, like rigatoni)", "1/2 cup pasta water, divided", "1 tbsp olive oil", "1 white onion, chopped", "2 cloves garlic, minced", "1-2 Calabrian chilies, chopped", "1 (6 oz) can tomato paste", "2-3 tbsp vodka", "1/4 cup heavy cream", "2 tbsp butter", "1/4 cup grated Parmesan"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["12 oz pasta (shape that holds sauce, like rigatoni)", "1/2 cup pasta water, divided", "1 tbsp olive oil", "1 white onion, chopped", "2 cloves garlic, minced", "1-2 Calabrian chilies, chopped", "1 (6 oz) can tomato paste", "2-3 tbsp vodka", "1/4 cup heavy cream", "2 tbsp butter", "1/4 cup grated Parmesan"]}, {"title": "Cook the Pasta", "text": "Bring a large pot of salted water to a boil. Cook the pasta until al dente, about 10-12 minutes, reserving pasta water, then drain.", "timer": 600, "uses": ["12 oz pasta (shape that holds sauce, like rigatoni)"], "while": "While the pasta cooks, start the sauce (next steps)."}, {"title": "Onion", "text": "Heat 1 tbsp olive oil in a Dutch oven over medium heat. Cook the white onion until softened, about 5-7 minutes.", "timer": 300, "uses": ["1 tbsp olive oil", "1 white onion, chopped"]}, {"title": "Garlic & Chilies", "text": "Add the garlic and Calabrian chilies and cook for 1-2 minutes until fragrant.", "timer": 60, "uses": ["2 cloves garlic, minced", "1-2 Calabrian chilies, chopped"]}, {"title": "Tomato Paste", "text": "Stir in the tomato paste and let cook for about 7 minutes.", "timer": 420, "uses": ["1 (6 oz) can tomato paste"]}, {"title": "Vodka & Cream", "text": "Add 2-3 tbsp vodka and let it cook off for 1-2 minutes, then add a splash of pasta water to deglaze the pan and stir in the heavy cream, butter, Parmesan, and more pasta water.", "timer": 60, "uses": ["2-3 tbsp vodka", "1/2 cup pasta water, divided", "1/4 cup heavy cream", "2 tbsp butter", "1/4 cup grated Parmesan"]}, {"title": "Toss & Serve", "text": "Add the cooked pasta to the sauce and toss until well coated."}]};
 const $ = id => document.getElementById(id);
 // card text: no Celsius conversions, no period at the very end
 const tidy = t => (t||"").replace(/\s*\(\s*-?\d+\s*°?\s*C\s*\)/g,"").replace(/\s*\/\s*-?\d+\s*°\s*C\b/g,"").replace(/\.\s*$/,"");
@@ -139,7 +139,7 @@ if(R.video){$("watch").href=R.video;$("watch").hidden=false}
 $("desc").textContent=tidy(R.description); $("desc").hidden=!R.description;
 
 /* ---- steps ---- */
-const N=R.slides.length;
+let N=R.slides.length;
 function show(i){
   cur=Math.max(0,Math.min(N,i));
   $("intro").hidden=true; $("cook").hidden=false;
@@ -229,6 +229,17 @@ async function keepAwake(){if(!("wakeLock" in navigator)||lock||asking||document
 document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"){if(cur>=0)keepAwake();paintTimers()}});
 
 renderIntro();
+
+/* ---- edits published from the recipe planner (data/edits.json) ----
+   If this recipe was edited there, use the edited title, ingredients and the
+   cards the planner rebuilt from the new steps. Only before cooking starts. */
+fetch("../data/edits.json?t="+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.json():null).then(d=>{
+  const o=d&&d.recipes&&d.recipes[R.slug], c=o&&o.cook;
+  if(!c||cur!==-1) return;
+  if(c.title){ R.title=c.title; $("ttl").textContent=c.title; document.title=c.title; }
+  if(c.ingredients) R.ingredients=c.ingredients;
+  if(c.slides&&c.slides.length){ R.slides=c.slides; N=R.slides.length; }
+}).catch(()=>{});
 </script>
 
 </body></html>

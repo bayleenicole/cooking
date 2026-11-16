@@ -95,7 +95,7 @@ ul.ing li{padding:5px 0}
 <div class="alarm" id="alarm" role="alert" hidden><span id="alarmTxt"></span><button id="alarmOk">OK</button></div>
 
 <script>
-const R = {"title": "Pavlova with Mascarpone Cream and Strawberries", "category": "Dessert", "description": "A crisp, marshmallowy meringue pavlova topped with mascarpone whipped cream and fresh strawberries", "serves": 4, "prep": 20, "cook": 90, "video": "https://www.tiktok.com/@bayleennicole/video/7471030169269144878", "ingredients": ["4-5 egg whites (about 134 grams)", "3/4 cup sugar (about 150 grams)", "1 tsp vanilla extract", "1 tsp cornstarch", "1 tsp lemon juice", "2/3 cup heavy whipping cream", "1/2 tsp vanilla extract", "2 tbsp powdered sugar", "2 tbsp mascarpone", "1 cup fresh strawberries, sliced"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["4-5 egg whites (about 134 grams)", "3/4 cup sugar (about 150 grams)", "1 tsp vanilla extract", "1 tsp cornstarch", "1 tsp lemon juice"]}, {"title": "Preheat", "text": "Preheat oven to 250°F and line a baking sheet with parchment paper."}, {"title": "Whip the Meringue", "text": "Whip the egg whites until foamy, gradually add the sugar and whip until stiff, glossy peaks form, then gently fold in the vanilla, cornstarch, and lemon juice.", "uses": ["4-5 egg whites (about 134 grams)", "3/4 cup sugar (about 150 grams)", "1 tsp vanilla extract", "1 tsp cornstarch", "1 tsp lemon juice"]}, {"title": "Bake", "text": "Shape the meringue into a round on the prepared baking sheet and bake for 90 minutes.", "timer": 5400}, {"title": "Cool in the Oven", "text": "Turn off the oven and let the pavlova cool inside for several hours or overnight."}, {"title": "Gather Ingredients", "gather": true, "text": "While you wait, get these out for the next part", "uses": ["2/3 cup heavy whipping cream", "1/2 tsp vanilla extract", "2 tbsp powdered sugar", "2 tbsp mascarpone", "1 cup fresh strawberries, sliced"]}, {"title": "Mascarpone Cream", "text": "Whip the heavy cream with vanilla, powdered sugar, and mascarpone until soft peaks form, then refrigerate the cream until ready to assemble.", "uses": ["2/3 cup heavy whipping cream", "1/2 tsp vanilla extract", "2 tbsp powdered sugar", "2 tbsp mascarpone"]}, {"title": "Top & Serve", "text": "Top the cooled pavlova with the mascarpone whipped cream and fresh strawberries, then slice and serve.", "uses": ["1 cup fresh strawberries, sliced"]}]};
+let R = {"title": "Pavlova with Mascarpone Cream and Strawberries", "category": "Dessert", "description": "A crisp, marshmallowy meringue pavlova topped with mascarpone whipped cream and fresh strawberries", "serves": 4, "prep": 20, "cook": 90, "video": "https://www.tiktok.com/@bayleennicole/video/7471030169269144878", "slug": "pavlova-with-mascarpone-cream-and-strawberries", "ingredients": ["4-5 egg whites (about 134 grams)", "3/4 cup sugar (about 150 grams)", "1 tsp vanilla extract", "1 tsp cornstarch", "1 tsp lemon juice", "2/3 cup heavy whipping cream", "1/2 tsp vanilla extract", "2 tbsp powdered sugar", "2 tbsp mascarpone", "1 cup fresh strawberries, sliced"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["4-5 egg whites (about 134 grams)", "3/4 cup sugar (about 150 grams)", "1 tsp vanilla extract", "1 tsp cornstarch", "1 tsp lemon juice"]}, {"title": "Preheat", "text": "Preheat oven to 250°F and line a baking sheet with parchment paper."}, {"title": "Whip the Meringue", "text": "Whip the egg whites until foamy, gradually add the sugar and whip until stiff, glossy peaks form, then gently fold in the vanilla, cornstarch, and lemon juice.", "uses": ["4-5 egg whites (about 134 grams)", "3/4 cup sugar (about 150 grams)", "1 tsp vanilla extract", "1 tsp cornstarch", "1 tsp lemon juice"]}, {"title": "Bake", "text": "Shape the meringue into a round on the prepared baking sheet and bake for 90 minutes.", "timer": 5400}, {"title": "Cool in the Oven", "text": "Turn off the oven and let the pavlova cool inside for several hours or overnight."}, {"title": "Gather Ingredients", "gather": true, "text": "While you wait, get these out for the next part", "uses": ["2/3 cup heavy whipping cream", "1/2 tsp vanilla extract", "2 tbsp powdered sugar", "2 tbsp mascarpone", "1 cup fresh strawberries, sliced"]}, {"title": "Mascarpone Cream", "text": "Whip the heavy cream with vanilla, powdered sugar, and mascarpone until soft peaks form, then refrigerate the cream until ready to assemble.", "uses": ["2/3 cup heavy whipping cream", "1/2 tsp vanilla extract", "2 tbsp powdered sugar", "2 tbsp mascarpone"]}, {"title": "Top & Serve", "text": "Top the cooled pavlova with the mascarpone whipped cream and fresh strawberries, then slice and serve.", "uses": ["1 cup fresh strawberries, sliced"]}]};
 const $ = id => document.getElementById(id);
 // card text: no Celsius conversions, no period at the very end
 const tidy = t => (t||"").replace(/\s*\(\s*-?\d+\s*°?\s*C\s*\)/g,"").replace(/\s*\/\s*-?\d+\s*°\s*C\b/g,"").replace(/\.\s*$/,"");
@@ -139,7 +139,7 @@ if(R.video){$("watch").href=R.video;$("watch").hidden=false}
 $("desc").textContent=tidy(R.description); $("desc").hidden=!R.description;
 
 /* ---- steps ---- */
-const N=R.slides.length;
+let N=R.slides.length;
 function show(i){
   cur=Math.max(0,Math.min(N,i));
   $("intro").hidden=true; $("cook").hidden=false;
@@ -229,6 +229,17 @@ async function keepAwake(){if(!("wakeLock" in navigator)||lock||asking||document
 document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"){if(cur>=0)keepAwake();paintTimers()}});
 
 renderIntro();
+
+/* ---- edits published from the recipe planner (data/edits.json) ----
+   If this recipe was edited there, use the edited title, ingredients and the
+   cards the planner rebuilt from the new steps. Only before cooking starts. */
+fetch("../data/edits.json?t="+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.json():null).then(d=>{
+  const o=d&&d.recipes&&d.recipes[R.slug], c=o&&o.cook;
+  if(!c||cur!==-1) return;
+  if(c.title){ R.title=c.title; $("ttl").textContent=c.title; document.title=c.title; }
+  if(c.ingredients) R.ingredients=c.ingredients;
+  if(c.slides&&c.slides.length){ R.slides=c.slides; N=R.slides.length; }
+}).catch(()=>{});
 </script>
 
 </body></html>

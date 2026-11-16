@@ -95,7 +95,7 @@ ul.ing li{padding:5px 0}
 <div class="alarm" id="alarm" role="alert" hidden><span id="alarmTxt"></span><button id="alarmOk">OK</button></div>
 
 <script>
-const R = {"title": "Chicken Tacos with Cilantro Lime Sauce", "category": "Lunch", "description": "Spiced baked chicken tacos with charred peppers and zucchini and a cilantro lime yogurt sauce", "serves": 4, "prep": 15, "cook": 15, "video": "https://www.tiktok.com/@bayleennicole/video/7662176377269013774", "ingredients": ["4 chicken breast cutlets", "1 tsp garlic powder", "1 tsp onion powder", "1 tsp paprika", "1 tsp chili powder", "1 tsp dried oregano", "Salt and pepper, to taste", "1/2 cup Greek yogurt", "1/4 cup chopped green onion", "1/4 cup chopped cilantro", "Salt and pepper, to taste", "1 clove garlic, minced", "Juice of 3 limes", "2 bell peppers, sliced", "2 zucchini, sliced thick", "8 small tortillas", "1/2 cup salsa, for serving"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["4 chicken breast cutlets", "1 tsp garlic powder", "1 tsp onion powder", "1 tsp paprika", "1 tsp chili powder", "1 tsp dried oregano", "Salt and pepper, to taste", "1/2 cup Greek yogurt", "1/4 cup chopped green onion", "1/4 cup chopped cilantro", "Salt and pepper, to taste", "1 clove garlic, minced", "Juice of 3 limes", "2 bell peppers, sliced", "2 zucchini, sliced thick", "8 small tortillas", "1/2 cup salsa, for serving"]}, {"title": "Bake the Chicken", "text": "Preheat oven to 425°F. Season the chicken cutlets with garlic powder, onion powder, paprika, chili powder, oregano, salt, and pepper, then bake for 10-12 minutes, checking for doneness with a meat thermometer.", "timer": 600, "uses": ["4 chicken breast cutlets", "1 tsp garlic powder", "1 tsp onion powder", "1 tsp paprika", "1 tsp chili powder", "1 tsp dried oregano", "Salt and pepper, to taste"], "while": "While the chicken bakes, make the sauce and vegetables (next two steps)."}, {"title": "Cilantro Lime Sauce", "text": "Whisk together the Greek yogurt, green onion, cilantro, salt, pepper, garlic, and lime juice for the cilantro lime dressing.", "uses": ["1/2 cup Greek yogurt", "1/4 cup chopped green onion", "1/4 cup chopped cilantro", "Salt and pepper, to taste", "1 clove garlic, minced", "Juice of 3 limes"]}, {"title": "Vegetables & Tortillas", "text": "Grill the sliced bell peppers and zucchini until charred and tender, and heat the tortillas on the stove.", "uses": ["2 bell peppers, sliced", "2 zucchini, sliced thick", "8 small tortillas"]}, {"title": "Assemble & Serve", "text": "Slice the cooked chicken and assemble tacos with the chicken, grilled vegetables, and cilantro lime dressing, then serve with salsa on the side.", "uses": ["1/2 cup salsa, for serving"]}]};
+let R = {"title": "Chicken Tacos with Cilantro Lime Sauce", "category": "Lunch", "description": "Spiced baked chicken tacos with charred peppers and zucchini and a cilantro lime yogurt sauce", "serves": 4, "prep": 15, "cook": 15, "video": "https://www.tiktok.com/@bayleennicole/video/7662176377269013774", "slug": "chicken-tacos-with-cilantro-lime-sauce", "ingredients": ["4 chicken breast cutlets", "1 tsp garlic powder", "1 tsp onion powder", "1 tsp paprika", "1 tsp chili powder", "1 tsp dried oregano", "Salt and pepper, to taste", "1/2 cup Greek yogurt", "1/4 cup chopped green onion", "1/4 cup chopped cilantro", "Salt and pepper, to taste", "1 clove garlic, minced", "Juice of 3 limes", "2 bell peppers, sliced", "2 zucchini, sliced thick", "8 small tortillas", "1/2 cup salsa, for serving"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["4 chicken breast cutlets", "1 tsp garlic powder", "1 tsp onion powder", "1 tsp paprika", "1 tsp chili powder", "1 tsp dried oregano", "Salt and pepper, to taste", "1/2 cup Greek yogurt", "1/4 cup chopped green onion", "1/4 cup chopped cilantro", "Salt and pepper, to taste", "1 clove garlic, minced", "Juice of 3 limes", "2 bell peppers, sliced", "2 zucchini, sliced thick", "8 small tortillas", "1/2 cup salsa, for serving"]}, {"title": "Bake the Chicken", "text": "Preheat oven to 425°F. Season the chicken cutlets with garlic powder, onion powder, paprika, chili powder, oregano, salt, and pepper, then bake for 10-12 minutes, checking for doneness with a meat thermometer.", "timer": 600, "uses": ["4 chicken breast cutlets", "1 tsp garlic powder", "1 tsp onion powder", "1 tsp paprika", "1 tsp chili powder", "1 tsp dried oregano", "Salt and pepper, to taste"], "while": "While the chicken bakes, make the sauce and vegetables (next two steps)."}, {"title": "Cilantro Lime Sauce", "text": "Whisk together the Greek yogurt, green onion, cilantro, salt, pepper, garlic, and lime juice for the cilantro lime dressing.", "uses": ["1/2 cup Greek yogurt", "1/4 cup chopped green onion", "1/4 cup chopped cilantro", "Salt and pepper, to taste", "1 clove garlic, minced", "Juice of 3 limes"]}, {"title": "Vegetables & Tortillas", "text": "Grill the sliced bell peppers and zucchini until charred and tender, and heat the tortillas on the stove.", "uses": ["2 bell peppers, sliced", "2 zucchini, sliced thick", "8 small tortillas"]}, {"title": "Assemble & Serve", "text": "Slice the cooked chicken and assemble tacos with the chicken, grilled vegetables, and cilantro lime dressing, then serve with salsa on the side.", "uses": ["1/2 cup salsa, for serving"]}]};
 const $ = id => document.getElementById(id);
 // card text: no Celsius conversions, no period at the very end
 const tidy = t => (t||"").replace(/\s*\(\s*-?\d+\s*°?\s*C\s*\)/g,"").replace(/\s*\/\s*-?\d+\s*°\s*C\b/g,"").replace(/\.\s*$/,"");
@@ -139,7 +139,7 @@ if(R.video){$("watch").href=R.video;$("watch").hidden=false}
 $("desc").textContent=tidy(R.description); $("desc").hidden=!R.description;
 
 /* ---- steps ---- */
-const N=R.slides.length;
+let N=R.slides.length;
 function show(i){
   cur=Math.max(0,Math.min(N,i));
   $("intro").hidden=true; $("cook").hidden=false;
@@ -229,6 +229,17 @@ async function keepAwake(){if(!("wakeLock" in navigator)||lock||asking||document
 document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"){if(cur>=0)keepAwake();paintTimers()}});
 
 renderIntro();
+
+/* ---- edits published from the recipe planner (data/edits.json) ----
+   If this recipe was edited there, use the edited title, ingredients and the
+   cards the planner rebuilt from the new steps. Only before cooking starts. */
+fetch("../data/edits.json?t="+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.json():null).then(d=>{
+  const o=d&&d.recipes&&d.recipes[R.slug], c=o&&o.cook;
+  if(!c||cur!==-1) return;
+  if(c.title){ R.title=c.title; $("ttl").textContent=c.title; document.title=c.title; }
+  if(c.ingredients) R.ingredients=c.ingredients;
+  if(c.slides&&c.slides.length){ R.slides=c.slides; N=R.slides.length; }
+}).catch(()=>{});
 </script>
 
 </body></html>

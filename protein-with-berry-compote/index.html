@@ -95,7 +95,7 @@ ul.ing li{padding:5px 0}
 <div class="alarm" id="alarm" role="alert" hidden><span id="alarmTxt"></span><button id="alarmOk">OK</button></div>
 
 <script>
-const R = {"title": "Protein with Berry Compote", "category": "Breakfast", "description": "A baked cottage cheese protein egg cup topped with warm lemony blueberry compote", "serves": 1, "prep": 5, "cook": 20, "video": "https://www.tiktok.com/@bayleennicole/video/7406091867793689886", "ingredients": ["1 egg", "1/2 cup cottage cheese", "1 serving of protein powder", "1-2 tsp maple syrup (for the egg cup)", "1 tsp olive oil", "1/2 cup blueberries", "1 tbsp maple syrup (for the compote)", "Squeeze of lemon"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["1 egg", "1/2 cup cottage cheese", "1 serving of protein powder", "1-2 tsp maple syrup (for the egg cup)", "1 tsp olive oil", "1/2 cup blueberries", "1 tbsp maple syrup (for the compote)", "Squeeze of lemon"]}, {"title": "Preheat & Blend", "text": "Preheat the oven to 375°F. Blend 1 egg, 1/2 cup cottage cheese, 1 serving of protein powder, 1-2 tsp maple syrup, and 1 tsp olive oil until smooth.", "uses": ["1 egg", "1/2 cup cottage cheese", "1 serving of protein powder", "1-2 tsp maple syrup (for the egg cup)", "1 tsp olive oil"]}, {"title": "Bake", "text": "Pour the mixture into a ramekin or baking cup and bake for about 18 minutes.", "timer": 1080, "while": "While it bakes, make the compote (next step)."}, {"title": "Compote & Serve", "text": "Add blueberries, 1 tbsp maple syrup, and a squeeze of lemon to a saucepan, then simmer until the berries start to get gooey and serve over the egg cup.", "uses": ["1/2 cup blueberries", "1 tbsp maple syrup (for the compote)", "Squeeze of lemon"]}]};
+let R = {"title": "Protein with Berry Compote", "category": "Breakfast", "description": "A baked cottage cheese protein egg cup topped with warm lemony blueberry compote", "serves": 1, "prep": 5, "cook": 20, "video": "https://www.tiktok.com/@bayleennicole/video/7406091867793689886", "slug": "protein-with-berry-compote", "ingredients": ["1 egg", "1/2 cup cottage cheese", "1 serving of protein powder", "1-2 tsp maple syrup (for the egg cup)", "1 tsp olive oil", "1/2 cup blueberries", "1 tbsp maple syrup (for the compote)", "Squeeze of lemon"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["1 egg", "1/2 cup cottage cheese", "1 serving of protein powder", "1-2 tsp maple syrup (for the egg cup)", "1 tsp olive oil", "1/2 cup blueberries", "1 tbsp maple syrup (for the compote)", "Squeeze of lemon"]}, {"title": "Preheat & Blend", "text": "Preheat the oven to 375°F. Blend 1 egg, 1/2 cup cottage cheese, 1 serving of protein powder, 1-2 tsp maple syrup, and 1 tsp olive oil until smooth.", "uses": ["1 egg", "1/2 cup cottage cheese", "1 serving of protein powder", "1-2 tsp maple syrup (for the egg cup)", "1 tsp olive oil"]}, {"title": "Bake", "text": "Pour the mixture into a ramekin or baking cup and bake for about 18 minutes.", "timer": 1080, "while": "While it bakes, make the compote (next step)."}, {"title": "Compote & Serve", "text": "Add blueberries, 1 tbsp maple syrup, and a squeeze of lemon to a saucepan, then simmer until the berries start to get gooey and serve over the egg cup.", "uses": ["1/2 cup blueberries", "1 tbsp maple syrup (for the compote)", "Squeeze of lemon"]}]};
 const $ = id => document.getElementById(id);
 // card text: no Celsius conversions, no period at the very end
 const tidy = t => (t||"").replace(/\s*\(\s*-?\d+\s*°?\s*C\s*\)/g,"").replace(/\s*\/\s*-?\d+\s*°\s*C\b/g,"").replace(/\.\s*$/,"");
@@ -139,7 +139,7 @@ if(R.video){$("watch").href=R.video;$("watch").hidden=false}
 $("desc").textContent=tidy(R.description); $("desc").hidden=!R.description;
 
 /* ---- steps ---- */
-const N=R.slides.length;
+let N=R.slides.length;
 function show(i){
   cur=Math.max(0,Math.min(N,i));
   $("intro").hidden=true; $("cook").hidden=false;
@@ -229,6 +229,17 @@ async function keepAwake(){if(!("wakeLock" in navigator)||lock||asking||document
 document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"){if(cur>=0)keepAwake();paintTimers()}});
 
 renderIntro();
+
+/* ---- edits published from the recipe planner (data/edits.json) ----
+   If this recipe was edited there, use the edited title, ingredients and the
+   cards the planner rebuilt from the new steps. Only before cooking starts. */
+fetch("../data/edits.json?t="+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.json():null).then(d=>{
+  const o=d&&d.recipes&&d.recipes[R.slug], c=o&&o.cook;
+  if(!c||cur!==-1) return;
+  if(c.title){ R.title=c.title; $("ttl").textContent=c.title; document.title=c.title; }
+  if(c.ingredients) R.ingredients=c.ingredients;
+  if(c.slides&&c.slides.length){ R.slides=c.slides; N=R.slides.length; }
+}).catch(()=>{});
 </script>
 
 </body></html>

@@ -95,7 +95,7 @@ ul.ing li{padding:5px 0}
 <div class="alarm" id="alarm" role="alert" hidden><span id="alarmTxt"></span><button id="alarmOk">OK</button></div>
 
 <script>
-const R = {"title": "Homemade Chicken Pho", "category": "Dinner", "description": "A deeply flavored chicken pho broth simmered from a roast chicken carcass with charred onion, ginger and spices", "serves": 4, "prep": 15, "cook": 120, "video": "https://www.tiktok.com/@bayleennicole/video/7427220204020616478", "ingredients": ["1 onion, charred", "2-inch piece ginger, charred", "1 pho spice pack", "1 roast chicken carcass and bones", "12 cups water (for the broth)", "1 tbsp sugar", "8 oz rice noodles", "2 cups cooked shredded chicken", "1 cup bean sprouts", "1/2 cup Thai basil leaves", "1 lime, cut into lime wedges"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["1 onion, charred", "2-inch piece ginger, charred", "1 pho spice pack", "1 roast chicken carcass and bones", "12 cups water (for the broth)", "1 tbsp sugar"]}, {"title": "Char & Toast", "text": "Preheat the broiler. Char the onion and ginger under the broiler, and toast the spices from the pho spice pack.", "uses": ["1 onion, charred", "2-inch piece ginger, charred", "1 pho spice pack"]}, {"title": "Build the Broth", "text": "Place the chicken bones in a pot of water and bring to a boil, then add the charred onion, ginger, spice pack, and sugar to the pot.", "uses": ["1 roast chicken carcass and bones", "12 cups water (for the broth)", "1 tbsp sugar"]}, {"title": "Simmer", "text": "Let simmer for at least 2 hours, up to several hours, for a rich broth, then strain out the bones, onion, ginger, and spices.", "timer": 7200}, {"title": "Gather Ingredients", "gather": true, "text": "While you wait, get these out for the next part", "uses": ["8 oz rice noodles", "2 cups cooked shredded chicken", "1 cup bean sprouts", "1/2 cup Thai basil leaves", "1 lime, cut into lime wedges"]}, {"title": "Cook the Noodles", "text": "Cook the rice noodles according to package directions.", "uses": ["8 oz rice noodles"]}, {"title": "Assemble & Serve", "text": "Assemble bowls with noodles, shredded chicken, bean sprouts, and Thai basil, ladle the hot broth over the top, and serve with lime wedges to squeeze in.", "uses": ["2 cups cooked shredded chicken", "1 cup bean sprouts", "1/2 cup Thai basil leaves", "1 lime, cut into lime wedges"]}]};
+let R = {"title": "Homemade Chicken Pho", "category": "Dinner", "description": "A deeply flavored chicken pho broth simmered from a roast chicken carcass with charred onion, ginger and spices", "serves": 4, "prep": 15, "cook": 120, "video": "https://www.tiktok.com/@bayleennicole/video/7427220204020616478", "slug": "homemade-chicken-pho", "ingredients": ["1 onion, charred", "2-inch piece ginger, charred", "1 pho spice pack", "1 roast chicken carcass and bones", "12 cups water (for the broth)", "1 tbsp sugar", "8 oz rice noodles", "2 cups cooked shredded chicken", "1 cup bean sprouts", "1/2 cup Thai basil leaves", "1 lime, cut into lime wedges"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["1 onion, charred", "2-inch piece ginger, charred", "1 pho spice pack", "1 roast chicken carcass and bones", "12 cups water (for the broth)", "1 tbsp sugar"]}, {"title": "Char & Toast", "text": "Preheat the broiler. Char the onion and ginger under the broiler, and toast the spices from the pho spice pack.", "uses": ["1 onion, charred", "2-inch piece ginger, charred", "1 pho spice pack"]}, {"title": "Build the Broth", "text": "Place the chicken bones in a pot of water and bring to a boil, then add the charred onion, ginger, spice pack, and sugar to the pot.", "uses": ["1 roast chicken carcass and bones", "12 cups water (for the broth)", "1 tbsp sugar"]}, {"title": "Simmer", "text": "Let simmer for at least 2 hours, up to several hours, for a rich broth, then strain out the bones, onion, ginger, and spices.", "timer": 7200}, {"title": "Gather Ingredients", "gather": true, "text": "While you wait, get these out for the next part", "uses": ["8 oz rice noodles", "2 cups cooked shredded chicken", "1 cup bean sprouts", "1/2 cup Thai basil leaves", "1 lime, cut into lime wedges"]}, {"title": "Cook the Noodles", "text": "Cook the rice noodles according to package directions.", "uses": ["8 oz rice noodles"]}, {"title": "Assemble & Serve", "text": "Assemble bowls with noodles, shredded chicken, bean sprouts, and Thai basil, ladle the hot broth over the top, and serve with lime wedges to squeeze in.", "uses": ["2 cups cooked shredded chicken", "1 cup bean sprouts", "1/2 cup Thai basil leaves", "1 lime, cut into lime wedges"]}]};
 const $ = id => document.getElementById(id);
 // card text: no Celsius conversions, no period at the very end
 const tidy = t => (t||"").replace(/\s*\(\s*-?\d+\s*°?\s*C\s*\)/g,"").replace(/\s*\/\s*-?\d+\s*°\s*C\b/g,"").replace(/\.\s*$/,"");
@@ -139,7 +139,7 @@ if(R.video){$("watch").href=R.video;$("watch").hidden=false}
 $("desc").textContent=tidy(R.description); $("desc").hidden=!R.description;
 
 /* ---- steps ---- */
-const N=R.slides.length;
+let N=R.slides.length;
 function show(i){
   cur=Math.max(0,Math.min(N,i));
   $("intro").hidden=true; $("cook").hidden=false;
@@ -229,6 +229,17 @@ async function keepAwake(){if(!("wakeLock" in navigator)||lock||asking||document
 document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"){if(cur>=0)keepAwake();paintTimers()}});
 
 renderIntro();
+
+/* ---- edits published from the recipe planner (data/edits.json) ----
+   If this recipe was edited there, use the edited title, ingredients and the
+   cards the planner rebuilt from the new steps. Only before cooking starts. */
+fetch("../data/edits.json?t="+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.json():null).then(d=>{
+  const o=d&&d.recipes&&d.recipes[R.slug], c=o&&o.cook;
+  if(!c||cur!==-1) return;
+  if(c.title){ R.title=c.title; $("ttl").textContent=c.title; document.title=c.title; }
+  if(c.ingredients) R.ingredients=c.ingredients;
+  if(c.slides&&c.slides.length){ R.slides=c.slides; N=R.slides.length; }
+}).catch(()=>{});
 </script>
 
 </body></html>

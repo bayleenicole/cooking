@@ -95,7 +95,7 @@ ul.ing li{padding:5px 0}
 <div class="alarm" id="alarm" role="alert" hidden><span id="alarmTxt"></span><button id="alarmOk">OK</button></div>
 
 <script>
-const R = {"title": "Prosciutto and Artichoke Pizza", "category": "Dinner", "description": "Greek yogurt pizza crusts topped with garlic oil, mozzarella, artichokes and prosciutto, finished with balsamic and arugula", "serves": 4, "prep": 15, "cook": 15, "video": "https://www.tiktok.com/@bayleennicole/video/7355582556575747359", "ingredients": ["3 cups all-purpose flour", "2 cups Greek yogurt", "1 tsp baking soda", "1/2 tsp salt", "2 egg whites, as needed", "1/2 cup olive oil", "2 cloves garlic, minced", "1 cup shredded mozzarella", "1/4 cup grated Parmesan", "1/4 cup marinated artichoke hearts", "1 tsp dried oregano", "1/2 tsp garlic salt", "4 slices prosciutto", "1 tbsp balsamic glaze, for drizzling", "1/2 cup arugula, for topping (optional)"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["3 cups all-purpose flour", "2 cups Greek yogurt", "1 tsp baking soda", "1/2 tsp salt", "2 egg whites, as needed", "1/2 cup olive oil", "2 cloves garlic, minced", "1 cup shredded mozzarella", "1/4 cup grated Parmesan", "1/4 cup marinated artichoke hearts", "1 tsp dried oregano", "1/2 tsp garlic salt", "4 slices prosciutto", "1 tbsp balsamic glaze, for drizzling", "1/2 cup arugula, for topping (optional)"]}, {"title": "Preheat & Dough", "text": "Preheat oven to 350°F. In a large bowl, combine flour, Greek yogurt, baking soda, and salt, then mix in egg whites as needed to bring the dough together.", "uses": ["3 cups all-purpose flour", "2 cups Greek yogurt", "1 tsp baking soda", "1/2 tsp salt", "2 egg whites, as needed"]}, {"title": "Par-Bake the Crusts", "text": "Divide the dough into 2 balls, roll each out into a crust, and bake for 5-7 minutes.", "timer": 300}, {"title": "Toppings", "text": "Remove from the oven, brush with olive oil and minced garlic, then top with mozzarella, Parmesan, artichoke hearts, oregano, and garlic salt.", "uses": ["1/2 cup olive oil", "2 cloves garlic, minced", "1 cup shredded mozzarella", "1/4 cup grated Parmesan", "1/4 cup marinated artichoke hearts", "1 tsp dried oregano", "1/2 tsp garlic salt"]}, {"title": "Bake", "text": "Return to the oven and bake until the cheese is melted and the crust is golden."}, {"title": "Finish & Serve", "text": "Top with prosciutto, balsamic glaze, and arugula, if using, then slice and serve.", "uses": ["4 slices prosciutto", "1 tbsp balsamic glaze, for drizzling", "1/2 cup arugula, for topping"]}]};
+let R = {"title": "Prosciutto and Artichoke Pizza", "category": "Dinner", "description": "Greek yogurt pizza crusts topped with garlic oil, mozzarella, artichokes and prosciutto, finished with balsamic and arugula", "serves": 4, "prep": 15, "cook": 15, "video": "https://www.tiktok.com/@bayleennicole/video/7355582556575747359", "slug": "prosciutto-and-artichoke-pizza", "ingredients": ["3 cups all-purpose flour", "2 cups Greek yogurt", "1 tsp baking soda", "1/2 tsp salt", "2 egg whites, as needed", "1/2 cup olive oil", "2 cloves garlic, minced", "1 cup shredded mozzarella", "1/4 cup grated Parmesan", "1/4 cup marinated artichoke hearts", "1 tsp dried oregano", "1/2 tsp garlic salt", "4 slices prosciutto", "1 tbsp balsamic glaze, for drizzling", "1/2 cup arugula, for topping (optional)"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["3 cups all-purpose flour", "2 cups Greek yogurt", "1 tsp baking soda", "1/2 tsp salt", "2 egg whites, as needed", "1/2 cup olive oil", "2 cloves garlic, minced", "1 cup shredded mozzarella", "1/4 cup grated Parmesan", "1/4 cup marinated artichoke hearts", "1 tsp dried oregano", "1/2 tsp garlic salt", "4 slices prosciutto", "1 tbsp balsamic glaze, for drizzling", "1/2 cup arugula, for topping (optional)"]}, {"title": "Preheat & Dough", "text": "Preheat oven to 350°F. In a large bowl, combine flour, Greek yogurt, baking soda, and salt, then mix in egg whites as needed to bring the dough together.", "uses": ["3 cups all-purpose flour", "2 cups Greek yogurt", "1 tsp baking soda", "1/2 tsp salt", "2 egg whites, as needed"]}, {"title": "Par-Bake the Crusts", "text": "Divide the dough into 2 balls, roll each out into a crust, and bake for 5-7 minutes.", "timer": 300}, {"title": "Toppings", "text": "Remove from the oven, brush with olive oil and minced garlic, then top with mozzarella, Parmesan, artichoke hearts, oregano, and garlic salt.", "uses": ["1/2 cup olive oil", "2 cloves garlic, minced", "1 cup shredded mozzarella", "1/4 cup grated Parmesan", "1/4 cup marinated artichoke hearts", "1 tsp dried oregano", "1/2 tsp garlic salt"]}, {"title": "Bake", "text": "Return to the oven and bake until the cheese is melted and the crust is golden."}, {"title": "Finish & Serve", "text": "Top with prosciutto, balsamic glaze, and arugula, if using, then slice and serve.", "uses": ["4 slices prosciutto", "1 tbsp balsamic glaze, for drizzling", "1/2 cup arugula, for topping"]}]};
 const $ = id => document.getElementById(id);
 // card text: no Celsius conversions, no period at the very end
 const tidy = t => (t||"").replace(/\s*\(\s*-?\d+\s*°?\s*C\s*\)/g,"").replace(/\s*\/\s*-?\d+\s*°\s*C\b/g,"").replace(/\.\s*$/,"");
@@ -139,7 +139,7 @@ if(R.video){$("watch").href=R.video;$("watch").hidden=false}
 $("desc").textContent=tidy(R.description); $("desc").hidden=!R.description;
 
 /* ---- steps ---- */
-const N=R.slides.length;
+let N=R.slides.length;
 function show(i){
   cur=Math.max(0,Math.min(N,i));
   $("intro").hidden=true; $("cook").hidden=false;
@@ -229,6 +229,17 @@ async function keepAwake(){if(!("wakeLock" in navigator)||lock||asking||document
 document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"){if(cur>=0)keepAwake();paintTimers()}});
 
 renderIntro();
+
+/* ---- edits published from the recipe planner (data/edits.json) ----
+   If this recipe was edited there, use the edited title, ingredients and the
+   cards the planner rebuilt from the new steps. Only before cooking starts. */
+fetch("../data/edits.json?t="+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.json():null).then(d=>{
+  const o=d&&d.recipes&&d.recipes[R.slug], c=o&&o.cook;
+  if(!c||cur!==-1) return;
+  if(c.title){ R.title=c.title; $("ttl").textContent=c.title; document.title=c.title; }
+  if(c.ingredients) R.ingredients=c.ingredients;
+  if(c.slides&&c.slides.length){ R.slides=c.slides; N=R.slides.length; }
+}).catch(()=>{});
 </script>
 
 </body></html>

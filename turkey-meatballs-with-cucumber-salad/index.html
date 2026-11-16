@@ -95,7 +95,7 @@ ul.ing li{padding:5px 0}
 <div class="alarm" id="alarm" role="alert" hidden><span id="alarmTxt"></span><button id="alarmOk">OK</button></div>
 
 <script>
-const R = {"title": "Turkey Meatballs with Cucumber Salad", "category": "Dinner", "description": "Herby baked turkey meatballs with a crunchy cucumber, tomato, dill and feta salad", "serves": 4, "prep": 20, "cook": 15, "video": "https://www.tiktok.com/@bayleennicole/video/7383787277371133215", "ingredients": ["For the meatballs:", "1 lb ground turkey", "1 egg", "1/4 cup almond flour", "2 tbsp fresh chopped parsley", "1/2 tsp garlic salt", "1/4 tsp pepper", "For the cucumber salad:", "2 diced cucumbers", "1 cup tomatoes, diced", "1/4 cup red onion, diced", "2 tbsp parsley, chopped", "1 tbsp dill, chopped", "1/2 cup feta, crumbled", "2 tbsp olive oil", "1 tbsp red wine vinegar", "1/2 lemon, juiced", "Salt and pepper to taste"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["§Meatballs", "1 lb ground turkey", "1 egg", "1/4 cup almond flour", "2 tbsp fresh chopped parsley", "1/2 tsp garlic salt", "1/4 tsp pepper", "§Cucumber salad", "2 diced cucumbers", "1 cup tomatoes, diced", "1/4 cup red onion, diced", "2 tbsp parsley, chopped", "1 tbsp dill, chopped", "1/2 cup feta, crumbled", "2 tbsp olive oil", "1 tbsp red wine vinegar", "1/2 lemon, juiced", "Salt and pepper to taste"]}, {"title": "Preheat", "text": "Preheat oven to 400°F and line a baking sheet with parchment paper."}, {"title": "Form the Meatballs", "text": "In a large bowl, combine 1 lb ground turkey, 1 egg, 1/4 cup almond flour, 2 tbsp fresh chopped parsley, garlic salt, and pepper, then form the mixture into 12 meatballs and place them on the prepared baking sheet.", "uses": ["1 lb ground turkey", "1 egg", "1/4 cup almond flour", "2 tbsp fresh chopped parsley", "1/2 tsp garlic salt", "1/4 tsp pepper"]}, {"title": "Bake", "text": "Bake at 400°F for 15 minutes.", "timer": 900, "while": "While the meatballs bake, make the cucumber salad (next step)."}, {"title": "Cucumber Salad", "text": "In a medium bowl, combine diced cucumbers, tomatoes, red onion, parsley, dill, and feta, then drizzle with olive oil, red wine vinegar, and lemon juice, season with salt and pepper to taste, and toss to combine.", "uses": ["2 diced cucumbers", "1 cup tomatoes, diced", "1/4 cup red onion, diced", "2 tbsp parsley, chopped", "1 tbsp dill, chopped", "1/2 cup feta, crumbled", "2 tbsp olive oil", "1 tbsp red wine vinegar", "1/2 lemon, juiced", "Salt and pepper to taste"]}]};
+let R = {"title": "Turkey Meatballs with Cucumber Salad", "category": "Dinner", "description": "Herby baked turkey meatballs with a crunchy cucumber, tomato, dill and feta salad", "serves": 4, "prep": 20, "cook": 15, "video": "https://www.tiktok.com/@bayleennicole/video/7383787277371133215", "slug": "turkey-meatballs-with-cucumber-salad", "ingredients": ["For the meatballs:", "1 lb ground turkey", "1 egg", "1/4 cup almond flour", "2 tbsp fresh chopped parsley", "1/2 tsp garlic salt", "1/4 tsp pepper", "For the cucumber salad:", "2 diced cucumbers", "1 cup tomatoes, diced", "1/4 cup red onion, diced", "2 tbsp parsley, chopped", "1 tbsp dill, chopped", "1/2 cup feta, crumbled", "2 tbsp olive oil", "1 tbsp red wine vinegar", "1/2 lemon, juiced", "Salt and pepper to taste"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["§Meatballs", "1 lb ground turkey", "1 egg", "1/4 cup almond flour", "2 tbsp fresh chopped parsley", "1/2 tsp garlic salt", "1/4 tsp pepper", "§Cucumber salad", "2 diced cucumbers", "1 cup tomatoes, diced", "1/4 cup red onion, diced", "2 tbsp parsley, chopped", "1 tbsp dill, chopped", "1/2 cup feta, crumbled", "2 tbsp olive oil", "1 tbsp red wine vinegar", "1/2 lemon, juiced", "Salt and pepper to taste"]}, {"title": "Preheat", "text": "Preheat oven to 400°F and line a baking sheet with parchment paper."}, {"title": "Form the Meatballs", "text": "In a large bowl, combine 1 lb ground turkey, 1 egg, 1/4 cup almond flour, 2 tbsp fresh chopped parsley, garlic salt, and pepper, then form the mixture into 12 meatballs and place them on the prepared baking sheet.", "uses": ["1 lb ground turkey", "1 egg", "1/4 cup almond flour", "2 tbsp fresh chopped parsley", "1/2 tsp garlic salt", "1/4 tsp pepper"]}, {"title": "Bake", "text": "Bake at 400°F for 15 minutes.", "timer": 900, "while": "While the meatballs bake, make the cucumber salad (next step)."}, {"title": "Cucumber Salad", "text": "In a medium bowl, combine diced cucumbers, tomatoes, red onion, parsley, dill, and feta, then drizzle with olive oil, red wine vinegar, and lemon juice, season with salt and pepper to taste, and toss to combine.", "uses": ["2 diced cucumbers", "1 cup tomatoes, diced", "1/4 cup red onion, diced", "2 tbsp parsley, chopped", "1 tbsp dill, chopped", "1/2 cup feta, crumbled", "2 tbsp olive oil", "1 tbsp red wine vinegar", "1/2 lemon, juiced", "Salt and pepper to taste"]}]};
 const $ = id => document.getElementById(id);
 // card text: no Celsius conversions, no period at the very end
 const tidy = t => (t||"").replace(/\s*\(\s*-?\d+\s*°?\s*C\s*\)/g,"").replace(/\s*\/\s*-?\d+\s*°\s*C\b/g,"").replace(/\.\s*$/,"");
@@ -139,7 +139,7 @@ if(R.video){$("watch").href=R.video;$("watch").hidden=false}
 $("desc").textContent=tidy(R.description); $("desc").hidden=!R.description;
 
 /* ---- steps ---- */
-const N=R.slides.length;
+let N=R.slides.length;
 function show(i){
   cur=Math.max(0,Math.min(N,i));
   $("intro").hidden=true; $("cook").hidden=false;
@@ -229,6 +229,17 @@ async function keepAwake(){if(!("wakeLock" in navigator)||lock||asking||document
 document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"){if(cur>=0)keepAwake();paintTimers()}});
 
 renderIntro();
+
+/* ---- edits published from the recipe planner (data/edits.json) ----
+   If this recipe was edited there, use the edited title, ingredients and the
+   cards the planner rebuilt from the new steps. Only before cooking starts. */
+fetch("../data/edits.json?t="+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.json():null).then(d=>{
+  const o=d&&d.recipes&&d.recipes[R.slug], c=o&&o.cook;
+  if(!c||cur!==-1) return;
+  if(c.title){ R.title=c.title; $("ttl").textContent=c.title; document.title=c.title; }
+  if(c.ingredients) R.ingredients=c.ingredients;
+  if(c.slides&&c.slides.length){ R.slides=c.slides; N=R.slides.length; }
+}).catch(()=>{});
 </script>
 
 </body></html>

@@ -95,7 +95,7 @@ ul.ing li{padding:5px 0}
 <div class="alarm" id="alarm" role="alert" hidden><span id="alarmTxt"></span><button id="alarmOk">OK</button></div>
 
 <script>
-const R = {"title": "Banh Mi Sandwich", "category": "Dinner", "description": "Slow-roasted shredded pork in a honey vinegar sauce on a baguette with sriracha mayo and quick-pickled vegetables", "serves": 4, "prep": 20, "cook": 150, "video": "https://www.tiktok.com/@bayleennicole/video/7525660396166843661", "ingredients": ["2 lbs pork roast", "Salt and pepper, to taste", "1/2 cup rice vinegar", "1/2 cup water", "2 tbsp honey", "2 carrots, shredded", "1 cucumber, sliced", "1 red onion, sliced", "Pinch of salt", "1/4 cup mayo", "1 tbsp sriracha", "1 baguette"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["2 lbs pork roast", "Salt and pepper, to taste"]}, {"title": "Pork: Roast", "text": "Preheat oven to 350°F. Season the pork roast with salt and pepper on all sides, then cook in a Dutch oven at 350°F for about 2-2 1/2 hours until tender, and shred the cooked pork.", "timer": 7200, "uses": ["2 lbs pork roast", "Salt and pepper, to taste"]}, {"title": "Gather Ingredients", "gather": true, "text": "While you wait, get these out for the next part", "uses": ["1/2 cup rice vinegar", "1/2 cup water", "2 tbsp honey", "2 carrots, shredded", "1 cucumber, sliced", "1 red onion, sliced", "Pinch of salt", "1/4 cup mayo", "1 tbsp sriracha", "1 baguette"]}, {"title": "Pickling Liquid", "text": "Combine the rice vinegar, water, and honey in a saucepan and bring to a boil, then reduce to a simmer.", "uses": ["1/2 cup rice vinegar", "1/2 cup water", "2 tbsp honey"]}, {"title": "Pickle the Vegetables", "text": "Place the shredded carrots, cucumber, and red onion in a bowl with a pinch of salt, pour the hot vinegar mixture over the vegetables, and let pickle.", "uses": ["2 carrots, shredded", "1 cucumber, sliced", "1 red onion, sliced", "Pinch of salt"]}, {"title": "Pork in Sauce", "text": "Add the shredded pork to the remaining sauce and let simmer for 5 minutes.", "timer": 300}, {"title": "Spicy Mayo & Bread", "text": "Mix the mayo and sriracha to make the spicy mayo, then slice the baguette and spread with the spicy mayo.", "uses": ["1/4 cup mayo", "1 tbsp sriracha", "1 baguette"]}, {"title": "Assemble & Serve", "text": "Add the pork and pickled vegetables, and serve immediately."}]};
+let R = {"title": "Banh Mi Sandwich", "category": "Dinner", "description": "Slow-roasted shredded pork in a honey vinegar sauce on a baguette with sriracha mayo and quick-pickled vegetables", "serves": 4, "prep": 20, "cook": 150, "video": "https://www.tiktok.com/@bayleennicole/video/7525660396166843661", "slug": "banh-mi-sandwich", "ingredients": ["2 lbs pork roast", "Salt and pepper, to taste", "1/2 cup rice vinegar", "1/2 cup water", "2 tbsp honey", "2 carrots, shredded", "1 cucumber, sliced", "1 red onion, sliced", "Pinch of salt", "1/4 cup mayo", "1 tbsp sriracha", "1 baguette"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["2 lbs pork roast", "Salt and pepper, to taste"]}, {"title": "Pork: Roast", "text": "Preheat oven to 350°F. Season the pork roast with salt and pepper on all sides, then cook in a Dutch oven at 350°F for about 2-2 1/2 hours until tender, and shred the cooked pork.", "timer": 7200, "uses": ["2 lbs pork roast", "Salt and pepper, to taste"]}, {"title": "Gather Ingredients", "gather": true, "text": "While you wait, get these out for the next part", "uses": ["1/2 cup rice vinegar", "1/2 cup water", "2 tbsp honey", "2 carrots, shredded", "1 cucumber, sliced", "1 red onion, sliced", "Pinch of salt", "1/4 cup mayo", "1 tbsp sriracha", "1 baguette"]}, {"title": "Pickling Liquid", "text": "Combine the rice vinegar, water, and honey in a saucepan and bring to a boil, then reduce to a simmer.", "uses": ["1/2 cup rice vinegar", "1/2 cup water", "2 tbsp honey"]}, {"title": "Pickle the Vegetables", "text": "Place the shredded carrots, cucumber, and red onion in a bowl with a pinch of salt, pour the hot vinegar mixture over the vegetables, and let pickle.", "uses": ["2 carrots, shredded", "1 cucumber, sliced", "1 red onion, sliced", "Pinch of salt"]}, {"title": "Pork in Sauce", "text": "Add the shredded pork to the remaining sauce and let simmer for 5 minutes.", "timer": 300}, {"title": "Spicy Mayo & Bread", "text": "Mix the mayo and sriracha to make the spicy mayo, then slice the baguette and spread with the spicy mayo.", "uses": ["1/4 cup mayo", "1 tbsp sriracha", "1 baguette"]}, {"title": "Assemble & Serve", "text": "Add the pork and pickled vegetables, and serve immediately."}]};
 const $ = id => document.getElementById(id);
 // card text: no Celsius conversions, no period at the very end
 const tidy = t => (t||"").replace(/\s*\(\s*-?\d+\s*°?\s*C\s*\)/g,"").replace(/\s*\/\s*-?\d+\s*°\s*C\b/g,"").replace(/\.\s*$/,"");
@@ -139,7 +139,7 @@ if(R.video){$("watch").href=R.video;$("watch").hidden=false}
 $("desc").textContent=tidy(R.description); $("desc").hidden=!R.description;
 
 /* ---- steps ---- */
-const N=R.slides.length;
+let N=R.slides.length;
 function show(i){
   cur=Math.max(0,Math.min(N,i));
   $("intro").hidden=true; $("cook").hidden=false;
@@ -229,6 +229,17 @@ async function keepAwake(){if(!("wakeLock" in navigator)||lock||asking||document
 document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"){if(cur>=0)keepAwake();paintTimers()}});
 
 renderIntro();
+
+/* ---- edits published from the recipe planner (data/edits.json) ----
+   If this recipe was edited there, use the edited title, ingredients and the
+   cards the planner rebuilt from the new steps. Only before cooking starts. */
+fetch("../data/edits.json?t="+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.json():null).then(d=>{
+  const o=d&&d.recipes&&d.recipes[R.slug], c=o&&o.cook;
+  if(!c||cur!==-1) return;
+  if(c.title){ R.title=c.title; $("ttl").textContent=c.title; document.title=c.title; }
+  if(c.ingredients) R.ingredients=c.ingredients;
+  if(c.slides&&c.slides.length){ R.slides=c.slides; N=R.slides.length; }
+}).catch(()=>{});
 </script>
 
 </body></html>

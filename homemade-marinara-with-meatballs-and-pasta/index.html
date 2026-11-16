@@ -95,7 +95,7 @@ ul.ing li{padding:5px 0}
 <div class="alarm" id="alarm" role="alert" hidden><span id="alarmTxt"></span><button id="alarmOk">OK</button></div>
 
 <script>
-const R = {"title": "Homemade Marinara with Meatballs and Pasta", "category": "Dinner", "description": "A slow-simmered San Marzano marinara with pan-browned beef meatballs over pasta", "serves": 4, "prep": 20, "cook": 240, "video": "https://www.tiktok.com/@bayleennicole/video/7650335989587528974", "ingredients": ["1/4 cup olive oil", "4 cloves garlic, minced (or 1 onion, chopped)", "2 (28 oz) cans San Marzano whole peeled tomatoes, blended", "Salt, to taste", "1 Parmesan rind (optional)", "1 lb ground beef", "1 slice white bread, torn", "1 egg", "1 tsp garlic powder", "1 tsp onion powder", "1 tsp dried oregano", "Salt and pepper, to taste", "12 oz pasta"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["1/4 cup olive oil", "4 cloves garlic, minced (or 1 onion, chopped)", "2 (28 oz) cans San Marzano whole peeled tomatoes, blended", "Salt, to taste", "1 Parmesan rind (optional)"]}, {"title": "Start the Sauce", "text": "Heat the olive oil in a Dutch oven and add the garlic (or onion), then stir in the blended tomatoes, a pinch of salt, and the Parmesan rind, if using.", "uses": ["1/4 cup olive oil", "4 cloves garlic, minced (or 1 onion, chopped)", "2 (28 oz) cans San Marzano whole peeled tomatoes, blended", "Salt, to taste", "1 Parmesan rind"]}, {"title": "Simmer", "text": "Simmer for 3-4 hours, stirring every 15-30 minutes and adding more salt toward the end.", "timer": 10800, "while": "Toward the end of the simmer, make the meatballs and pasta (next steps)."}, {"title": "Gather Ingredients", "gather": true, "text": "While you wait, get these out for the next part", "uses": ["1 lb ground beef", "1 slice white bread, torn", "1 egg", "1 tsp garlic powder", "1 tsp onion powder", "1 tsp dried oregano", "Salt and pepper, to taste", "12 oz pasta"]}, {"title": "Form the Meatballs", "text": "Combine the ground beef, torn bread, egg, garlic powder, onion powder, oregano, salt, and pepper, then form the mixture into meatballs.", "uses": ["1 lb ground beef", "1 slice white bread, torn", "1 egg", "1 tsp garlic powder", "1 tsp onion powder", "1 tsp dried oregano", "Salt and pepper, to taste"]}, {"title": "Brown the Meatballs", "text": "Cook the meatballs in a pan until browned and cooked through."}, {"title": "Cook the Pasta", "text": "Cook the pasta in salted boiling water according to package directions, then drain.", "uses": ["12 oz pasta"]}, {"title": "Serve", "text": "Add the meatballs to the sauce, then serve the sauce and meatballs over the cooked pasta."}]};
+let R = {"title": "Homemade Marinara with Meatballs and Pasta", "category": "Dinner", "description": "A slow-simmered San Marzano marinara with pan-browned beef meatballs over pasta", "serves": 4, "prep": 20, "cook": 240, "video": "https://www.tiktok.com/@bayleennicole/video/7650335989587528974", "slug": "homemade-marinara-with-meatballs-and-pasta", "ingredients": ["1/4 cup olive oil", "4 cloves garlic, minced (or 1 onion, chopped)", "2 (28 oz) cans San Marzano whole peeled tomatoes, blended", "Salt, to taste", "1 Parmesan rind (optional)", "1 lb ground beef", "1 slice white bread, torn", "1 egg", "1 tsp garlic powder", "1 tsp onion powder", "1 tsp dried oregano", "Salt and pepper, to taste", "12 oz pasta"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["1/4 cup olive oil", "4 cloves garlic, minced (or 1 onion, chopped)", "2 (28 oz) cans San Marzano whole peeled tomatoes, blended", "Salt, to taste", "1 Parmesan rind (optional)"]}, {"title": "Start the Sauce", "text": "Heat the olive oil in a Dutch oven and add the garlic (or onion), then stir in the blended tomatoes, a pinch of salt, and the Parmesan rind, if using.", "uses": ["1/4 cup olive oil", "4 cloves garlic, minced (or 1 onion, chopped)", "2 (28 oz) cans San Marzano whole peeled tomatoes, blended", "Salt, to taste", "1 Parmesan rind"]}, {"title": "Simmer", "text": "Simmer for 3-4 hours, stirring every 15-30 minutes and adding more salt toward the end.", "timer": 10800, "while": "Toward the end of the simmer, make the meatballs and pasta (next steps)."}, {"title": "Gather Ingredients", "gather": true, "text": "While you wait, get these out for the next part", "uses": ["1 lb ground beef", "1 slice white bread, torn", "1 egg", "1 tsp garlic powder", "1 tsp onion powder", "1 tsp dried oregano", "Salt and pepper, to taste", "12 oz pasta"]}, {"title": "Form the Meatballs", "text": "Combine the ground beef, torn bread, egg, garlic powder, onion powder, oregano, salt, and pepper, then form the mixture into meatballs.", "uses": ["1 lb ground beef", "1 slice white bread, torn", "1 egg", "1 tsp garlic powder", "1 tsp onion powder", "1 tsp dried oregano", "Salt and pepper, to taste"]}, {"title": "Brown the Meatballs", "text": "Cook the meatballs in a pan until browned and cooked through."}, {"title": "Cook the Pasta", "text": "Cook the pasta in salted boiling water according to package directions, then drain.", "uses": ["12 oz pasta"]}, {"title": "Serve", "text": "Add the meatballs to the sauce, then serve the sauce and meatballs over the cooked pasta."}]};
 const $ = id => document.getElementById(id);
 // card text: no Celsius conversions, no period at the very end
 const tidy = t => (t||"").replace(/\s*\(\s*-?\d+\s*°?\s*C\s*\)/g,"").replace(/\s*\/\s*-?\d+\s*°\s*C\b/g,"").replace(/\.\s*$/,"");
@@ -139,7 +139,7 @@ if(R.video){$("watch").href=R.video;$("watch").hidden=false}
 $("desc").textContent=tidy(R.description); $("desc").hidden=!R.description;
 
 /* ---- steps ---- */
-const N=R.slides.length;
+let N=R.slides.length;
 function show(i){
   cur=Math.max(0,Math.min(N,i));
   $("intro").hidden=true; $("cook").hidden=false;
@@ -229,6 +229,17 @@ async function keepAwake(){if(!("wakeLock" in navigator)||lock||asking||document
 document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"){if(cur>=0)keepAwake();paintTimers()}});
 
 renderIntro();
+
+/* ---- edits published from the recipe planner (data/edits.json) ----
+   If this recipe was edited there, use the edited title, ingredients and the
+   cards the planner rebuilt from the new steps. Only before cooking starts. */
+fetch("../data/edits.json?t="+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.json():null).then(d=>{
+  const o=d&&d.recipes&&d.recipes[R.slug], c=o&&o.cook;
+  if(!c||cur!==-1) return;
+  if(c.title){ R.title=c.title; $("ttl").textContent=c.title; document.title=c.title; }
+  if(c.ingredients) R.ingredients=c.ingredients;
+  if(c.slides&&c.slides.length){ R.slides=c.slides; N=R.slides.length; }
+}).catch(()=>{});
 </script>
 
 </body></html>

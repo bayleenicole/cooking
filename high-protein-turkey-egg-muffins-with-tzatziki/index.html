@@ -95,7 +95,7 @@ ul.ing li{padding:5px 0}
 <div class="alarm" id="alarm" role="alert" hidden><span id="alarmTxt"></span><button id="alarmOk">OK</button></div>
 
 <script>
-const R = {"title": "High-Protein Turkey Egg Muffins with Tzatziki", "category": "Dinner", "description": "Baked turkey, corn and cilantro egg muffins with a lemony dill tzatziki for dipping", "serves": 4, "prep": 15, "cook": 30, "video": "https://www.tiktok.com/@bayleennicole/video/7662086438254628110", "ingredients": ["3 eggs", "2 lb ground turkey (2 packages)", "1 cup frozen fire-roasted corn", "1/4 cup chopped cilantro", "1 tsp dried oregano", "1 tsp onion salt", "1 tsp paprika", "1 cup Greek yogurt", "Juice of 1 lemon", "1 clove garlic, minced", "2 tbsp chopped fresh dill", "1 tbsp olive oil", "Salt and pepper, to taste"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["3 eggs", "2 lb ground turkey (2 packages)", "1 cup frozen fire-roasted corn", "1/4 cup chopped cilantro", "1 tsp dried oregano", "1 tsp onion salt", "1 tsp paprika", "1 cup Greek yogurt", "Juice of 1 lemon", "1 clove garlic, minced", "2 tbsp chopped fresh dill", "1 tbsp olive oil", "Salt and pepper, to taste"]}, {"title": "Mix", "text": "Preheat oven to 375°F. In a large bowl, whisk the eggs, then mix in the ground turkey, corn, cilantro, oregano, onion salt, and paprika.", "uses": ["3 eggs", "2 lb ground turkey (2 packages)", "1 cup frozen fire-roasted corn", "1/4 cup chopped cilantro", "1 tsp dried oregano", "1 tsp onion salt", "1 tsp paprika"]}, {"title": "Bake", "text": "Form into balls, place in a greased cupcake tin, and bake for 30 minutes, until cooked through.", "timer": 1800, "while": "While they bake, make the tzatziki (next step)."}, {"title": "Tzatziki", "text": "For the tzatziki, mix the Greek yogurt, lemon juice, garlic, dill, olive oil, salt, and pepper.", "uses": ["1 cup Greek yogurt", "Juice of 1 lemon", "1 clove garlic, minced", "2 tbsp chopped fresh dill", "1 tbsp olive oil", "Salt and pepper, to taste"]}, {"title": "Serve", "text": "Serve the turkey egg muffins with the tzatziki for dipping."}]};
+let R = {"title": "High-Protein Turkey Egg Muffins with Tzatziki", "category": "Dinner", "description": "Baked turkey, corn and cilantro egg muffins with a lemony dill tzatziki for dipping", "serves": 4, "prep": 15, "cook": 30, "video": "https://www.tiktok.com/@bayleennicole/video/7662086438254628110", "slug": "high-protein-turkey-egg-muffins-with-tzatziki", "ingredients": ["3 eggs", "2 lb ground turkey (2 packages)", "1 cup frozen fire-roasted corn", "1/4 cup chopped cilantro", "1 tsp dried oregano", "1 tsp onion salt", "1 tsp paprika", "1 cup Greek yogurt", "Juice of 1 lemon", "1 clove garlic, minced", "2 tbsp chopped fresh dill", "1 tbsp olive oil", "Salt and pepper, to taste"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["3 eggs", "2 lb ground turkey (2 packages)", "1 cup frozen fire-roasted corn", "1/4 cup chopped cilantro", "1 tsp dried oregano", "1 tsp onion salt", "1 tsp paprika", "1 cup Greek yogurt", "Juice of 1 lemon", "1 clove garlic, minced", "2 tbsp chopped fresh dill", "1 tbsp olive oil", "Salt and pepper, to taste"]}, {"title": "Mix", "text": "Preheat oven to 375°F. In a large bowl, whisk the eggs, then mix in the ground turkey, corn, cilantro, oregano, onion salt, and paprika.", "uses": ["3 eggs", "2 lb ground turkey (2 packages)", "1 cup frozen fire-roasted corn", "1/4 cup chopped cilantro", "1 tsp dried oregano", "1 tsp onion salt", "1 tsp paprika"]}, {"title": "Bake", "text": "Form into balls, place in a greased cupcake tin, and bake for 30 minutes, until cooked through.", "timer": 1800, "while": "While they bake, make the tzatziki (next step)."}, {"title": "Tzatziki", "text": "For the tzatziki, mix the Greek yogurt, lemon juice, garlic, dill, olive oil, salt, and pepper.", "uses": ["1 cup Greek yogurt", "Juice of 1 lemon", "1 clove garlic, minced", "2 tbsp chopped fresh dill", "1 tbsp olive oil", "Salt and pepper, to taste"]}, {"title": "Serve", "text": "Serve the turkey egg muffins with the tzatziki for dipping."}]};
 const $ = id => document.getElementById(id);
 // card text: no Celsius conversions, no period at the very end
 const tidy = t => (t||"").replace(/\s*\(\s*-?\d+\s*°?\s*C\s*\)/g,"").replace(/\s*\/\s*-?\d+\s*°\s*C\b/g,"").replace(/\.\s*$/,"");
@@ -139,7 +139,7 @@ if(R.video){$("watch").href=R.video;$("watch").hidden=false}
 $("desc").textContent=tidy(R.description); $("desc").hidden=!R.description;
 
 /* ---- steps ---- */
-const N=R.slides.length;
+let N=R.slides.length;
 function show(i){
   cur=Math.max(0,Math.min(N,i));
   $("intro").hidden=true; $("cook").hidden=false;
@@ -229,6 +229,17 @@ async function keepAwake(){if(!("wakeLock" in navigator)||lock||asking||document
 document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"){if(cur>=0)keepAwake();paintTimers()}});
 
 renderIntro();
+
+/* ---- edits published from the recipe planner (data/edits.json) ----
+   If this recipe was edited there, use the edited title, ingredients and the
+   cards the planner rebuilt from the new steps. Only before cooking starts. */
+fetch("../data/edits.json?t="+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.json():null).then(d=>{
+  const o=d&&d.recipes&&d.recipes[R.slug], c=o&&o.cook;
+  if(!c||cur!==-1) return;
+  if(c.title){ R.title=c.title; $("ttl").textContent=c.title; document.title=c.title; }
+  if(c.ingredients) R.ingredients=c.ingredients;
+  if(c.slides&&c.slides.length){ R.slides=c.slides; N=R.slides.length; }
+}).catch(()=>{});
 </script>
 
 </body></html>

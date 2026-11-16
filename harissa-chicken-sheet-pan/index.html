@@ -95,7 +95,7 @@ ul.ing li{padding:5px 0}
 <div class="alarm" id="alarm" role="alert" hidden><span id="alarmTxt"></span><button id="alarmOk">OK</button></div>
 
 <script>
-const R = {"title": "Harissa Chicken Sheet Pan", "category": "Dinner", "description": "Harissa maple chicken thighs roasted with peppers, zucchini, cauliflower and tomatoes, over rice and arugula", "serves": 4, "prep": 15, "cook": 20, "video": "https://www.tiktok.com/@bayleennicole/video/7531427408717679886", "ingredients": ["4 chicken thighs, chopped", "1 zucchini, chopped", "1/2 red onion, chopped", "1 red bell pepper, chopped", "1 cup cauliflower florets", "1 cup cherry tomatoes", "1/4 cup harissa sauce", "1 tbsp maple syrup", "Salt and pepper, to taste", "2 cups arugula", "2 cups cooked rice", "1/4 cup harissa hummus"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["4 chicken thighs, chopped", "1 zucchini, chopped", "1/2 red onion, chopped", "1 red bell pepper, chopped", "1 cup cauliflower florets", "1 cup cherry tomatoes", "1/4 cup harissa sauce", "1 tbsp maple syrup", "Salt and pepper, to taste", "2 cups arugula", "2 cups cooked rice", "1/4 cup harissa hummus"]}, {"title": "Chop & Pan", "text": "Preheat oven to 425°F. Chop the chicken thighs and vegetables (zucchini, red onion, red bell pepper) and place them on a sheet pan along with the cauliflower florets and cherry tomatoes.", "uses": ["4 chicken thighs, chopped", "1 zucchini, chopped", "1/2 red onion, chopped", "1 red bell pepper, chopped", "1 cup cauliflower florets", "1 cup cherry tomatoes"]}, {"title": "Harissa Glaze", "text": "Whisk together the harissa sauce and maple syrup, toss with the chicken and vegetables, and season with salt and pepper to taste.", "uses": ["1/4 cup harissa sauce", "1 tbsp maple syrup", "Salt and pepper, to taste"]}, {"title": "Bake", "text": "Bake for 20 minutes, until the chicken is cooked through.", "timer": 1200}, {"title": "Serve", "text": "Serve on a bed of arugula and cooked rice, and top with harissa hummus.", "uses": ["2 cups arugula", "2 cups cooked rice", "1/4 cup harissa hummus"]}]};
+let R = {"title": "Harissa Chicken Sheet Pan", "category": "Dinner", "description": "Harissa maple chicken thighs roasted with peppers, zucchini, cauliflower and tomatoes, over rice and arugula", "serves": 4, "prep": 15, "cook": 20, "video": "https://www.tiktok.com/@bayleennicole/video/7531427408717679886", "slug": "harissa-chicken-sheet-pan", "ingredients": ["4 chicken thighs, chopped", "1 zucchini, chopped", "1/2 red onion, chopped", "1 red bell pepper, chopped", "1 cup cauliflower florets", "1 cup cherry tomatoes", "1/4 cup harissa sauce", "1 tbsp maple syrup", "Salt and pepper, to taste", "2 cups arugula", "2 cups cooked rice", "1/4 cup harissa hummus"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["4 chicken thighs, chopped", "1 zucchini, chopped", "1/2 red onion, chopped", "1 red bell pepper, chopped", "1 cup cauliflower florets", "1 cup cherry tomatoes", "1/4 cup harissa sauce", "1 tbsp maple syrup", "Salt and pepper, to taste", "2 cups arugula", "2 cups cooked rice", "1/4 cup harissa hummus"]}, {"title": "Chop & Pan", "text": "Preheat oven to 425°F. Chop the chicken thighs and vegetables (zucchini, red onion, red bell pepper) and place them on a sheet pan along with the cauliflower florets and cherry tomatoes.", "uses": ["4 chicken thighs, chopped", "1 zucchini, chopped", "1/2 red onion, chopped", "1 red bell pepper, chopped", "1 cup cauliflower florets", "1 cup cherry tomatoes"]}, {"title": "Harissa Glaze", "text": "Whisk together the harissa sauce and maple syrup, toss with the chicken and vegetables, and season with salt and pepper to taste.", "uses": ["1/4 cup harissa sauce", "1 tbsp maple syrup", "Salt and pepper, to taste"]}, {"title": "Bake", "text": "Bake for 20 minutes, until the chicken is cooked through.", "timer": 1200}, {"title": "Serve", "text": "Serve on a bed of arugula and cooked rice, and top with harissa hummus.", "uses": ["2 cups arugula", "2 cups cooked rice", "1/4 cup harissa hummus"]}]};
 const $ = id => document.getElementById(id);
 // card text: no Celsius conversions, no period at the very end
 const tidy = t => (t||"").replace(/\s*\(\s*-?\d+\s*°?\s*C\s*\)/g,"").replace(/\s*\/\s*-?\d+\s*°\s*C\b/g,"").replace(/\.\s*$/,"");
@@ -139,7 +139,7 @@ if(R.video){$("watch").href=R.video;$("watch").hidden=false}
 $("desc").textContent=tidy(R.description); $("desc").hidden=!R.description;
 
 /* ---- steps ---- */
-const N=R.slides.length;
+let N=R.slides.length;
 function show(i){
   cur=Math.max(0,Math.min(N,i));
   $("intro").hidden=true; $("cook").hidden=false;
@@ -229,6 +229,17 @@ async function keepAwake(){if(!("wakeLock" in navigator)||lock||asking||document
 document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"){if(cur>=0)keepAwake();paintTimers()}});
 
 renderIntro();
+
+/* ---- edits published from the recipe planner (data/edits.json) ----
+   If this recipe was edited there, use the edited title, ingredients and the
+   cards the planner rebuilt from the new steps. Only before cooking starts. */
+fetch("../data/edits.json?t="+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.json():null).then(d=>{
+  const o=d&&d.recipes&&d.recipes[R.slug], c=o&&o.cook;
+  if(!c||cur!==-1) return;
+  if(c.title){ R.title=c.title; $("ttl").textContent=c.title; document.title=c.title; }
+  if(c.ingredients) R.ingredients=c.ingredients;
+  if(c.slides&&c.slides.length){ R.slides=c.slides; N=R.slides.length; }
+}).catch(()=>{});
 </script>
 
 </body></html>

@@ -95,7 +95,7 @@ ul.ing li{padding:5px 0}
 <div class="alarm" id="alarm" role="alert" hidden><span id="alarmTxt"></span><button id="alarmOk">OK</button></div>
 
 <script>
-const R = {"title": "Gordon Ramsay-Style Scrambled Egg Wrap", "category": "Breakfast", "description": "Slow, creamy scrambled eggs folded into a cream cheese flatbread wrap", "serves": 1, "prep": 5, "cook": 5, "video": "https://www.tiktok.com/@bayleennicole/video/7320392734534077739", "ingredients": ["1 small lavash or flatbread wrap", "1 tbsp butter", "2 eggs", "2 tbsp cream cheese"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["1 small lavash or flatbread wrap", "1 tbsp butter", "2 eggs", "2 tbsp cream cheese"]}, {"title": "Toast the Flatbread", "text": "Toast the flatbread lightly.", "uses": ["1 small lavash or flatbread wrap"]}, {"title": "Scramble the Eggs", "text": "Melt the butter in a pan over low heat, crack the eggs directly into the pan, and scramble continuously over low heat until soft and creamy.", "uses": ["1 tbsp butter", "2 eggs"]}, {"title": "Fill & Serve", "text": "Spread cream cheese over the flatbread, add the scrambled eggs, then fold or roll up the wrap and serve.", "uses": ["2 tbsp cream cheese"]}]};
+let R = {"title": "Gordon Ramsay-Style Scrambled Egg Wrap", "category": "Breakfast", "description": "Slow, creamy scrambled eggs folded into a cream cheese flatbread wrap", "serves": 1, "prep": 5, "cook": 5, "video": "https://www.tiktok.com/@bayleennicole/video/7320392734534077739", "slug": "gordon-ramsay-style-scrambled-egg-wrap", "ingredients": ["1 small lavash or flatbread wrap", "1 tbsp butter", "2 eggs", "2 tbsp cream cheese"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["1 small lavash or flatbread wrap", "1 tbsp butter", "2 eggs", "2 tbsp cream cheese"]}, {"title": "Toast the Flatbread", "text": "Toast the flatbread lightly.", "uses": ["1 small lavash or flatbread wrap"]}, {"title": "Scramble the Eggs", "text": "Melt the butter in a pan over low heat, crack the eggs directly into the pan, and scramble continuously over low heat until soft and creamy.", "uses": ["1 tbsp butter", "2 eggs"]}, {"title": "Fill & Serve", "text": "Spread cream cheese over the flatbread, add the scrambled eggs, then fold or roll up the wrap and serve.", "uses": ["2 tbsp cream cheese"]}]};
 const $ = id => document.getElementById(id);
 // card text: no Celsius conversions, no period at the very end
 const tidy = t => (t||"").replace(/\s*\(\s*-?\d+\s*°?\s*C\s*\)/g,"").replace(/\s*\/\s*-?\d+\s*°\s*C\b/g,"").replace(/\.\s*$/,"");
@@ -139,7 +139,7 @@ if(R.video){$("watch").href=R.video;$("watch").hidden=false}
 $("desc").textContent=tidy(R.description); $("desc").hidden=!R.description;
 
 /* ---- steps ---- */
-const N=R.slides.length;
+let N=R.slides.length;
 function show(i){
   cur=Math.max(0,Math.min(N,i));
   $("intro").hidden=true; $("cook").hidden=false;
@@ -229,6 +229,17 @@ async function keepAwake(){if(!("wakeLock" in navigator)||lock||asking||document
 document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"){if(cur>=0)keepAwake();paintTimers()}});
 
 renderIntro();
+
+/* ---- edits published from the recipe planner (data/edits.json) ----
+   If this recipe was edited there, use the edited title, ingredients and the
+   cards the planner rebuilt from the new steps. Only before cooking starts. */
+fetch("../data/edits.json?t="+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.json():null).then(d=>{
+  const o=d&&d.recipes&&d.recipes[R.slug], c=o&&o.cook;
+  if(!c||cur!==-1) return;
+  if(c.title){ R.title=c.title; $("ttl").textContent=c.title; document.title=c.title; }
+  if(c.ingredients) R.ingredients=c.ingredients;
+  if(c.slides&&c.slides.length){ R.slides=c.slides; N=R.slides.length; }
+}).catch(()=>{});
 </script>
 
 </body></html>

@@ -95,7 +95,7 @@ ul.ing li{padding:5px 0}
 <div class="alarm" id="alarm" role="alert" hidden><span id="alarmTxt"></span><button id="alarmOk">OK</button></div>
 
 <script>
-const R = {"title": "Shrimp Ceviche Tostadas", "category": "Lunch", "description": "Lime-marinated shrimp ceviche with avocado, tomato and cilantro on crispy baked tostadas with cilantro mayo", "serves": 4, "prep": 15, "cook": 15, "video": "https://www.tiktok.com/@bayleennicole/video/7361166637434817838", "ingredients": ["1 lb shrimp, peeled and deveined", "1/2 cup chopped cilantro", "1/2 red onion, diced", "2 tomatoes, diced", "1 avocado, diced", "Juice of 3-4 limes", "2 tbsp olive oil", "Salt, to taste", "1 tbsp olive oil, for brushing", "4 corn tortillas", "1/2 cup mayo blended with 2 tbsp cilantro, for sauce"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["1 lb shrimp, peeled and deveined", "1/2 cup chopped cilantro", "1/2 red onion, diced", "2 tomatoes, diced", "1 avocado, diced", "Juice of 3-4 limes", "2 tbsp olive oil", "Salt, to taste", "1 tbsp olive oil, for brushing", "4 corn tortillas", "1/2 cup mayo blended with 2 tbsp cilantro, for sauce"]}, {"title": "Boil the Shrimp", "text": "Bring a pot of water to a boil, boil the shrimp for 2-3 minutes until cooked through, then drain and chop.", "timer": 120, "uses": ["1 lb shrimp, peeled and deveined"]}, {"title": "Ceviche", "text": "In a bowl, combine the chopped shrimp, cilantro, red onion, tomato, and avocado, then stir in the lime juice, 2 tbsp olive oil, and salt to taste, and chill for 15 minutes.", "timer": 900, "uses": ["1/2 cup chopped cilantro", "1/2 red onion, diced", "2 tomatoes, diced", "1 avocado, diced", "Juice of 3-4 limes", "2 tbsp olive oil", "Salt, to taste"], "while": "While the ceviche chills, crisp the tortillas and make the sauce (next two steps)."}, {"title": "Crisp the Tortillas", "text": "Preheat oven to 400°F, rub 1 tbsp olive oil onto both sides of each corn tortilla, and bake at 400°F for 4-5 minutes per side until crisp.", "timer": 240, "uses": ["4 corn tortillas", "1 tbsp olive oil, for brushing"]}, {"title": "Cilantro Mayo", "text": "Blend 1/2 cup mayo with 2 tbsp cilantro to make the sauce.", "uses": ["1/2 cup mayo blended with 2 tbsp cilantro, for sauce"]}, {"title": "Assemble & Serve", "text": "Top the crisp tortillas with the mayo-cilantro sauce and the ceviche, then serve immediately."}]};
+let R = {"title": "Shrimp Ceviche Tostadas", "category": "Lunch", "description": "Lime-marinated shrimp ceviche with avocado, tomato and cilantro on crispy baked tostadas with cilantro mayo", "serves": 4, "prep": 15, "cook": 15, "video": "https://www.tiktok.com/@bayleennicole/video/7361166637434817838", "slug": "shrimp-ceviche-tostadas", "ingredients": ["1 lb shrimp, peeled and deveined", "1/2 cup chopped cilantro", "1/2 red onion, diced", "2 tomatoes, diced", "1 avocado, diced", "Juice of 3-4 limes", "2 tbsp olive oil", "Salt, to taste", "1 tbsp olive oil, for brushing", "4 corn tortillas", "1/2 cup mayo blended with 2 tbsp cilantro, for sauce"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["1 lb shrimp, peeled and deveined", "1/2 cup chopped cilantro", "1/2 red onion, diced", "2 tomatoes, diced", "1 avocado, diced", "Juice of 3-4 limes", "2 tbsp olive oil", "Salt, to taste", "1 tbsp olive oil, for brushing", "4 corn tortillas", "1/2 cup mayo blended with 2 tbsp cilantro, for sauce"]}, {"title": "Boil the Shrimp", "text": "Bring a pot of water to a boil, boil the shrimp for 2-3 minutes until cooked through, then drain and chop.", "timer": 120, "uses": ["1 lb shrimp, peeled and deveined"]}, {"title": "Ceviche", "text": "In a bowl, combine the chopped shrimp, cilantro, red onion, tomato, and avocado, then stir in the lime juice, 2 tbsp olive oil, and salt to taste, and chill for 15 minutes.", "timer": 900, "uses": ["1/2 cup chopped cilantro", "1/2 red onion, diced", "2 tomatoes, diced", "1 avocado, diced", "Juice of 3-4 limes", "2 tbsp olive oil", "Salt, to taste"], "while": "While the ceviche chills, crisp the tortillas and make the sauce (next two steps)."}, {"title": "Crisp the Tortillas", "text": "Preheat oven to 400°F, rub 1 tbsp olive oil onto both sides of each corn tortilla, and bake at 400°F for 4-5 minutes per side until crisp.", "timer": 240, "uses": ["4 corn tortillas", "1 tbsp olive oil, for brushing"]}, {"title": "Cilantro Mayo", "text": "Blend 1/2 cup mayo with 2 tbsp cilantro to make the sauce.", "uses": ["1/2 cup mayo blended with 2 tbsp cilantro, for sauce"]}, {"title": "Assemble & Serve", "text": "Top the crisp tortillas with the mayo-cilantro sauce and the ceviche, then serve immediately."}]};
 const $ = id => document.getElementById(id);
 // card text: no Celsius conversions, no period at the very end
 const tidy = t => (t||"").replace(/\s*\(\s*-?\d+\s*°?\s*C\s*\)/g,"").replace(/\s*\/\s*-?\d+\s*°\s*C\b/g,"").replace(/\.\s*$/,"");
@@ -139,7 +139,7 @@ if(R.video){$("watch").href=R.video;$("watch").hidden=false}
 $("desc").textContent=tidy(R.description); $("desc").hidden=!R.description;
 
 /* ---- steps ---- */
-const N=R.slides.length;
+let N=R.slides.length;
 function show(i){
   cur=Math.max(0,Math.min(N,i));
   $("intro").hidden=true; $("cook").hidden=false;
@@ -229,6 +229,17 @@ async function keepAwake(){if(!("wakeLock" in navigator)||lock||asking||document
 document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"){if(cur>=0)keepAwake();paintTimers()}});
 
 renderIntro();
+
+/* ---- edits published from the recipe planner (data/edits.json) ----
+   If this recipe was edited there, use the edited title, ingredients and the
+   cards the planner rebuilt from the new steps. Only before cooking starts. */
+fetch("../data/edits.json?t="+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.json():null).then(d=>{
+  const o=d&&d.recipes&&d.recipes[R.slug], c=o&&o.cook;
+  if(!c||cur!==-1) return;
+  if(c.title){ R.title=c.title; $("ttl").textContent=c.title; document.title=c.title; }
+  if(c.ingredients) R.ingredients=c.ingredients;
+  if(c.slides&&c.slides.length){ R.slides=c.slides; N=R.slides.length; }
+}).catch(()=>{});
 </script>
 
 </body></html>

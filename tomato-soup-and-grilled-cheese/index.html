@@ -95,7 +95,7 @@ ul.ing li{padding:5px 0}
 <div class="alarm" id="alarm" role="alert" hidden><span id="alarmTxt"></span><button id="alarmOk">OK</button></div>
 
 <script>
-const R = {"title": "Tomato Soup & Grilled Cheese", "category": "Dinner", "description": "Roasted tomato, garlic and basil soup finished with Parmesan and cream, with a pesto prosciutto grilled cheese", "serves": 2, "prep": 15, "cook": 45, "video": "https://www.tiktok.com/@bayleennicole/video/7420201467069369631", "ingredients": ["2 lbs tomatoes, halved", "1 white onion, quartered", "2 bulbs garlic, halved", "4 basil stems", "3 tbsp olive oil", "1 tbsp balsamic vinegar", "Salt and pepper, to taste", "1/2 cup vegetable stock or water", "1/4 cup grated Parmesan", "1/4 cup heavy cream", "2 tbsp pesto", "4 slices sandwich bread", "4 slices provolone cheese", "4 slices prosciutto", "2 tbsp butter, softened, for the sandwiches"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["2 lbs tomatoes, halved", "1 white onion, quartered", "2 bulbs garlic, halved", "4 basil stems", "3 tbsp olive oil", "1 tbsp balsamic vinegar", "Salt and pepper, to taste", "1/2 cup vegetable stock or water", "1/4 cup grated Parmesan", "1/4 cup heavy cream", "2 tbsp pesto", "4 slices sandwich bread", "4 slices provolone cheese", "4 slices prosciutto", "2 tbsp butter, softened, for the sandwiches"]}, {"title": "Roast", "text": "Preheat oven to 400°F. Toss tomatoes, onion, garlic, and basil stems with olive oil, balsamic vinegar, salt, and pepper, then roast for 40 minutes.", "timer": 2400, "uses": ["2 lbs tomatoes, halved", "1 white onion, quartered", "2 bulbs garlic, halved", "4 basil stems", "3 tbsp olive oil", "1 tbsp balsamic vinegar", "Salt and pepper, to taste"], "while": "While the vegetables roast, assemble the sandwiches (step 3)."}, {"title": "Blend the Soup", "text": "Blend the roasted vegetables with vegetable stock until smooth, then stir in Parmesan and heavy cream, and season to taste.", "uses": ["1/2 cup vegetable stock or water", "1/4 cup grated Parmesan", "1/4 cup heavy cream"]}, {"title": "Assemble the Sandwiches", "text": "Spread pesto on one side of each bread slice, then layer provolone and prosciutto between the slices with the pesto side in.", "uses": ["4 slices sandwich bread", "2 tbsp pesto", "4 slices provolone cheese", "4 slices prosciutto"]}, {"title": "Toast the Sandwiches", "text": "Butter the outside of the sandwiches and toast in a skillet on both sides until golden and the cheese is melted.", "uses": ["2 tbsp butter, softened, for the sandwiches"]}, {"title": "Serve", "text": "Serve the grilled cheese alongside the tomato soup."}]};
+let R = {"title": "Tomato Soup & Grilled Cheese", "category": "Dinner", "description": "Roasted tomato, garlic and basil soup finished with Parmesan and cream, with a pesto prosciutto grilled cheese", "serves": 2, "prep": 15, "cook": 45, "video": "https://www.tiktok.com/@bayleennicole/video/7420201467069369631", "slug": "tomato-soup-and-grilled-cheese", "ingredients": ["2 lbs tomatoes, halved", "1 white onion, quartered", "2 bulbs garlic, halved", "4 basil stems", "3 tbsp olive oil", "1 tbsp balsamic vinegar", "Salt and pepper, to taste", "1/2 cup vegetable stock or water", "1/4 cup grated Parmesan", "1/4 cup heavy cream", "2 tbsp pesto", "4 slices sandwich bread", "4 slices provolone cheese", "4 slices prosciutto", "2 tbsp butter, softened, for the sandwiches"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["2 lbs tomatoes, halved", "1 white onion, quartered", "2 bulbs garlic, halved", "4 basil stems", "3 tbsp olive oil", "1 tbsp balsamic vinegar", "Salt and pepper, to taste", "1/2 cup vegetable stock or water", "1/4 cup grated Parmesan", "1/4 cup heavy cream", "2 tbsp pesto", "4 slices sandwich bread", "4 slices provolone cheese", "4 slices prosciutto", "2 tbsp butter, softened, for the sandwiches"]}, {"title": "Roast", "text": "Preheat oven to 400°F. Toss tomatoes, onion, garlic, and basil stems with olive oil, balsamic vinegar, salt, and pepper, then roast for 40 minutes.", "timer": 2400, "uses": ["2 lbs tomatoes, halved", "1 white onion, quartered", "2 bulbs garlic, halved", "4 basil stems", "3 tbsp olive oil", "1 tbsp balsamic vinegar", "Salt and pepper, to taste"], "while": "While the vegetables roast, assemble the sandwiches (step 3)."}, {"title": "Blend the Soup", "text": "Blend the roasted vegetables with vegetable stock until smooth, then stir in Parmesan and heavy cream, and season to taste.", "uses": ["1/2 cup vegetable stock or water", "1/4 cup grated Parmesan", "1/4 cup heavy cream"]}, {"title": "Assemble the Sandwiches", "text": "Spread pesto on one side of each bread slice, then layer provolone and prosciutto between the slices with the pesto side in.", "uses": ["4 slices sandwich bread", "2 tbsp pesto", "4 slices provolone cheese", "4 slices prosciutto"]}, {"title": "Toast the Sandwiches", "text": "Butter the outside of the sandwiches and toast in a skillet on both sides until golden and the cheese is melted.", "uses": ["2 tbsp butter, softened, for the sandwiches"]}, {"title": "Serve", "text": "Serve the grilled cheese alongside the tomato soup."}]};
 const $ = id => document.getElementById(id);
 // card text: no Celsius conversions, no period at the very end
 const tidy = t => (t||"").replace(/\s*\(\s*-?\d+\s*°?\s*C\s*\)/g,"").replace(/\s*\/\s*-?\d+\s*°\s*C\b/g,"").replace(/\.\s*$/,"");
@@ -139,7 +139,7 @@ if(R.video){$("watch").href=R.video;$("watch").hidden=false}
 $("desc").textContent=tidy(R.description); $("desc").hidden=!R.description;
 
 /* ---- steps ---- */
-const N=R.slides.length;
+let N=R.slides.length;
 function show(i){
   cur=Math.max(0,Math.min(N,i));
   $("intro").hidden=true; $("cook").hidden=false;
@@ -229,6 +229,17 @@ async function keepAwake(){if(!("wakeLock" in navigator)||lock||asking||document
 document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"){if(cur>=0)keepAwake();paintTimers()}});
 
 renderIntro();
+
+/* ---- edits published from the recipe planner (data/edits.json) ----
+   If this recipe was edited there, use the edited title, ingredients and the
+   cards the planner rebuilt from the new steps. Only before cooking starts. */
+fetch("../data/edits.json?t="+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.json():null).then(d=>{
+  const o=d&&d.recipes&&d.recipes[R.slug], c=o&&o.cook;
+  if(!c||cur!==-1) return;
+  if(c.title){ R.title=c.title; $("ttl").textContent=c.title; document.title=c.title; }
+  if(c.ingredients) R.ingredients=c.ingredients;
+  if(c.slides&&c.slides.length){ R.slides=c.slides; N=R.slides.length; }
+}).catch(()=>{});
 </script>
 
 </body></html>

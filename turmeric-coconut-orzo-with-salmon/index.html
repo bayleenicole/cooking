@@ -95,7 +95,7 @@ ul.ing li{padding:5px 0}
 <div class="alarm" id="alarm" role="alert" hidden><span id="alarmTxt"></span><button id="alarmOk">OK</button></div>
 
 <script>
-const R = {"title": "Turmeric Coconut Orzo with Salmon", "category": "Dinner", "description": "Creamy coconut turmeric orzo with spinach and flaked pan-seared salmon, finished with lemon", "serves": 2, "prep": 10, "cook": 30, "video": "https://www.tiktok.com/@bayleennicole/video/7320434478617333035", "ingredients": ["2 (6 oz) salmon fillets", "1/2 tsp garlic powder", "1/2 tsp paprika", "1 tbsp butter", "1/2 yellow diced onion", "1 cup dry orzo", "2 cloves garlic, minced", "1/2 tsp turmeric", "1/4 tsp cumin", "Salt and pepper, to taste", "1 cup full fat coconut milk from can", "1 1/2 cups water", "2 cups spinach", "1 tbsp lemon juice"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["2 (6 oz) salmon fillets", "1/2 tsp garlic powder", "1/2 tsp paprika", "1 tbsp butter", "1/2 yellow diced onion", "1 cup dry orzo", "2 cloves garlic, minced", "1/2 tsp turmeric", "1/4 tsp cumin", "Salt and pepper, to taste", "1 cup full fat coconut milk from can", "1 1/2 cups water", "2 cups spinach", "1 tbsp lemon juice"]}, {"title": "Sear the Salmon", "text": "Season the salmon with garlic powder and paprika and cook each side for 4 minutes over medium-high heat, then remove from the heat and set aside.", "timer": 240, "uses": ["2 (6 oz) salmon fillets", "1/2 tsp garlic powder", "1/2 tsp paprika"]}, {"title": "Onion", "text": "Add butter and diced onion to the skillet and cook for 3-4 minutes, stirring occasionally, until softened.", "timer": 180, "uses": ["1 tbsp butter", "1/2 yellow diced onion"]}, {"title": "Toast the Orzo", "text": "Add the orzo, garlic, turmeric, cumin, salt, and pepper and toast for 2 minutes.", "timer": 120, "uses": ["1 cup dry orzo", "2 cloves garlic, minced", "1/2 tsp turmeric", "1/4 tsp cumin", "Salt and pepper, to taste"]}, {"title": "Simmer", "text": "Pour in the coconut milk and water and mix. Cover the pan, bring to a boil, then reduce to a simmer and let the orzo cook for 10 minutes.", "timer": 600, "uses": ["1 cup full fat coconut milk from can", "1 1/2 cups water"]}, {"title": "Salmon & Spinach", "text": "Flake the cooked salmon into bite-sized pieces, then mix the spinach and salmon into the pan and cook for 5 more minutes on low heat.", "timer": 300, "uses": ["2 cups spinach"]}, {"title": "Serve", "text": "Top with lemon juice and serve warm.", "uses": ["1 tbsp lemon juice"]}]};
+let R = {"title": "Turmeric Coconut Orzo with Salmon", "category": "Dinner", "description": "Creamy coconut turmeric orzo with spinach and flaked pan-seared salmon, finished with lemon", "serves": 2, "prep": 10, "cook": 30, "video": "https://www.tiktok.com/@bayleennicole/video/7320434478617333035", "slug": "turmeric-coconut-orzo-with-salmon", "ingredients": ["2 (6 oz) salmon fillets", "1/2 tsp garlic powder", "1/2 tsp paprika", "1 tbsp butter", "1/2 yellow diced onion", "1 cup dry orzo", "2 cloves garlic, minced", "1/2 tsp turmeric", "1/4 tsp cumin", "Salt and pepper, to taste", "1 cup full fat coconut milk from can", "1 1/2 cups water", "2 cups spinach", "1 tbsp lemon juice"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["2 (6 oz) salmon fillets", "1/2 tsp garlic powder", "1/2 tsp paprika", "1 tbsp butter", "1/2 yellow diced onion", "1 cup dry orzo", "2 cloves garlic, minced", "1/2 tsp turmeric", "1/4 tsp cumin", "Salt and pepper, to taste", "1 cup full fat coconut milk from can", "1 1/2 cups water", "2 cups spinach", "1 tbsp lemon juice"]}, {"title": "Sear the Salmon", "text": "Season the salmon with garlic powder and paprika and cook each side for 4 minutes over medium-high heat, then remove from the heat and set aside.", "timer": 240, "uses": ["2 (6 oz) salmon fillets", "1/2 tsp garlic powder", "1/2 tsp paprika"]}, {"title": "Onion", "text": "Add butter and diced onion to the skillet and cook for 3-4 minutes, stirring occasionally, until softened.", "timer": 180, "uses": ["1 tbsp butter", "1/2 yellow diced onion"]}, {"title": "Toast the Orzo", "text": "Add the orzo, garlic, turmeric, cumin, salt, and pepper and toast for 2 minutes.", "timer": 120, "uses": ["1 cup dry orzo", "2 cloves garlic, minced", "1/2 tsp turmeric", "1/4 tsp cumin", "Salt and pepper, to taste"]}, {"title": "Simmer", "text": "Pour in the coconut milk and water and mix. Cover the pan, bring to a boil, then reduce to a simmer and let the orzo cook for 10 minutes.", "timer": 600, "uses": ["1 cup full fat coconut milk from can", "1 1/2 cups water"]}, {"title": "Salmon & Spinach", "text": "Flake the cooked salmon into bite-sized pieces, then mix the spinach and salmon into the pan and cook for 5 more minutes on low heat.", "timer": 300, "uses": ["2 cups spinach"]}, {"title": "Serve", "text": "Top with lemon juice and serve warm.", "uses": ["1 tbsp lemon juice"]}]};
 const $ = id => document.getElementById(id);
 // card text: no Celsius conversions, no period at the very end
 const tidy = t => (t||"").replace(/\s*\(\s*-?\d+\s*°?\s*C\s*\)/g,"").replace(/\s*\/\s*-?\d+\s*°\s*C\b/g,"").replace(/\.\s*$/,"");
@@ -139,7 +139,7 @@ if(R.video){$("watch").href=R.video;$("watch").hidden=false}
 $("desc").textContent=tidy(R.description); $("desc").hidden=!R.description;
 
 /* ---- steps ---- */
-const N=R.slides.length;
+let N=R.slides.length;
 function show(i){
   cur=Math.max(0,Math.min(N,i));
   $("intro").hidden=true; $("cook").hidden=false;
@@ -229,6 +229,17 @@ async function keepAwake(){if(!("wakeLock" in navigator)||lock||asking||document
 document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"){if(cur>=0)keepAwake();paintTimers()}});
 
 renderIntro();
+
+/* ---- edits published from the recipe planner (data/edits.json) ----
+   If this recipe was edited there, use the edited title, ingredients and the
+   cards the planner rebuilt from the new steps. Only before cooking starts. */
+fetch("../data/edits.json?t="+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.json():null).then(d=>{
+  const o=d&&d.recipes&&d.recipes[R.slug], c=o&&o.cook;
+  if(!c||cur!==-1) return;
+  if(c.title){ R.title=c.title; $("ttl").textContent=c.title; document.title=c.title; }
+  if(c.ingredients) R.ingredients=c.ingredients;
+  if(c.slides&&c.slides.length){ R.slides=c.slides; N=R.slides.length; }
+}).catch(()=>{});
 </script>
 
 </body></html>

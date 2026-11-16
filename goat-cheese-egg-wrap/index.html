@@ -95,7 +95,7 @@ ul.ing li{padding:5px 0}
 <div class="alarm" id="alarm" role="alert" hidden><span id="alarmTxt"></span><button id="alarmOk">OK</button></div>
 
 <script>
-const R = {"title": "Goat Cheese Egg Wrap", "category": "Breakfast", "description": "A fried egg with goat cheese wrapped in a warm almond flour tortilla with a drizzle of honey", "serves": 1, "prep": 5, "cook": 5, "video": "https://www.tiktok.com/@bayleennicole/video/7284335264766430507", "ingredients": ["1 egg", "2 tbsp crumbled goat cheese", "1 almond flour tortilla", "1 tsp honey, for drizzling"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["1 egg", "2 tbsp crumbled goat cheese", "1 almond flour tortilla", "1 tsp honey, for drizzling"]}, {"title": "Fry the Egg", "text": "Heat a nonstick skillet over medium heat, fry the egg for 2 to 3 minutes, and top with the crumbled goat cheese.", "timer": 120, "uses": ["1 egg", "2 tbsp crumbled goat cheese"]}, {"title": "Wrap & Serve", "text": "Warm the almond flour tortilla in a dry skillet for 10 seconds per side, wrap the egg in the tortilla, and drizzle with honey.", "uses": ["1 almond flour tortilla", "1 tsp honey, for drizzling"]}]};
+let R = {"title": "Goat Cheese Egg Wrap", "category": "Breakfast", "description": "A fried egg with goat cheese wrapped in a warm almond flour tortilla with a drizzle of honey", "serves": 1, "prep": 5, "cook": 5, "video": "https://www.tiktok.com/@bayleennicole/video/7284335264766430507", "slug": "goat-cheese-egg-wrap", "ingredients": ["1 egg", "2 tbsp crumbled goat cheese", "1 almond flour tortilla", "1 tsp honey, for drizzling"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["1 egg", "2 tbsp crumbled goat cheese", "1 almond flour tortilla", "1 tsp honey, for drizzling"]}, {"title": "Fry the Egg", "text": "Heat a nonstick skillet over medium heat, fry the egg for 2 to 3 minutes, and top with the crumbled goat cheese.", "timer": 120, "uses": ["1 egg", "2 tbsp crumbled goat cheese"]}, {"title": "Wrap & Serve", "text": "Warm the almond flour tortilla in a dry skillet for 10 seconds per side, wrap the egg in the tortilla, and drizzle with honey.", "uses": ["1 almond flour tortilla", "1 tsp honey, for drizzling"]}]};
 const $ = id => document.getElementById(id);
 // card text: no Celsius conversions, no period at the very end
 const tidy = t => (t||"").replace(/\s*\(\s*-?\d+\s*°?\s*C\s*\)/g,"").replace(/\s*\/\s*-?\d+\s*°\s*C\b/g,"").replace(/\.\s*$/,"");
@@ -139,7 +139,7 @@ if(R.video){$("watch").href=R.video;$("watch").hidden=false}
 $("desc").textContent=tidy(R.description); $("desc").hidden=!R.description;
 
 /* ---- steps ---- */
-const N=R.slides.length;
+let N=R.slides.length;
 function show(i){
   cur=Math.max(0,Math.min(N,i));
   $("intro").hidden=true; $("cook").hidden=false;
@@ -229,6 +229,17 @@ async function keepAwake(){if(!("wakeLock" in navigator)||lock||asking||document
 document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"){if(cur>=0)keepAwake();paintTimers()}});
 
 renderIntro();
+
+/* ---- edits published from the recipe planner (data/edits.json) ----
+   If this recipe was edited there, use the edited title, ingredients and the
+   cards the planner rebuilt from the new steps. Only before cooking starts. */
+fetch("../data/edits.json?t="+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.json():null).then(d=>{
+  const o=d&&d.recipes&&d.recipes[R.slug], c=o&&o.cook;
+  if(!c||cur!==-1) return;
+  if(c.title){ R.title=c.title; $("ttl").textContent=c.title; document.title=c.title; }
+  if(c.ingredients) R.ingredients=c.ingredients;
+  if(c.slides&&c.slides.length){ R.slides=c.slides; N=R.slides.length; }
+}).catch(()=>{});
 </script>
 
 </body></html>

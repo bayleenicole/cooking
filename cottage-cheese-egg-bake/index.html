@@ -95,7 +95,7 @@ ul.ing li{padding:5px 0}
 <div class="alarm" id="alarm" role="alert" hidden><span id="alarmTxt"></span><button id="alarmOk">OK</button></div>
 
 <script>
-const R = {"title": "Cottage Cheese Egg Bake", "category": "Breakfast", "description": "A make-ahead cottage cheese egg bake with optional turkey bacon and spinach, sliced into squares", "serves": 8, "prep": 10, "cook": 35, "video": "https://www.tiktok.com/@bayleennicole/video/7555259400449985805", "ingredients": ["10 eggs", "16 oz cottage cheese", "2 tbsp melted butter", "1/3 cup flour", "1 tsp baking powder", "1/2 tsp salt", "1/4 tsp black pepper", "1/4-1/2 cup shredded cheese", "Optional meat & veggie add-ins:", "1 lb cooked turkey bacon or breakfast sausage, crumbled", "Handful of spinach, chopped"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["10 eggs", "16 oz cottage cheese", "2 tbsp melted butter", "1/3 cup flour", "1 tsp baking powder", "1/2 tsp salt", "1/4 tsp black pepper", "1/4-1/2 cup shredded cheese", "§Optional meat & veggie add-ins", "1 lb cooked turkey bacon or breakfast sausage, crumbled", "Handful of spinach, chopped"]}, {"title": "Preheat & Prep Dish", "text": "Preheat oven to 350F and grease a 9x13-inch baking dish."}, {"title": "Mix", "text": "In a large mixing bowl, whisk the 10 eggs until beaten, then add the 16 oz cottage cheese, 2 tbsp melted butter, 1/3 cup flour, 1 tsp baking powder, 1/2 tsp salt, and 1/4 tsp black pepper and mix together until well combined.", "uses": ["10 eggs", "16 oz cottage cheese", "2 tbsp melted butter", "1/3 cup flour", "1 tsp baking powder", "1/2 tsp salt", "1/4 tsp black pepper"]}, {"title": "Fold & Pour", "text": "Fold in the 1/4-1/2 cup shredded cheese, then pour the mixture into the prepared baking dish. (Optional: fold in the cooked turkey bacon or breakfast sausage and chopped spinach along with the cheese for a meat-and-veggie version)", "uses": ["1/4-1/2 cup shredded cheese", "1 lb cooked turkey bacon or breakfast sausage, crumbled", "Handful of spinach, chopped"]}, {"title": "Bake", "text": "Bake for 35 minutes at 350F until set and light golden brown.", "timer": 2100}, {"title": "Cool & Serve", "text": "Allow to cool for 5 minutes before slicing and serving.", "timer": 300}]};
+let R = {"title": "Cottage Cheese Egg Bake", "category": "Breakfast", "description": "A make-ahead cottage cheese egg bake with optional turkey bacon and spinach, sliced into squares", "serves": 8, "prep": 10, "cook": 35, "video": "https://www.tiktok.com/@bayleennicole/video/7555259400449985805", "slug": "cottage-cheese-egg-bake", "ingredients": ["10 eggs", "16 oz cottage cheese", "2 tbsp melted butter", "1/3 cup flour", "1 tsp baking powder", "1/2 tsp salt", "1/4 tsp black pepper", "1/4-1/2 cup shredded cheese", "Optional meat & veggie add-ins:", "1 lb cooked turkey bacon or breakfast sausage, crumbled", "Handful of spinach, chopped"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["10 eggs", "16 oz cottage cheese", "2 tbsp melted butter", "1/3 cup flour", "1 tsp baking powder", "1/2 tsp salt", "1/4 tsp black pepper", "1/4-1/2 cup shredded cheese", "§Optional meat & veggie add-ins", "1 lb cooked turkey bacon or breakfast sausage, crumbled", "Handful of spinach, chopped"]}, {"title": "Preheat & Prep Dish", "text": "Preheat oven to 350F and grease a 9x13-inch baking dish."}, {"title": "Mix", "text": "In a large mixing bowl, whisk the 10 eggs until beaten, then add the 16 oz cottage cheese, 2 tbsp melted butter, 1/3 cup flour, 1 tsp baking powder, 1/2 tsp salt, and 1/4 tsp black pepper and mix together until well combined.", "uses": ["10 eggs", "16 oz cottage cheese", "2 tbsp melted butter", "1/3 cup flour", "1 tsp baking powder", "1/2 tsp salt", "1/4 tsp black pepper"]}, {"title": "Fold & Pour", "text": "Fold in the 1/4-1/2 cup shredded cheese, then pour the mixture into the prepared baking dish. (Optional: fold in the cooked turkey bacon or breakfast sausage and chopped spinach along with the cheese for a meat-and-veggie version)", "uses": ["1/4-1/2 cup shredded cheese", "1 lb cooked turkey bacon or breakfast sausage, crumbled", "Handful of spinach, chopped"]}, {"title": "Bake", "text": "Bake for 35 minutes at 350F until set and light golden brown.", "timer": 2100}, {"title": "Cool & Serve", "text": "Allow to cool for 5 minutes before slicing and serving.", "timer": 300}]};
 const $ = id => document.getElementById(id);
 // card text: no Celsius conversions, no period at the very end
 const tidy = t => (t||"").replace(/\s*\(\s*-?\d+\s*°?\s*C\s*\)/g,"").replace(/\s*\/\s*-?\d+\s*°\s*C\b/g,"").replace(/\.\s*$/,"");
@@ -139,7 +139,7 @@ if(R.video){$("watch").href=R.video;$("watch").hidden=false}
 $("desc").textContent=tidy(R.description); $("desc").hidden=!R.description;
 
 /* ---- steps ---- */
-const N=R.slides.length;
+let N=R.slides.length;
 function show(i){
   cur=Math.max(0,Math.min(N,i));
   $("intro").hidden=true; $("cook").hidden=false;
@@ -229,6 +229,17 @@ async function keepAwake(){if(!("wakeLock" in navigator)||lock||asking||document
 document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"){if(cur>=0)keepAwake();paintTimers()}});
 
 renderIntro();
+
+/* ---- edits published from the recipe planner (data/edits.json) ----
+   If this recipe was edited there, use the edited title, ingredients and the
+   cards the planner rebuilt from the new steps. Only before cooking starts. */
+fetch("../data/edits.json?t="+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.json():null).then(d=>{
+  const o=d&&d.recipes&&d.recipes[R.slug], c=o&&o.cook;
+  if(!c||cur!==-1) return;
+  if(c.title){ R.title=c.title; $("ttl").textContent=c.title; document.title=c.title; }
+  if(c.ingredients) R.ingredients=c.ingredients;
+  if(c.slides&&c.slides.length){ R.slides=c.slides; N=R.slides.length; }
+}).catch(()=>{});
 </script>
 
 </body></html>

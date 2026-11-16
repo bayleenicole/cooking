@@ -95,7 +95,7 @@ ul.ing li{padding:5px 0}
 <div class="alarm" id="alarm" role="alert" hidden><span id="alarmTxt"></span><button id="alarmOk">OK</button></div>
 
 <script>
-const R = {"title": "Chicken Thighs with Bone Broth Rice", "category": "Dinner", "description": "Japanese barbecue and Dijon glazed chicken thighs over bone broth rice with roasted broccoli", "serves": 4, "prep": 15, "cook": 30, "video": "https://www.tiktok.com/@bayleennicole/video/7571681640993328439", "ingredients": ["1/2 cup Japanese barbecue sauce", "1 tbsp Dijon mustard", "1 1/2 lbs chicken thighs", "1 cup rice", "2 cups bone broth", "1 head broccoli, roasted", "1 tbsp olive oil", "2 tbsp to 1/4 cup bone broth, for deglazing"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["1/2 cup Japanese barbecue sauce", "1 tbsp Dijon mustard", "1 1/2 lbs chicken thighs", "1 cup rice", "2 cups bone broth", "1 head broccoli, roasted", "1 tbsp olive oil", "2 tbsp to 1/4 cup bone broth, for deglazing"]}, {"title": "Marinate", "text": "Preheat oven to 425°F. Mix the Japanese barbecue sauce and Dijon mustard, and marinate the chicken thighs for 30 minutes.", "timer": 1800, "uses": ["1/2 cup Japanese barbecue sauce", "1 tbsp Dijon mustard", "1 1/2 lbs chicken thighs"], "while": "While the chicken marinates, start the rice and broccoli (next two steps)."}, {"title": "Bone Broth Rice", "text": "Add the rice and bone broth to a pot, bring to a boil, then simmer for 20 minutes, until the rice is tender.", "timer": 1200, "uses": ["1 cup rice", "2 cups bone broth"]}, {"title": "Roast the Broccoli", "text": "Roast the broccoli in the oven at 425°F until tender.", "uses": ["1 head broccoli, roasted"]}, {"title": "Cook the Chicken", "text": "Heat olive oil in a Dutch oven, add the marinated chicken thighs, cook for about 5 minutes, then flip and add a splash of bone broth to deglaze the pan and create a sauce.", "timer": 300, "uses": ["1 tbsp olive oil", "2 tbsp to 1/4 cup bone broth, for deglazing"]}, {"title": "Serve", "text": "Serve the chicken over the bone broth rice with the roasted broccoli on the side."}]};
+let R = {"title": "Chicken Thighs with Bone Broth Rice", "category": "Dinner", "description": "Japanese barbecue and Dijon glazed chicken thighs over bone broth rice with roasted broccoli", "serves": 4, "prep": 15, "cook": 30, "video": "https://www.tiktok.com/@bayleennicole/video/7571681640993328439", "slug": "chicken-thighs-with-bone-broth-rice", "ingredients": ["1/2 cup Japanese barbecue sauce", "1 tbsp Dijon mustard", "1 1/2 lbs chicken thighs", "1 cup rice", "2 cups bone broth", "1 head broccoli, roasted", "1 tbsp olive oil", "2 tbsp to 1/4 cup bone broth, for deglazing"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["1/2 cup Japanese barbecue sauce", "1 tbsp Dijon mustard", "1 1/2 lbs chicken thighs", "1 cup rice", "2 cups bone broth", "1 head broccoli, roasted", "1 tbsp olive oil", "2 tbsp to 1/4 cup bone broth, for deglazing"]}, {"title": "Marinate", "text": "Preheat oven to 425°F. Mix the Japanese barbecue sauce and Dijon mustard, and marinate the chicken thighs for 30 minutes.", "timer": 1800, "uses": ["1/2 cup Japanese barbecue sauce", "1 tbsp Dijon mustard", "1 1/2 lbs chicken thighs"], "while": "While the chicken marinates, start the rice and broccoli (next two steps)."}, {"title": "Bone Broth Rice", "text": "Add the rice and bone broth to a pot, bring to a boil, then simmer for 20 minutes, until the rice is tender.", "timer": 1200, "uses": ["1 cup rice", "2 cups bone broth"]}, {"title": "Roast the Broccoli", "text": "Roast the broccoli in the oven at 425°F until tender.", "uses": ["1 head broccoli, roasted"]}, {"title": "Cook the Chicken", "text": "Heat olive oil in a Dutch oven, add the marinated chicken thighs, cook for about 5 minutes, then flip and add a splash of bone broth to deglaze the pan and create a sauce.", "timer": 300, "uses": ["1 tbsp olive oil", "2 tbsp to 1/4 cup bone broth, for deglazing"]}, {"title": "Serve", "text": "Serve the chicken over the bone broth rice with the roasted broccoli on the side."}]};
 const $ = id => document.getElementById(id);
 // card text: no Celsius conversions, no period at the very end
 const tidy = t => (t||"").replace(/\s*\(\s*-?\d+\s*°?\s*C\s*\)/g,"").replace(/\s*\/\s*-?\d+\s*°\s*C\b/g,"").replace(/\.\s*$/,"");
@@ -139,7 +139,7 @@ if(R.video){$("watch").href=R.video;$("watch").hidden=false}
 $("desc").textContent=tidy(R.description); $("desc").hidden=!R.description;
 
 /* ---- steps ---- */
-const N=R.slides.length;
+let N=R.slides.length;
 function show(i){
   cur=Math.max(0,Math.min(N,i));
   $("intro").hidden=true; $("cook").hidden=false;
@@ -229,6 +229,17 @@ async function keepAwake(){if(!("wakeLock" in navigator)||lock||asking||document
 document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"){if(cur>=0)keepAwake();paintTimers()}});
 
 renderIntro();
+
+/* ---- edits published from the recipe planner (data/edits.json) ----
+   If this recipe was edited there, use the edited title, ingredients and the
+   cards the planner rebuilt from the new steps. Only before cooking starts. */
+fetch("../data/edits.json?t="+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.json():null).then(d=>{
+  const o=d&&d.recipes&&d.recipes[R.slug], c=o&&o.cook;
+  if(!c||cur!==-1) return;
+  if(c.title){ R.title=c.title; $("ttl").textContent=c.title; document.title=c.title; }
+  if(c.ingredients) R.ingredients=c.ingredients;
+  if(c.slides&&c.slides.length){ R.slides=c.slides; N=R.slides.length; }
+}).catch(()=>{});
 </script>
 
 </body></html>

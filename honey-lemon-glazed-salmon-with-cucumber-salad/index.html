@@ -95,7 +95,7 @@ ul.ing li{padding:5px 0}
 <div class="alarm" id="alarm" role="alert" hidden><span id="alarmTxt"></span><button id="alarmOk">OK</button></div>
 
 <script>
-const R = {"title": "Honey Lemon Glazed Salmon with Cucumber Salad", "category": "Lunch", "description": "Seared salmon glazed in honey, soy and lemon, with a garlicky sesame chili crunch cucumber salad", "serves": 2, "prep": 10, "cook": 10, "video": "https://www.tiktok.com/@bayleennicole/video/7459612975238892843", "ingredients": ["For the salmon:", "1 tbsp olive oil", "2 salmon fillets (6 oz each)", "2 cloves garlic, minced", "2 tbsp soy sauce", "1 tbsp honey", "Juice from half a lemon", "Splash of rice vinegar", "For the cucumber salad:", "2 cucumbers", "1 clove garlic, minced", "1 tbsp toasted sesame oil", "1 tbsp chili crunch oil", "1 tbsp sesame seeds", "1 tbsp rice vinegar", "1/4 cup soy sauce"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["§Salmon", "1 tbsp olive oil", "2 salmon fillets (6 oz each)", "2 cloves garlic, minced", "2 tbsp soy sauce", "1 tbsp honey", "Juice from half a lemon", "Splash of rice vinegar", "§Cucumber salad", "2 cucumbers", "1 clove garlic, minced", "1 tbsp toasted sesame oil", "1 tbsp chili crunch oil", "1 tbsp sesame seeds", "1 tbsp rice vinegar", "1/4 cup soy sauce"]}, {"title": "Sear the Salmon", "text": "Heat 1 tbsp olive oil in a frying pan over medium-high heat, sear the 2 salmon fillets for 3 to 4 minutes per side until cooked through, then remove the salmon from the pan and set aside.", "timer": 180, "uses": ["1 tbsp olive oil", "2 salmon fillets (6 oz each)"]}, {"title": "Glaze", "text": "In the same pan, add 2 cloves minced garlic, 2 tbsp soy sauce, 1 tbsp honey, juice from half a lemon, and a splash of rice vinegar. Stir until the sauce begins to bubble and thicken, about 1 to 2 minutes, then place the salmon back in the frying pan to coat with the sauce.", "timer": 60, "uses": ["2 cloves garlic, minced", "2 tbsp soy sauce", "1 tbsp honey", "Juice from half a lemon", "Splash of rice vinegar"]}, {"title": "Cucumber Salad", "text": "Slice the cucumbers and mix together in a bowl with 1 clove minced garlic, 1 tbsp toasted sesame oil, 1 tbsp chili crunch oil, 1 tbsp sesame seeds, 1 tbsp rice vinegar, and 1/4 cup soy sauce.", "uses": ["2 cucumbers", "1 clove garlic, minced", "1 tbsp toasted sesame oil", "1 tbsp chili crunch oil", "1 tbsp sesame seeds", "1 tbsp rice vinegar", "1/4 cup soy sauce"]}]};
+let R = {"title": "Honey Lemon Glazed Salmon with Cucumber Salad", "category": "Lunch", "description": "Seared salmon glazed in honey, soy and lemon, with a garlicky sesame chili crunch cucumber salad", "serves": 2, "prep": 10, "cook": 10, "video": "https://www.tiktok.com/@bayleennicole/video/7459612975238892843", "slug": "honey-lemon-glazed-salmon-with-cucumber-salad", "ingredients": ["For the salmon:", "1 tbsp olive oil", "2 salmon fillets (6 oz each)", "2 cloves garlic, minced", "2 tbsp soy sauce", "1 tbsp honey", "Juice from half a lemon", "Splash of rice vinegar", "For the cucumber salad:", "2 cucumbers", "1 clove garlic, minced", "1 tbsp toasted sesame oil", "1 tbsp chili crunch oil", "1 tbsp sesame seeds", "1 tbsp rice vinegar", "1/4 cup soy sauce"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["§Salmon", "1 tbsp olive oil", "2 salmon fillets (6 oz each)", "2 cloves garlic, minced", "2 tbsp soy sauce", "1 tbsp honey", "Juice from half a lemon", "Splash of rice vinegar", "§Cucumber salad", "2 cucumbers", "1 clove garlic, minced", "1 tbsp toasted sesame oil", "1 tbsp chili crunch oil", "1 tbsp sesame seeds", "1 tbsp rice vinegar", "1/4 cup soy sauce"]}, {"title": "Sear the Salmon", "text": "Heat 1 tbsp olive oil in a frying pan over medium-high heat, sear the 2 salmon fillets for 3 to 4 minutes per side until cooked through, then remove the salmon from the pan and set aside.", "timer": 180, "uses": ["1 tbsp olive oil", "2 salmon fillets (6 oz each)"]}, {"title": "Glaze", "text": "In the same pan, add 2 cloves minced garlic, 2 tbsp soy sauce, 1 tbsp honey, juice from half a lemon, and a splash of rice vinegar. Stir until the sauce begins to bubble and thicken, about 1 to 2 minutes, then place the salmon back in the frying pan to coat with the sauce.", "timer": 60, "uses": ["2 cloves garlic, minced", "2 tbsp soy sauce", "1 tbsp honey", "Juice from half a lemon", "Splash of rice vinegar"]}, {"title": "Cucumber Salad", "text": "Slice the cucumbers and mix together in a bowl with 1 clove minced garlic, 1 tbsp toasted sesame oil, 1 tbsp chili crunch oil, 1 tbsp sesame seeds, 1 tbsp rice vinegar, and 1/4 cup soy sauce.", "uses": ["2 cucumbers", "1 clove garlic, minced", "1 tbsp toasted sesame oil", "1 tbsp chili crunch oil", "1 tbsp sesame seeds", "1 tbsp rice vinegar", "1/4 cup soy sauce"]}]};
 const $ = id => document.getElementById(id);
 // card text: no Celsius conversions, no period at the very end
 const tidy = t => (t||"").replace(/\s*\(\s*-?\d+\s*°?\s*C\s*\)/g,"").replace(/\s*\/\s*-?\d+\s*°\s*C\b/g,"").replace(/\.\s*$/,"");
@@ -139,7 +139,7 @@ if(R.video){$("watch").href=R.video;$("watch").hidden=false}
 $("desc").textContent=tidy(R.description); $("desc").hidden=!R.description;
 
 /* ---- steps ---- */
-const N=R.slides.length;
+let N=R.slides.length;
 function show(i){
   cur=Math.max(0,Math.min(N,i));
   $("intro").hidden=true; $("cook").hidden=false;
@@ -229,6 +229,17 @@ async function keepAwake(){if(!("wakeLock" in navigator)||lock||asking||document
 document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"){if(cur>=0)keepAwake();paintTimers()}});
 
 renderIntro();
+
+/* ---- edits published from the recipe planner (data/edits.json) ----
+   If this recipe was edited there, use the edited title, ingredients and the
+   cards the planner rebuilt from the new steps. Only before cooking starts. */
+fetch("../data/edits.json?t="+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.json():null).then(d=>{
+  const o=d&&d.recipes&&d.recipes[R.slug], c=o&&o.cook;
+  if(!c||cur!==-1) return;
+  if(c.title){ R.title=c.title; $("ttl").textContent=c.title; document.title=c.title; }
+  if(c.ingredients) R.ingredients=c.ingredients;
+  if(c.slides&&c.slides.length){ R.slides=c.slides; N=R.slides.length; }
+}).catch(()=>{});
 </script>
 
 </body></html>

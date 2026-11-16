@@ -95,7 +95,7 @@ ul.ing li{padding:5px 0}
 <div class="alarm" id="alarm" role="alert" hidden><span id="alarmTxt"></span><button id="alarmOk">OK</button></div>
 
 <script>
-const R = {"title": "Creamy Southwest Chicken and Rice", "category": "Dinner", "description": "One-pan taco-seasoned chicken and rice with green chilies and corn, made creamy with Greek yogurt", "serves": 4, "prep": 15, "cook": 30, "video": "https://www.tiktok.com/@bayleennicole/video/7521929865264745741", "ingredients": ["2 carrots, chopped", "1/2 onion, chopped", "1 bell pepper, chopped", "2 chicken breasts, diced", "1 tbsp taco seasoning", "1 cup rice", "1 (4 oz) can mild diced green chilies", "1 cup corn", "2 cups chicken broth", "1/4 cup Greek yogurt", "1/2 cup shredded cheese (optional)", "Fresh parsley, chopped, for garnish"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["2 carrots, chopped", "1/2 onion, chopped", "1 bell pepper, chopped", "2 chicken breasts, diced", "1 tbsp taco seasoning", "1 cup rice", "1 (4 oz) can mild diced green chilies", "1 cup corn", "2 cups chicken broth", "1/4 cup Greek yogurt", "1/2 cup shredded cheese (optional)", "Fresh parsley, chopped, for garnish"]}, {"title": "Vegetables & Chicken", "text": "Sauté the carrots, onion, and bell pepper in a large pan, then season the diced chicken with taco seasoning, add to the pan, and let it brown.", "uses": ["2 carrots, chopped", "1/2 onion, chopped", "1 bell pepper, chopped", "2 chicken breasts, diced", "1 tbsp taco seasoning"]}, {"title": "Rice & Broth", "text": "Stir in the rice, green chilies, and corn, then add the chicken broth, bring to a simmer, and cover.", "uses": ["1 cup rice", "1 (4 oz) can mild diced green chilies", "1 cup corn", "2 cups chicken broth"]}, {"title": "Simmer", "text": "Cook for 15-20 minutes, until the rice is tender.", "timer": 900}, {"title": "Uncover & Finish", "text": "Uncover and cook for about 5 more minutes, until the chicken is cooked through, then stir in the Greek yogurt to make it creamy.", "timer": 300, "uses": ["1/4 cup Greek yogurt"]}, {"title": "Top & Serve", "text": "Add shredded cheese, if desired, top with fresh parsley, and serve.", "uses": ["1/2 cup shredded cheese", "Fresh parsley, chopped, for garnish"]}]};
+let R = {"title": "Creamy Southwest Chicken and Rice", "category": "Dinner", "description": "One-pan taco-seasoned chicken and rice with green chilies and corn, made creamy with Greek yogurt", "serves": 4, "prep": 15, "cook": 30, "video": "https://www.tiktok.com/@bayleennicole/video/7521929865264745741", "slug": "creamy-southwest-chicken-and-rice", "ingredients": ["2 carrots, chopped", "1/2 onion, chopped", "1 bell pepper, chopped", "2 chicken breasts, diced", "1 tbsp taco seasoning", "1 cup rice", "1 (4 oz) can mild diced green chilies", "1 cup corn", "2 cups chicken broth", "1/4 cup Greek yogurt", "1/2 cup shredded cheese (optional)", "Fresh parsley, chopped, for garnish"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["2 carrots, chopped", "1/2 onion, chopped", "1 bell pepper, chopped", "2 chicken breasts, diced", "1 tbsp taco seasoning", "1 cup rice", "1 (4 oz) can mild diced green chilies", "1 cup corn", "2 cups chicken broth", "1/4 cup Greek yogurt", "1/2 cup shredded cheese (optional)", "Fresh parsley, chopped, for garnish"]}, {"title": "Vegetables & Chicken", "text": "Sauté the carrots, onion, and bell pepper in a large pan, then season the diced chicken with taco seasoning, add to the pan, and let it brown.", "uses": ["2 carrots, chopped", "1/2 onion, chopped", "1 bell pepper, chopped", "2 chicken breasts, diced", "1 tbsp taco seasoning"]}, {"title": "Rice & Broth", "text": "Stir in the rice, green chilies, and corn, then add the chicken broth, bring to a simmer, and cover.", "uses": ["1 cup rice", "1 (4 oz) can mild diced green chilies", "1 cup corn", "2 cups chicken broth"]}, {"title": "Simmer", "text": "Cook for 15-20 minutes, until the rice is tender.", "timer": 900}, {"title": "Uncover & Finish", "text": "Uncover and cook for about 5 more minutes, until the chicken is cooked through, then stir in the Greek yogurt to make it creamy.", "timer": 300, "uses": ["1/4 cup Greek yogurt"]}, {"title": "Top & Serve", "text": "Add shredded cheese, if desired, top with fresh parsley, and serve.", "uses": ["1/2 cup shredded cheese", "Fresh parsley, chopped, for garnish"]}]};
 const $ = id => document.getElementById(id);
 // card text: no Celsius conversions, no period at the very end
 const tidy = t => (t||"").replace(/\s*\(\s*-?\d+\s*°?\s*C\s*\)/g,"").replace(/\s*\/\s*-?\d+\s*°\s*C\b/g,"").replace(/\.\s*$/,"");
@@ -139,7 +139,7 @@ if(R.video){$("watch").href=R.video;$("watch").hidden=false}
 $("desc").textContent=tidy(R.description); $("desc").hidden=!R.description;
 
 /* ---- steps ---- */
-const N=R.slides.length;
+let N=R.slides.length;
 function show(i){
   cur=Math.max(0,Math.min(N,i));
   $("intro").hidden=true; $("cook").hidden=false;
@@ -229,6 +229,17 @@ async function keepAwake(){if(!("wakeLock" in navigator)||lock||asking||document
 document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"){if(cur>=0)keepAwake();paintTimers()}});
 
 renderIntro();
+
+/* ---- edits published from the recipe planner (data/edits.json) ----
+   If this recipe was edited there, use the edited title, ingredients and the
+   cards the planner rebuilt from the new steps. Only before cooking starts. */
+fetch("../data/edits.json?t="+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.json():null).then(d=>{
+  const o=d&&d.recipes&&d.recipes[R.slug], c=o&&o.cook;
+  if(!c||cur!==-1) return;
+  if(c.title){ R.title=c.title; $("ttl").textContent=c.title; document.title=c.title; }
+  if(c.ingredients) R.ingredients=c.ingredients;
+  if(c.slides&&c.slides.length){ R.slides=c.slides; N=R.slides.length; }
+}).catch(()=>{});
 </script>
 
 </body></html>

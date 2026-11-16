@@ -95,7 +95,7 @@ ul.ing li{padding:5px 0}
 <div class="alarm" id="alarm" role="alert" hidden><span id="alarmTxt"></span><button id="alarmOk">OK</button></div>
 
 <script>
-const R = {"title": "Sun-Dried Tomato and Feta Turkey Burgers", "category": "Lunch", "description": "Juicy turkey burgers packed with feta, sun-dried tomatoes, spinach and red onion", "serves": 4, "prep": 15, "cook": 15, "video": "https://www.tiktok.com/@bayleennicole/video/7270920319987223850", "ingredients": ["1 lb ground turkey", "1/4 cup feta", "1/4 cup sun dried tomato, chopped", "1/4 cup finely diced red onion", "1/2 cup finely chopped spinach", "2 garlic cloves, minced", "1 tsp dried oregano", "1/2 tsp garlic powder", "Pinch of cayenne or paprika", "1/2 tsp salt", "1/4 tsp black pepper", "1 tbsp olive oil"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["1 lb ground turkey", "1/4 cup feta", "1/4 cup sun dried tomato, chopped", "1/4 cup finely diced red onion", "1/2 cup finely chopped spinach", "2 garlic cloves, minced", "1 tsp dried oregano", "1/2 tsp garlic powder", "Pinch of cayenne or paprika", "1/2 tsp salt", "1/4 tsp black pepper", "1 tbsp olive oil"]}, {"title": "Mix & Shape", "text": "In a large bowl, combine the ground turkey, feta, sun-dried tomato, red onion, spinach, minced garlic, dried oregano, garlic powder, cayenne or paprika, salt, and black pepper, then mix well and shape into 4 patties.", "uses": ["1 lb ground turkey", "1/4 cup feta", "1/4 cup sun dried tomato, chopped", "1/4 cup finely diced red onion", "1/2 cup finely chopped spinach", "2 garlic cloves, minced", "1 tsp dried oregano", "1/2 tsp garlic powder", "Pinch of cayenne or paprika", "1/2 tsp salt", "1/4 tsp black pepper"]}, {"title": "Heat the Pan", "text": "Heat 1 tbsp olive oil in a skillet or cast iron skillet over medium heat.", "uses": ["1 tbsp olive oil"]}, {"title": "Cook", "text": "Add the patties and cook for 5-6 minutes on each side until cooked through and reaching an internal temperature of 165°F.", "timer": 300}]};
+let R = {"title": "Sun-Dried Tomato and Feta Turkey Burgers", "category": "Lunch", "description": "Juicy turkey burgers packed with feta, sun-dried tomatoes, spinach and red onion", "serves": 4, "prep": 15, "cook": 15, "video": "https://www.tiktok.com/@bayleennicole/video/7270920319987223850", "slug": "sun-dried-tomato-and-feta-turkey-burgers", "ingredients": ["1 lb ground turkey", "1/4 cup feta", "1/4 cup sun dried tomato, chopped", "1/4 cup finely diced red onion", "1/2 cup finely chopped spinach", "2 garlic cloves, minced", "1 tsp dried oregano", "1/2 tsp garlic powder", "Pinch of cayenne or paprika", "1/2 tsp salt", "1/4 tsp black pepper", "1 tbsp olive oil"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["1 lb ground turkey", "1/4 cup feta", "1/4 cup sun dried tomato, chopped", "1/4 cup finely diced red onion", "1/2 cup finely chopped spinach", "2 garlic cloves, minced", "1 tsp dried oregano", "1/2 tsp garlic powder", "Pinch of cayenne or paprika", "1/2 tsp salt", "1/4 tsp black pepper", "1 tbsp olive oil"]}, {"title": "Mix & Shape", "text": "In a large bowl, combine the ground turkey, feta, sun-dried tomato, red onion, spinach, minced garlic, dried oregano, garlic powder, cayenne or paprika, salt, and black pepper, then mix well and shape into 4 patties.", "uses": ["1 lb ground turkey", "1/4 cup feta", "1/4 cup sun dried tomato, chopped", "1/4 cup finely diced red onion", "1/2 cup finely chopped spinach", "2 garlic cloves, minced", "1 tsp dried oregano", "1/2 tsp garlic powder", "Pinch of cayenne or paprika", "1/2 tsp salt", "1/4 tsp black pepper"]}, {"title": "Heat the Pan", "text": "Heat 1 tbsp olive oil in a skillet or cast iron skillet over medium heat.", "uses": ["1 tbsp olive oil"]}, {"title": "Cook", "text": "Add the patties and cook for 5-6 minutes on each side until cooked through and reaching an internal temperature of 165°F.", "timer": 300}]};
 const $ = id => document.getElementById(id);
 // card text: no Celsius conversions, no period at the very end
 const tidy = t => (t||"").replace(/\s*\(\s*-?\d+\s*°?\s*C\s*\)/g,"").replace(/\s*\/\s*-?\d+\s*°\s*C\b/g,"").replace(/\.\s*$/,"");
@@ -139,7 +139,7 @@ if(R.video){$("watch").href=R.video;$("watch").hidden=false}
 $("desc").textContent=tidy(R.description); $("desc").hidden=!R.description;
 
 /* ---- steps ---- */
-const N=R.slides.length;
+let N=R.slides.length;
 function show(i){
   cur=Math.max(0,Math.min(N,i));
   $("intro").hidden=true; $("cook").hidden=false;
@@ -229,6 +229,17 @@ async function keepAwake(){if(!("wakeLock" in navigator)||lock||asking||document
 document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"){if(cur>=0)keepAwake();paintTimers()}});
 
 renderIntro();
+
+/* ---- edits published from the recipe planner (data/edits.json) ----
+   If this recipe was edited there, use the edited title, ingredients and the
+   cards the planner rebuilt from the new steps. Only before cooking starts. */
+fetch("../data/edits.json?t="+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.json():null).then(d=>{
+  const o=d&&d.recipes&&d.recipes[R.slug], c=o&&o.cook;
+  if(!c||cur!==-1) return;
+  if(c.title){ R.title=c.title; $("ttl").textContent=c.title; document.title=c.title; }
+  if(c.ingredients) R.ingredients=c.ingredients;
+  if(c.slides&&c.slides.length){ R.slides=c.slides; N=R.slides.length; }
+}).catch(()=>{});
 </script>
 
 </body></html>

@@ -95,7 +95,7 @@ ul.ing li{padding:5px 0}
 <div class="alarm" id="alarm" role="alert" hidden><span id="alarmTxt"></span><button id="alarmOk">OK</button></div>
 
 <script>
-const R = {"title": "Pumpkin Vodka Sauce Pasta", "category": "Dinner", "description": "A cozy pumpkin vodka sauce with cream, Parmesan and chili flakes, tossed with pasta", "serves": 4, "prep": 10, "cook": 20, "video": "https://www.tiktok.com/@bayleennicole/video/7281313176602299694", "ingredients": ["12 oz pasta of choice", "1 tbsp olive oil", "3 cloves garlic, minced", "2 tbsp tomato paste", "1/4 cup vodka", "1 cup canned pumpkin puree", "1 cup crushed tomatoes", "1/2 cup heavy cream", "1/2 tsp red pepper flakes", "Salt and pepper, to taste", "1/2 cup grated Parmesan", "Fresh basil, for garnish"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["12 oz pasta of choice", "1 tbsp olive oil", "3 cloves garlic, minced", "2 tbsp tomato paste", "1/4 cup vodka", "1 cup canned pumpkin puree", "1 cup crushed tomatoes", "1/2 cup heavy cream", "1/2 tsp red pepper flakes", "Salt and pepper, to taste", "1/2 cup grated Parmesan", "Fresh basil, for garnish"]}, {"title": "Cook the Pasta", "text": "Cook pasta in salted boiling water according to package directions, then drain.", "uses": ["12 oz pasta of choice"]}, {"title": "Garlic & Tomato Paste", "text": "Heat olive oil in a large skillet over medium heat and sauté garlic for 1 minute, then stir in tomato paste and cook for 2 minutes.", "timer": 60, "uses": ["1 tbsp olive oil", "3 cloves garlic, minced", "2 tbsp tomato paste"]}, {"title": "Vodka & Pumpkin", "text": "Add vodka and let it cook off for 1 minute, then stir in pumpkin puree and crushed tomatoes and simmer for 10 minutes.", "timer": 600, "uses": ["1/4 cup vodka", "1 cup canned pumpkin puree", "1 cup crushed tomatoes"]}, {"title": "Cream & Parmesan", "text": "Add heavy cream, red pepper flakes, salt, and pepper, simmer 5 more minutes, then stir in Parmesan until melted.", "timer": 300, "uses": ["1/2 cup heavy cream", "1/2 tsp red pepper flakes", "Salt and pepper, to taste", "1/2 cup grated Parmesan"]}, {"title": "Toss & Serve", "text": "Toss the cooked pasta with the sauce, garnish with fresh basil, and serve.", "uses": ["Fresh basil, for garnish"]}]};
+let R = {"title": "Pumpkin Vodka Sauce Pasta", "category": "Dinner", "description": "A cozy pumpkin vodka sauce with cream, Parmesan and chili flakes, tossed with pasta", "serves": 4, "prep": 10, "cook": 20, "video": "https://www.tiktok.com/@bayleennicole/video/7281313176602299694", "slug": "pumpkin-vodka-sauce-pasta", "ingredients": ["12 oz pasta of choice", "1 tbsp olive oil", "3 cloves garlic, minced", "2 tbsp tomato paste", "1/4 cup vodka", "1 cup canned pumpkin puree", "1 cup crushed tomatoes", "1/2 cup heavy cream", "1/2 tsp red pepper flakes", "Salt and pepper, to taste", "1/2 cup grated Parmesan", "Fresh basil, for garnish"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["12 oz pasta of choice", "1 tbsp olive oil", "3 cloves garlic, minced", "2 tbsp tomato paste", "1/4 cup vodka", "1 cup canned pumpkin puree", "1 cup crushed tomatoes", "1/2 cup heavy cream", "1/2 tsp red pepper flakes", "Salt and pepper, to taste", "1/2 cup grated Parmesan", "Fresh basil, for garnish"]}, {"title": "Cook the Pasta", "text": "Cook pasta in salted boiling water according to package directions, then drain.", "uses": ["12 oz pasta of choice"]}, {"title": "Garlic & Tomato Paste", "text": "Heat olive oil in a large skillet over medium heat and sauté garlic for 1 minute, then stir in tomato paste and cook for 2 minutes.", "timer": 60, "uses": ["1 tbsp olive oil", "3 cloves garlic, minced", "2 tbsp tomato paste"]}, {"title": "Vodka & Pumpkin", "text": "Add vodka and let it cook off for 1 minute, then stir in pumpkin puree and crushed tomatoes and simmer for 10 minutes.", "timer": 600, "uses": ["1/4 cup vodka", "1 cup canned pumpkin puree", "1 cup crushed tomatoes"]}, {"title": "Cream & Parmesan", "text": "Add heavy cream, red pepper flakes, salt, and pepper, simmer 5 more minutes, then stir in Parmesan until melted.", "timer": 300, "uses": ["1/2 cup heavy cream", "1/2 tsp red pepper flakes", "Salt and pepper, to taste", "1/2 cup grated Parmesan"]}, {"title": "Toss & Serve", "text": "Toss the cooked pasta with the sauce, garnish with fresh basil, and serve.", "uses": ["Fresh basil, for garnish"]}]};
 const $ = id => document.getElementById(id);
 // card text: no Celsius conversions, no period at the very end
 const tidy = t => (t||"").replace(/\s*\(\s*-?\d+\s*°?\s*C\s*\)/g,"").replace(/\s*\/\s*-?\d+\s*°\s*C\b/g,"").replace(/\.\s*$/,"");
@@ -139,7 +139,7 @@ if(R.video){$("watch").href=R.video;$("watch").hidden=false}
 $("desc").textContent=tidy(R.description); $("desc").hidden=!R.description;
 
 /* ---- steps ---- */
-const N=R.slides.length;
+let N=R.slides.length;
 function show(i){
   cur=Math.max(0,Math.min(N,i));
   $("intro").hidden=true; $("cook").hidden=false;
@@ -229,6 +229,17 @@ async function keepAwake(){if(!("wakeLock" in navigator)||lock||asking||document
 document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"){if(cur>=0)keepAwake();paintTimers()}});
 
 renderIntro();
+
+/* ---- edits published from the recipe planner (data/edits.json) ----
+   If this recipe was edited there, use the edited title, ingredients and the
+   cards the planner rebuilt from the new steps. Only before cooking starts. */
+fetch("../data/edits.json?t="+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.json():null).then(d=>{
+  const o=d&&d.recipes&&d.recipes[R.slug], c=o&&o.cook;
+  if(!c||cur!==-1) return;
+  if(c.title){ R.title=c.title; $("ttl").textContent=c.title; document.title=c.title; }
+  if(c.ingredients) R.ingredients=c.ingredients;
+  if(c.slides&&c.slides.length){ R.slides=c.slides; N=R.slides.length; }
+}).catch(()=>{});
 </script>
 
 </body></html>

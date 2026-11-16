@@ -95,7 +95,7 @@ ul.ing li{padding:5px 0}
 <div class="alarm" id="alarm" role="alert" hidden><span id="alarmTxt"></span><button id="alarmOk">OK</button></div>
 
 <script>
-const R = {"title": "Chipotle Copycat Chicken Bowl", "category": "Lunch", "description": "Chipotle-marinated chicken over cilantro-lime rice with black beans, fresh salsa, guacamole and romaine", "serves": 4, "prep": 15, "cook": 30, "video": "https://www.tiktok.com/@bayleennicole/video/7423920734856072479", "ingredients": ["2-3 chipotle peppers in adobo sauce, blended", "2 chicken breasts", "1 cup uncooked rice", "2 cups water", "1 tbsp olive oil", "2 bay leaves", "Juice of 1 lime", "Juice of 1 lemon", "Salt, to taste", "Chopped cilantro, to taste", "2 tomatoes, diced", "1/2 onion, diced", "2 avocados", "1 (15 oz) can black beans", "1 head romaine lettuce, chopped"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["2-3 chipotle peppers in adobo sauce, blended", "2 chicken breasts", "1 cup uncooked rice", "2 cups water", "1 tbsp olive oil", "2 bay leaves", "Juice of 1 lime", "Juice of 1 lemon", "Salt, to taste", "Chopped cilantro, to taste", "2 tomatoes, diced", "1/2 onion, diced", "2 avocados", "1 (15 oz) can black beans", "1 head romaine lettuce, chopped"]}, {"title": "Marinate the Chicken", "text": "Blend the chipotle peppers with the adobo sauce, then marinate the chicken in the blended mixture in the fridge for 20-30 minutes.", "timer": 1200, "uses": ["2-3 chipotle peppers in adobo sauce, blended", "2 chicken breasts"], "while": "While the chicken marinates, make the rice, salsa, and guacamole (next steps)."}, {"title": "Cilantro-Lime Rice", "text": "Cook the rice in the water with the olive oil and bay leaves, then stir in lime juice, lemon juice, salt, and chopped cilantro to make cilantro-lime rice.", "uses": ["1 cup uncooked rice", "2 cups water", "1 tbsp olive oil", "2 bay leaves", "Juice of 1 lemon", "Juice of 1/2 lime", "Salt and cilantro"]}, {"title": "Salsa", "text": "Dice the tomatoes and onion, then combine with cilantro, lime juice, and salt to make the salsa.", "uses": ["2 tomatoes, diced", "1/2 onion, diced", "Juice of 1/2 lime", "Salt and cilantro"]}, {"title": "Guacamole", "text": "Mash the avocados with a portion of the prepared salsa mixture to make guacamole.", "uses": ["2 avocados"]}, {"title": "Beans & Lettuce", "text": "Warm the black beans and chop the romaine lettuce.", "uses": ["1 (15 oz) can black beans", "1 head romaine lettuce, chopped"]}, {"title": "Cook the Chicken", "text": "Cook the marinated chicken in a cast iron pan until cooked through."}, {"title": "Assemble", "text": "Assemble bowls with rice, lettuce, beans, salsa, guacamole, and chicken."}]};
+let R = {"title": "Chipotle Copycat Chicken Bowl", "category": "Lunch", "description": "Chipotle-marinated chicken over cilantro-lime rice with black beans, fresh salsa, guacamole and romaine", "serves": 4, "prep": 15, "cook": 30, "video": "https://www.tiktok.com/@bayleennicole/video/7423920734856072479", "slug": "chipotle-copycat-chicken-bowl", "ingredients": ["2-3 chipotle peppers in adobo sauce, blended", "2 chicken breasts", "1 cup uncooked rice", "2 cups water", "1 tbsp olive oil", "2 bay leaves", "Juice of 1 lime", "Juice of 1 lemon", "Salt, to taste", "Chopped cilantro, to taste", "2 tomatoes, diced", "1/2 onion, diced", "2 avocados", "1 (15 oz) can black beans", "1 head romaine lettuce, chopped"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["2-3 chipotle peppers in adobo sauce, blended", "2 chicken breasts", "1 cup uncooked rice", "2 cups water", "1 tbsp olive oil", "2 bay leaves", "Juice of 1 lime", "Juice of 1 lemon", "Salt, to taste", "Chopped cilantro, to taste", "2 tomatoes, diced", "1/2 onion, diced", "2 avocados", "1 (15 oz) can black beans", "1 head romaine lettuce, chopped"]}, {"title": "Marinate the Chicken", "text": "Blend the chipotle peppers with the adobo sauce, then marinate the chicken in the blended mixture in the fridge for 20-30 minutes.", "timer": 1200, "uses": ["2-3 chipotle peppers in adobo sauce, blended", "2 chicken breasts"], "while": "While the chicken marinates, make the rice, salsa, and guacamole (next steps)."}, {"title": "Cilantro-Lime Rice", "text": "Cook the rice in the water with the olive oil and bay leaves, then stir in lime juice, lemon juice, salt, and chopped cilantro to make cilantro-lime rice.", "uses": ["1 cup uncooked rice", "2 cups water", "1 tbsp olive oil", "2 bay leaves", "Juice of 1 lemon", "Juice of 1/2 lime", "Salt and cilantro"]}, {"title": "Salsa", "text": "Dice the tomatoes and onion, then combine with cilantro, lime juice, and salt to make the salsa.", "uses": ["2 tomatoes, diced", "1/2 onion, diced", "Juice of 1/2 lime", "Salt and cilantro"]}, {"title": "Guacamole", "text": "Mash the avocados with a portion of the prepared salsa mixture to make guacamole.", "uses": ["2 avocados"]}, {"title": "Beans & Lettuce", "text": "Warm the black beans and chop the romaine lettuce.", "uses": ["1 (15 oz) can black beans", "1 head romaine lettuce, chopped"]}, {"title": "Cook the Chicken", "text": "Cook the marinated chicken in a cast iron pan until cooked through."}, {"title": "Assemble", "text": "Assemble bowls with rice, lettuce, beans, salsa, guacamole, and chicken."}]};
 const $ = id => document.getElementById(id);
 // card text: no Celsius conversions, no period at the very end
 const tidy = t => (t||"").replace(/\s*\(\s*-?\d+\s*°?\s*C\s*\)/g,"").replace(/\s*\/\s*-?\d+\s*°\s*C\b/g,"").replace(/\.\s*$/,"");
@@ -139,7 +139,7 @@ if(R.video){$("watch").href=R.video;$("watch").hidden=false}
 $("desc").textContent=tidy(R.description); $("desc").hidden=!R.description;
 
 /* ---- steps ---- */
-const N=R.slides.length;
+let N=R.slides.length;
 function show(i){
   cur=Math.max(0,Math.min(N,i));
   $("intro").hidden=true; $("cook").hidden=false;
@@ -229,6 +229,17 @@ async function keepAwake(){if(!("wakeLock" in navigator)||lock||asking||document
 document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"){if(cur>=0)keepAwake();paintTimers()}});
 
 renderIntro();
+
+/* ---- edits published from the recipe planner (data/edits.json) ----
+   If this recipe was edited there, use the edited title, ingredients and the
+   cards the planner rebuilt from the new steps. Only before cooking starts. */
+fetch("../data/edits.json?t="+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.json():null).then(d=>{
+  const o=d&&d.recipes&&d.recipes[R.slug], c=o&&o.cook;
+  if(!c||cur!==-1) return;
+  if(c.title){ R.title=c.title; $("ttl").textContent=c.title; document.title=c.title; }
+  if(c.ingredients) R.ingredients=c.ingredients;
+  if(c.slides&&c.slides.length){ R.slides=c.slides; N=R.slides.length; }
+}).catch(()=>{});
 </script>
 
 </body></html>

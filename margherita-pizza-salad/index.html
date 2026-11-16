@@ -95,7 +95,7 @@ ul.ing li{padding:5px 0}
 <div class="alarm" id="alarm" role="alert" hidden><span id="alarmTxt"></span><button id="alarmOk">OK</button></div>
 
 <script>
-const R = {"title": "Margherita Pizza Salad", "category": "Lunch", "description": "Arugula topped with blistered tomatoes and melted mozzarella, roasted eggplant and Parmesan croutons, with a caper yogurt dressing", "serves": 4, "prep": 15, "cook": 20, "video": "https://www.tiktok.com/@bayleennicole/video/7281366188289133870", "ingredients": ["2 cups cherry tomatoes", "2 cloves garlic, minced", "2 tbsp olive oil", "1 tsp dried oregano", "1 eggplant, cubed", "Salt, pepper, and oregano, to taste", "1/2 baguette, diced", "1/4 cup grated Parmesan", "2 tbsp olive oil", "1/2 tsp garlic salt", "1/2 tsp dried oregano", "1/2 cup Greek yogurt", "2 tbsp caper brine", "1/2 tsp garlic salt", "1/2 tsp dried oregano", "1 cup shredded mozzarella", "4 cups arugula"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["2 cups cherry tomatoes", "2 cloves garlic, minced", "2 tbsp olive oil", "1 tsp dried oregano", "1 eggplant, cubed", "Salt, pepper, and oregano, to taste", "1/2 baguette, diced", "1/4 cup grated Parmesan", "2 tbsp olive oil", "1/2 tsp garlic salt", "1/2 tsp dried oregano", "1/2 cup Greek yogurt", "2 tbsp caper brine", "1/2 tsp garlic salt", "1/2 tsp dried oregano", "1 cup shredded mozzarella", "4 cups arugula"]}, {"title": "Preheat & Tomatoes", "text": "Preheat oven to 400°F. Toss the cherry tomatoes with garlic, olive oil, and oregano, and bake for 15-20 minutes, until blistered.", "timer": 900, "uses": ["2 cups cherry tomatoes", "2 cloves garlic, minced", "2 tbsp olive oil", "1 tsp dried oregano"]}, {"title": "Eggplant", "text": "Toss the eggplant with salt, pepper, and oregano, and roast for 15-20 minutes.", "timer": 900, "uses": ["1 eggplant, cubed", "Salt, pepper, and oregano, to taste"]}, {"title": "Croutons", "text": "Toss the diced baguette with Parmesan, olive oil, garlic salt, and oregano, and bake for about 7 minutes, until crisp.", "timer": 420, "uses": ["1/2 baguette, diced", "1/4 cup grated Parmesan", "2 tbsp olive oil", "1/2 tsp garlic salt", "1/2 tsp dried oregano"]}, {"title": "Dressing", "text": "Whisk together the Greek yogurt, caper brine, garlic salt, and oregano for the dressing.", "uses": ["1/2 cup Greek yogurt", "2 tbsp caper brine", "1/2 tsp garlic salt", "1/2 tsp dried oregano"]}, {"title": "Melt the Mozzarella", "text": "Once the tomatoes are done, stir in the mozzarella to melt.", "uses": ["1 cup shredded mozzarella"]}, {"title": "Assemble & Serve", "text": "Arrange the arugula on a plate, top with the roasted tomatoes, eggplant, and croutons, drizzle with the dressing, and serve.", "uses": ["4 cups arugula"]}]};
+let R = {"title": "Margherita Pizza Salad", "category": "Lunch", "description": "Arugula topped with blistered tomatoes and melted mozzarella, roasted eggplant and Parmesan croutons, with a caper yogurt dressing", "serves": 4, "prep": 15, "cook": 20, "video": "https://www.tiktok.com/@bayleennicole/video/7281366188289133870", "slug": "margherita-pizza-salad", "ingredients": ["2 cups cherry tomatoes", "2 cloves garlic, minced", "2 tbsp olive oil", "1 tsp dried oregano", "1 eggplant, cubed", "Salt, pepper, and oregano, to taste", "1/2 baguette, diced", "1/4 cup grated Parmesan", "2 tbsp olive oil", "1/2 tsp garlic salt", "1/2 tsp dried oregano", "1/2 cup Greek yogurt", "2 tbsp caper brine", "1/2 tsp garlic salt", "1/2 tsp dried oregano", "1 cup shredded mozzarella", "4 cups arugula"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["2 cups cherry tomatoes", "2 cloves garlic, minced", "2 tbsp olive oil", "1 tsp dried oregano", "1 eggplant, cubed", "Salt, pepper, and oregano, to taste", "1/2 baguette, diced", "1/4 cup grated Parmesan", "2 tbsp olive oil", "1/2 tsp garlic salt", "1/2 tsp dried oregano", "1/2 cup Greek yogurt", "2 tbsp caper brine", "1/2 tsp garlic salt", "1/2 tsp dried oregano", "1 cup shredded mozzarella", "4 cups arugula"]}, {"title": "Preheat & Tomatoes", "text": "Preheat oven to 400°F. Toss the cherry tomatoes with garlic, olive oil, and oregano, and bake for 15-20 minutes, until blistered.", "timer": 900, "uses": ["2 cups cherry tomatoes", "2 cloves garlic, minced", "2 tbsp olive oil", "1 tsp dried oregano"]}, {"title": "Eggplant", "text": "Toss the eggplant with salt, pepper, and oregano, and roast for 15-20 minutes.", "timer": 900, "uses": ["1 eggplant, cubed", "Salt, pepper, and oregano, to taste"]}, {"title": "Croutons", "text": "Toss the diced baguette with Parmesan, olive oil, garlic salt, and oregano, and bake for about 7 minutes, until crisp.", "timer": 420, "uses": ["1/2 baguette, diced", "1/4 cup grated Parmesan", "2 tbsp olive oil", "1/2 tsp garlic salt", "1/2 tsp dried oregano"]}, {"title": "Dressing", "text": "Whisk together the Greek yogurt, caper brine, garlic salt, and oregano for the dressing.", "uses": ["1/2 cup Greek yogurt", "2 tbsp caper brine", "1/2 tsp garlic salt", "1/2 tsp dried oregano"]}, {"title": "Melt the Mozzarella", "text": "Once the tomatoes are done, stir in the mozzarella to melt.", "uses": ["1 cup shredded mozzarella"]}, {"title": "Assemble & Serve", "text": "Arrange the arugula on a plate, top with the roasted tomatoes, eggplant, and croutons, drizzle with the dressing, and serve.", "uses": ["4 cups arugula"]}]};
 const $ = id => document.getElementById(id);
 // card text: no Celsius conversions, no period at the very end
 const tidy = t => (t||"").replace(/\s*\(\s*-?\d+\s*°?\s*C\s*\)/g,"").replace(/\s*\/\s*-?\d+\s*°\s*C\b/g,"").replace(/\.\s*$/,"");
@@ -139,7 +139,7 @@ if(R.video){$("watch").href=R.video;$("watch").hidden=false}
 $("desc").textContent=tidy(R.description); $("desc").hidden=!R.description;
 
 /* ---- steps ---- */
-const N=R.slides.length;
+let N=R.slides.length;
 function show(i){
   cur=Math.max(0,Math.min(N,i));
   $("intro").hidden=true; $("cook").hidden=false;
@@ -229,6 +229,17 @@ async function keepAwake(){if(!("wakeLock" in navigator)||lock||asking||document
 document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"){if(cur>=0)keepAwake();paintTimers()}});
 
 renderIntro();
+
+/* ---- edits published from the recipe planner (data/edits.json) ----
+   If this recipe was edited there, use the edited title, ingredients and the
+   cards the planner rebuilt from the new steps. Only before cooking starts. */
+fetch("../data/edits.json?t="+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.json():null).then(d=>{
+  const o=d&&d.recipes&&d.recipes[R.slug], c=o&&o.cook;
+  if(!c||cur!==-1) return;
+  if(c.title){ R.title=c.title; $("ttl").textContent=c.title; document.title=c.title; }
+  if(c.ingredients) R.ingredients=c.ingredients;
+  if(c.slides&&c.slides.length){ R.slides=c.slides; N=R.slides.length; }
+}).catch(()=>{});
 </script>
 
 </body></html>

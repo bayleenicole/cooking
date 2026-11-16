@@ -95,7 +95,7 @@ ul.ing li{padding:5px 0}
 <div class="alarm" id="alarm" role="alert" hidden><span id="alarmTxt"></span><button id="alarmOk">OK</button></div>
 
 <script>
-const R = {"title": "Nightly Greek Yogurt Dessert Bowl", "category": "Dessert", "description": "Sweetened Greek yogurt under warm mashed berries, a crumbled Aussie Bite and a dollop of Cool Whip", "serves": 1, "prep": 5, "cook": 0, "video": "https://www.tiktok.com/@bayleennicole/video/7279648167375801646", "ingredients": ["3/4 cup Greek yogurt (5%)", "1 tsp stevia", "2 tbsp water", "1 cup frozen berries", "1 Aussie Bite, crumbled", "2 tbsp Cool Whip"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["3/4 cup Greek yogurt (5%)", "1 tsp stevia", "2 tbsp water", "1 cup frozen berries", "1 Aussie Bite, crumbled", "2 tbsp Cool Whip"]}, {"title": "Yogurt", "text": "Mix Greek yogurt with stevia and water until creamy, and spoon into a bowl.", "uses": ["3/4 cup Greek yogurt (5%)", "1 tsp stevia", "2 tbsp water"]}, {"title": "Berry Syrup", "text": "Microwave the frozen berries until soft, then mash slightly to create a syrup, and pour over the yogurt.", "uses": ["1 cup frozen berries"]}, {"title": "Top & Serve", "text": "Crumble the Aussie Bite over the top, add a dollop of Cool Whip, and serve immediately.", "uses": ["1 Aussie Bite, crumbled", "2 tbsp Cool Whip"]}]};
+let R = {"title": "Nightly Greek Yogurt Dessert Bowl", "category": "Dessert", "description": "Sweetened Greek yogurt under warm mashed berries, a crumbled Aussie Bite and a dollop of Cool Whip", "serves": 1, "prep": 5, "cook": 0, "video": "https://www.tiktok.com/@bayleennicole/video/7279648167375801646", "slug": "nightly-greek-yogurt-dessert-bowl", "ingredients": ["3/4 cup Greek yogurt (5%)", "1 tsp stevia", "2 tbsp water", "1 cup frozen berries", "1 Aussie Bite, crumbled", "2 tbsp Cool Whip"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["3/4 cup Greek yogurt (5%)", "1 tsp stevia", "2 tbsp water", "1 cup frozen berries", "1 Aussie Bite, crumbled", "2 tbsp Cool Whip"]}, {"title": "Yogurt", "text": "Mix Greek yogurt with stevia and water until creamy, and spoon into a bowl.", "uses": ["3/4 cup Greek yogurt (5%)", "1 tsp stevia", "2 tbsp water"]}, {"title": "Berry Syrup", "text": "Microwave the frozen berries until soft, then mash slightly to create a syrup, and pour over the yogurt.", "uses": ["1 cup frozen berries"]}, {"title": "Top & Serve", "text": "Crumble the Aussie Bite over the top, add a dollop of Cool Whip, and serve immediately.", "uses": ["1 Aussie Bite, crumbled", "2 tbsp Cool Whip"]}]};
 const $ = id => document.getElementById(id);
 // card text: no Celsius conversions, no period at the very end
 const tidy = t => (t||"").replace(/\s*\(\s*-?\d+\s*°?\s*C\s*\)/g,"").replace(/\s*\/\s*-?\d+\s*°\s*C\b/g,"").replace(/\.\s*$/,"");
@@ -139,7 +139,7 @@ if(R.video){$("watch").href=R.video;$("watch").hidden=false}
 $("desc").textContent=tidy(R.description); $("desc").hidden=!R.description;
 
 /* ---- steps ---- */
-const N=R.slides.length;
+let N=R.slides.length;
 function show(i){
   cur=Math.max(0,Math.min(N,i));
   $("intro").hidden=true; $("cook").hidden=false;
@@ -229,6 +229,17 @@ async function keepAwake(){if(!("wakeLock" in navigator)||lock||asking||document
 document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"){if(cur>=0)keepAwake();paintTimers()}});
 
 renderIntro();
+
+/* ---- edits published from the recipe planner (data/edits.json) ----
+   If this recipe was edited there, use the edited title, ingredients and the
+   cards the planner rebuilt from the new steps. Only before cooking starts. */
+fetch("../data/edits.json?t="+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.json():null).then(d=>{
+  const o=d&&d.recipes&&d.recipes[R.slug], c=o&&o.cook;
+  if(!c||cur!==-1) return;
+  if(c.title){ R.title=c.title; $("ttl").textContent=c.title; document.title=c.title; }
+  if(c.ingredients) R.ingredients=c.ingredients;
+  if(c.slides&&c.slides.length){ R.slides=c.slides; N=R.slides.length; }
+}).catch(()=>{});
 </script>
 
 </body></html>

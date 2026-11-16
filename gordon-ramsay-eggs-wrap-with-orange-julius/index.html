@@ -95,7 +95,7 @@ ul.ing li{padding:5px 0}
 <div class="alarm" id="alarm" role="alert" hidden><span id="alarmTxt"></span><button id="alarmOk">OK</button></div>
 
 <script>
-const R = {"title": "Gordon Ramsay Eggs Wrap with Orange Julius", "category": "Breakfast", "description": "Soft, slow-scrambled eggs in a cream cheese wrap with green onions, plus an orange juice protein shake", "serves": 1, "prep": 5, "cook": 5, "video": "https://www.tiktok.com/@bayleennicole/video/7322634441828912430", "ingredients": ["1 laboche or flatbread wrap", "1 tbsp butter", "2 eggs", "1 tbsp cream cheese", "2 green onions, sliced", "Salt, to taste", "1 cup orange juice", "1 scoop cake batter protein powder"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["1 laboche or flatbread wrap", "1 tbsp butter", "2 eggs", "1 tbsp cream cheese", "2 green onions, sliced", "Salt, to taste", "1 cup orange juice", "1 scoop cake batter protein powder"]}, {"title": "Warm the Wrap", "text": "Preheat oven to 350°F. Toast the flatbread wrap in the oven until warmed through.", "uses": ["1 laboche or flatbread wrap"]}, {"title": "Scramble the Eggs", "text": "Melt the butter in a pan over low heat, then crack the eggs directly into the pan and scramble continuously over low heat until soft.", "uses": ["1 tbsp butter", "2 eggs"]}, {"title": "Fill & Fold", "text": "Spread cream cheese on the wrap, add the scrambled eggs, sprinkle with green onions and salt, and fold.", "uses": ["1 tbsp cream cheese", "2 green onions, sliced", "Salt, to taste"]}, {"title": "Orange Julius", "text": "For the Orange Julius, blend the orange juice with the protein powder until smooth, then pour into a glass and serve alongside.", "uses": ["1 cup orange juice", "1 scoop cake batter protein powder"]}]};
+let R = {"title": "Gordon Ramsay Eggs Wrap with Orange Julius", "category": "Breakfast", "description": "Soft, slow-scrambled eggs in a cream cheese wrap with green onions, plus an orange juice protein shake", "serves": 1, "prep": 5, "cook": 5, "video": "https://www.tiktok.com/@bayleennicole/video/7322634441828912430", "slug": "gordon-ramsay-eggs-wrap-with-orange-julius", "ingredients": ["1 laboche or flatbread wrap", "1 tbsp butter", "2 eggs", "1 tbsp cream cheese", "2 green onions, sliced", "Salt, to taste", "1 cup orange juice", "1 scoop cake batter protein powder"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["1 laboche or flatbread wrap", "1 tbsp butter", "2 eggs", "1 tbsp cream cheese", "2 green onions, sliced", "Salt, to taste", "1 cup orange juice", "1 scoop cake batter protein powder"]}, {"title": "Warm the Wrap", "text": "Preheat oven to 350°F. Toast the flatbread wrap in the oven until warmed through.", "uses": ["1 laboche or flatbread wrap"]}, {"title": "Scramble the Eggs", "text": "Melt the butter in a pan over low heat, then crack the eggs directly into the pan and scramble continuously over low heat until soft.", "uses": ["1 tbsp butter", "2 eggs"]}, {"title": "Fill & Fold", "text": "Spread cream cheese on the wrap, add the scrambled eggs, sprinkle with green onions and salt, and fold.", "uses": ["1 tbsp cream cheese", "2 green onions, sliced", "Salt, to taste"]}, {"title": "Orange Julius", "text": "For the Orange Julius, blend the orange juice with the protein powder until smooth, then pour into a glass and serve alongside.", "uses": ["1 cup orange juice", "1 scoop cake batter protein powder"]}]};
 const $ = id => document.getElementById(id);
 // card text: no Celsius conversions, no period at the very end
 const tidy = t => (t||"").replace(/\s*\(\s*-?\d+\s*°?\s*C\s*\)/g,"").replace(/\s*\/\s*-?\d+\s*°\s*C\b/g,"").replace(/\.\s*$/,"");
@@ -139,7 +139,7 @@ if(R.video){$("watch").href=R.video;$("watch").hidden=false}
 $("desc").textContent=tidy(R.description); $("desc").hidden=!R.description;
 
 /* ---- steps ---- */
-const N=R.slides.length;
+let N=R.slides.length;
 function show(i){
   cur=Math.max(0,Math.min(N,i));
   $("intro").hidden=true; $("cook").hidden=false;
@@ -229,6 +229,17 @@ async function keepAwake(){if(!("wakeLock" in navigator)||lock||asking||document
 document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"){if(cur>=0)keepAwake();paintTimers()}});
 
 renderIntro();
+
+/* ---- edits published from the recipe planner (data/edits.json) ----
+   If this recipe was edited there, use the edited title, ingredients and the
+   cards the planner rebuilt from the new steps. Only before cooking starts. */
+fetch("../data/edits.json?t="+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.json():null).then(d=>{
+  const o=d&&d.recipes&&d.recipes[R.slug], c=o&&o.cook;
+  if(!c||cur!==-1) return;
+  if(c.title){ R.title=c.title; $("ttl").textContent=c.title; document.title=c.title; }
+  if(c.ingredients) R.ingredients=c.ingredients;
+  if(c.slides&&c.slides.length){ R.slides=c.slides; N=R.slides.length; }
+}).catch(()=>{});
 </script>
 
 </body></html>

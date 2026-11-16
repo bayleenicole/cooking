@@ -95,7 +95,7 @@ ul.ing li{padding:5px 0}
 <div class="alarm" id="alarm" role="alert" hidden><span id="alarmTxt"></span><button id="alarmOk">OK</button></div>
 
 <script>
-const R = {"title": "Apple Pancake Bites", "category": "Breakfast", "description": "Apple rings dipped in pancake batter and griddled golden, sprinkled with cinnamon and dunked in warm maple syrup", "serves": 4, "prep": 10, "cook": 10, "video": "https://www.tiktok.com/@bayleennicole/video/7449087495834275115", "ingredients": ["2 Honeycrisp apples, sliced into rounds", "1 cup buttermilk pancake mix", "1/2 cup water", "Cinnamon, for topping", "1/2 cup warmed maple syrup, for dipping"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["2 Honeycrisp apples, sliced into rounds", "1 cup buttermilk pancake mix", "1/2 cup water", "Cinnamon, for topping", "1/2 cup warmed maple syrup, for dipping"]}, {"title": "Slice the Apples", "text": "Slice the apples into rounds.", "uses": ["2 Honeycrisp apples, sliced into rounds"]}, {"title": "Batter", "text": "Mix the pancake mix with water to make a batter.", "uses": ["1 cup buttermilk pancake mix", "1/2 cup water"]}, {"title": "Dip & Cook", "text": "Dip each apple slice into the pancake batter and cook on a griddle, flipping once, until golden on both sides."}, {"title": "Serve", "text": "Sprinkle with cinnamon, then dip into warmed maple syrup and serve.", "uses": ["Cinnamon, for topping", "1/2 cup warmed maple syrup, for dipping"]}]};
+let R = {"title": "Apple Pancake Bites", "category": "Breakfast", "description": "Apple rings dipped in pancake batter and griddled golden, sprinkled with cinnamon and dunked in warm maple syrup", "serves": 4, "prep": 10, "cook": 10, "video": "https://www.tiktok.com/@bayleennicole/video/7449087495834275115", "slug": "apple-pancake-bites", "ingredients": ["2 Honeycrisp apples, sliced into rounds", "1 cup buttermilk pancake mix", "1/2 cup water", "Cinnamon, for topping", "1/2 cup warmed maple syrup, for dipping"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["2 Honeycrisp apples, sliced into rounds", "1 cup buttermilk pancake mix", "1/2 cup water", "Cinnamon, for topping", "1/2 cup warmed maple syrup, for dipping"]}, {"title": "Slice the Apples", "text": "Slice the apples into rounds.", "uses": ["2 Honeycrisp apples, sliced into rounds"]}, {"title": "Batter", "text": "Mix the pancake mix with water to make a batter.", "uses": ["1 cup buttermilk pancake mix", "1/2 cup water"]}, {"title": "Dip & Cook", "text": "Dip each apple slice into the pancake batter and cook on a griddle, flipping once, until golden on both sides."}, {"title": "Serve", "text": "Sprinkle with cinnamon, then dip into warmed maple syrup and serve.", "uses": ["Cinnamon, for topping", "1/2 cup warmed maple syrup, for dipping"]}]};
 const $ = id => document.getElementById(id);
 // card text: no Celsius conversions, no period at the very end
 const tidy = t => (t||"").replace(/\s*\(\s*-?\d+\s*°?\s*C\s*\)/g,"").replace(/\s*\/\s*-?\d+\s*°\s*C\b/g,"").replace(/\.\s*$/,"");
@@ -139,7 +139,7 @@ if(R.video){$("watch").href=R.video;$("watch").hidden=false}
 $("desc").textContent=tidy(R.description); $("desc").hidden=!R.description;
 
 /* ---- steps ---- */
-const N=R.slides.length;
+let N=R.slides.length;
 function show(i){
   cur=Math.max(0,Math.min(N,i));
   $("intro").hidden=true; $("cook").hidden=false;
@@ -229,6 +229,17 @@ async function keepAwake(){if(!("wakeLock" in navigator)||lock||asking||document
 document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"){if(cur>=0)keepAwake();paintTimers()}});
 
 renderIntro();
+
+/* ---- edits published from the recipe planner (data/edits.json) ----
+   If this recipe was edited there, use the edited title, ingredients and the
+   cards the planner rebuilt from the new steps. Only before cooking starts. */
+fetch("../data/edits.json?t="+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.json():null).then(d=>{
+  const o=d&&d.recipes&&d.recipes[R.slug], c=o&&o.cook;
+  if(!c||cur!==-1) return;
+  if(c.title){ R.title=c.title; $("ttl").textContent=c.title; document.title=c.title; }
+  if(c.ingredients) R.ingredients=c.ingredients;
+  if(c.slides&&c.slides.length){ R.slides=c.slides; N=R.slides.length; }
+}).catch(()=>{});
 </script>
 
 </body></html>

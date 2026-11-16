@@ -95,7 +95,7 @@ ul.ing li{padding:5px 0}
 <div class="alarm" id="alarm" role="alert" hidden><span id="alarmTxt"></span><button id="alarmOk">OK</button></div>
 
 <script>
-const R = {"title": "Creamy Tuscan Chicken", "category": "Dinner", "description": "Seared chicken with potatoes and kale in a Parmesan cream sauce, topped with crispy bacon", "serves": 4, "prep": 15, "cook": 25, "video": "https://www.tiktok.com/@bayleennicole/video/7266863164925529386", "ingredients": ["4 slices bacon, chopped", "2 chicken breasts", "2 potatoes, chopped", "2 cups chopped kale", "1/2 cup heavy cream", "1/4 cup grated Parmesan"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["4 slices bacon, chopped", "2 chicken breasts", "2 potatoes, chopped", "2 cups chopped kale", "1/2 cup heavy cream", "1/4 cup grated Parmesan"]}, {"title": "Bacon", "text": "Cook the bacon in a pan until crisp, then remove.", "uses": ["4 slices bacon, chopped"]}, {"title": "Chicken", "text": "Cook the chicken breasts in the same pan until browned and cooked through, then slice.", "uses": ["2 chicken breasts"]}, {"title": "Potatoes", "text": "Add the potatoes to the pan and cook until tender.", "uses": ["2 potatoes, chopped"]}, {"title": "Cream Sauce", "text": "Stir in the kale, heavy cream, and Parmesan, and let the kale wilt and the sauce thicken.", "uses": ["2 cups chopped kale", "1/2 cup heavy cream", "1/4 cup grated Parmesan"]}, {"title": "Top & Serve", "text": "Top with the crispy bacon."}]};
+let R = {"title": "Creamy Tuscan Chicken", "category": "Dinner", "description": "Seared chicken with potatoes and kale in a Parmesan cream sauce, topped with crispy bacon", "serves": 4, "prep": 15, "cook": 25, "video": "https://www.tiktok.com/@bayleennicole/video/7266863164925529386", "slug": "creamy-tuscan-chicken", "ingredients": ["4 slices bacon, chopped", "2 chicken breasts", "2 potatoes, chopped", "2 cups chopped kale", "1/2 cup heavy cream", "1/4 cup grated Parmesan"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["4 slices bacon, chopped", "2 chicken breasts", "2 potatoes, chopped", "2 cups chopped kale", "1/2 cup heavy cream", "1/4 cup grated Parmesan"]}, {"title": "Bacon", "text": "Cook the bacon in a pan until crisp, then remove.", "uses": ["4 slices bacon, chopped"]}, {"title": "Chicken", "text": "Cook the chicken breasts in the same pan until browned and cooked through, then slice.", "uses": ["2 chicken breasts"]}, {"title": "Potatoes", "text": "Add the potatoes to the pan and cook until tender.", "uses": ["2 potatoes, chopped"]}, {"title": "Cream Sauce", "text": "Stir in the kale, heavy cream, and Parmesan, and let the kale wilt and the sauce thicken.", "uses": ["2 cups chopped kale", "1/2 cup heavy cream", "1/4 cup grated Parmesan"]}, {"title": "Top & Serve", "text": "Top with the crispy bacon."}]};
 const $ = id => document.getElementById(id);
 // card text: no Celsius conversions, no period at the very end
 const tidy = t => (t||"").replace(/\s*\(\s*-?\d+\s*°?\s*C\s*\)/g,"").replace(/\s*\/\s*-?\d+\s*°\s*C\b/g,"").replace(/\.\s*$/,"");
@@ -139,7 +139,7 @@ if(R.video){$("watch").href=R.video;$("watch").hidden=false}
 $("desc").textContent=tidy(R.description); $("desc").hidden=!R.description;
 
 /* ---- steps ---- */
-const N=R.slides.length;
+let N=R.slides.length;
 function show(i){
   cur=Math.max(0,Math.min(N,i));
   $("intro").hidden=true; $("cook").hidden=false;
@@ -229,6 +229,17 @@ async function keepAwake(){if(!("wakeLock" in navigator)||lock||asking||document
 document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"){if(cur>=0)keepAwake();paintTimers()}});
 
 renderIntro();
+
+/* ---- edits published from the recipe planner (data/edits.json) ----
+   If this recipe was edited there, use the edited title, ingredients and the
+   cards the planner rebuilt from the new steps. Only before cooking starts. */
+fetch("../data/edits.json?t="+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.json():null).then(d=>{
+  const o=d&&d.recipes&&d.recipes[R.slug], c=o&&o.cook;
+  if(!c||cur!==-1) return;
+  if(c.title){ R.title=c.title; $("ttl").textContent=c.title; document.title=c.title; }
+  if(c.ingredients) R.ingredients=c.ingredients;
+  if(c.slides&&c.slides.length){ R.slides=c.slides; N=R.slides.length; }
+}).catch(()=>{});
 </script>
 
 </body></html>

@@ -95,7 +95,7 @@ ul.ing li{padding:5px 0}
 <div class="alarm" id="alarm" role="alert" hidden><span id="alarmTxt"></span><button id="alarmOk">OK</button></div>
 
 <script>
-const R = {"title": "Chicken Asian Salad", "category": "Lunch", "description": "Chicken with peas, bell pepper, green onion and cilantro in a peanut ginger dressing", "serves": 2, "prep": 15, "cook": 10, "video": "https://www.tiktok.com/@bayleennicole/video/7347905954572242222", "ingredients": ["2 chicken breasts, cut into bite-sized pieces", "1 tbsp olive oil", "Salt and pepper, to taste", "1 bunch green onion, chopped", "1 cup peas", "1 bell pepper, chopped", "1/4 cup chopped cilantro", "2 tbsp peanut butter", "2 tbsp olive oil (dressing)", "1 tbsp minced ginger", "1 clove garlic, minced", "3 tbsp rice vinegar", "1 1/2 tbsp fish sauce", "1 1/2 tbsp coconut aminos", "1 tbsp honey"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["2 chicken breasts, cut into bite-sized pieces", "1 tbsp olive oil", "Salt and pepper, to taste", "1 bunch green onion, chopped", "1 cup peas", "1 bell pepper, chopped", "1/4 cup chopped cilantro", "2 tbsp peanut butter", "2 tbsp olive oil (dressing)", "1 tbsp minced ginger", "1 clove garlic, minced", "3 tbsp rice vinegar", "1 1/2 tbsp fish sauce", "1 1/2 tbsp coconut aminos", "1 tbsp honey"]}, {"title": "Cook the Chicken", "text": "Season the chicken with olive oil, salt, and pepper, and cook in a skillet until cooked through.", "uses": ["2 chicken breasts, cut into bite-sized pieces", "1 tbsp olive oil", "Salt and pepper, to taste"]}, {"title": "Chop & Combine", "text": "Chop the green onion, peas, bell pepper, and cilantro, combine in a large bowl, and add the cooked chicken.", "uses": ["1 bunch green onion, chopped", "1 cup peas", "1 bell pepper, chopped", "1/4 cup chopped cilantro"]}, {"title": "Peanut Dressing", "text": "Whisk together the peanut butter, olive oil, ginger, garlic, rice vinegar, fish sauce, coconut aminos, and honey for the dressing.", "uses": ["2 tbsp peanut butter", "2 tbsp olive oil (dressing)", "1 tbsp minced ginger", "1 clove garlic, minced", "3 tbsp rice vinegar", "1 1/2 tbsp fish sauce", "1 1/2 tbsp coconut aminos", "1 tbsp honey"]}, {"title": "Toss & Serve", "text": "Toss the salad with the dressing and serve."}]};
+let R = {"title": "Chicken Asian Salad", "category": "Lunch", "description": "Chicken with peas, bell pepper, green onion and cilantro in a peanut ginger dressing", "serves": 2, "prep": 15, "cook": 10, "video": "https://www.tiktok.com/@bayleennicole/video/7347905954572242222", "slug": "chicken-asian-salad", "ingredients": ["2 chicken breasts, cut into bite-sized pieces", "1 tbsp olive oil", "Salt and pepper, to taste", "1 bunch green onion, chopped", "1 cup peas", "1 bell pepper, chopped", "1/4 cup chopped cilantro", "2 tbsp peanut butter", "2 tbsp olive oil (dressing)", "1 tbsp minced ginger", "1 clove garlic, minced", "3 tbsp rice vinegar", "1 1/2 tbsp fish sauce", "1 1/2 tbsp coconut aminos", "1 tbsp honey"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["2 chicken breasts, cut into bite-sized pieces", "1 tbsp olive oil", "Salt and pepper, to taste", "1 bunch green onion, chopped", "1 cup peas", "1 bell pepper, chopped", "1/4 cup chopped cilantro", "2 tbsp peanut butter", "2 tbsp olive oil (dressing)", "1 tbsp minced ginger", "1 clove garlic, minced", "3 tbsp rice vinegar", "1 1/2 tbsp fish sauce", "1 1/2 tbsp coconut aminos", "1 tbsp honey"]}, {"title": "Cook the Chicken", "text": "Season the chicken with olive oil, salt, and pepper, and cook in a skillet until cooked through.", "uses": ["2 chicken breasts, cut into bite-sized pieces", "1 tbsp olive oil", "Salt and pepper, to taste"]}, {"title": "Chop & Combine", "text": "Chop the green onion, peas, bell pepper, and cilantro, combine in a large bowl, and add the cooked chicken.", "uses": ["1 bunch green onion, chopped", "1 cup peas", "1 bell pepper, chopped", "1/4 cup chopped cilantro"]}, {"title": "Peanut Dressing", "text": "Whisk together the peanut butter, olive oil, ginger, garlic, rice vinegar, fish sauce, coconut aminos, and honey for the dressing.", "uses": ["2 tbsp peanut butter", "2 tbsp olive oil (dressing)", "1 tbsp minced ginger", "1 clove garlic, minced", "3 tbsp rice vinegar", "1 1/2 tbsp fish sauce", "1 1/2 tbsp coconut aminos", "1 tbsp honey"]}, {"title": "Toss & Serve", "text": "Toss the salad with the dressing and serve."}]};
 const $ = id => document.getElementById(id);
 // card text: no Celsius conversions, no period at the very end
 const tidy = t => (t||"").replace(/\s*\(\s*-?\d+\s*°?\s*C\s*\)/g,"").replace(/\s*\/\s*-?\d+\s*°\s*C\b/g,"").replace(/\.\s*$/,"");
@@ -139,7 +139,7 @@ if(R.video){$("watch").href=R.video;$("watch").hidden=false}
 $("desc").textContent=tidy(R.description); $("desc").hidden=!R.description;
 
 /* ---- steps ---- */
-const N=R.slides.length;
+let N=R.slides.length;
 function show(i){
   cur=Math.max(0,Math.min(N,i));
   $("intro").hidden=true; $("cook").hidden=false;
@@ -229,6 +229,17 @@ async function keepAwake(){if(!("wakeLock" in navigator)||lock||asking||document
 document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"){if(cur>=0)keepAwake();paintTimers()}});
 
 renderIntro();
+
+/* ---- edits published from the recipe planner (data/edits.json) ----
+   If this recipe was edited there, use the edited title, ingredients and the
+   cards the planner rebuilt from the new steps. Only before cooking starts. */
+fetch("../data/edits.json?t="+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.json():null).then(d=>{
+  const o=d&&d.recipes&&d.recipes[R.slug], c=o&&o.cook;
+  if(!c||cur!==-1) return;
+  if(c.title){ R.title=c.title; $("ttl").textContent=c.title; document.title=c.title; }
+  if(c.ingredients) R.ingredients=c.ingredients;
+  if(c.slides&&c.slides.length){ R.slides=c.slides; N=R.slides.length; }
+}).catch(()=>{});
 </script>
 
 </body></html>

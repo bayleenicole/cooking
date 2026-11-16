@@ -95,7 +95,7 @@ ul.ing li{padding:5px 0}
 <div class="alarm" id="alarm" role="alert" hidden><span id="alarmTxt"></span><button id="alarmOk">OK</button></div>
 
 <script>
-const R = {"title": "Sweet Potato Cottage Cheese Ground Beef Bowl", "category": "Dinner", "description": "Roasted sweet potatoes and taco beef over cottage cheese with cucumber, hot honey and jalapeño hot sauce", "serves": 4, "prep": 15, "cook": 20, "video": "https://www.tiktok.com/@bayleennicole/video/7534541591113960717", "ingredients": ["Avocado oil spray", "2 sweet potatoes, cubed", "Salt, pepper, and garlic salt, to taste", "1/2 red onion, diced", "1 lb ground beef", "1 packet taco seasoning", "1/3 cup water", "1 cup cottage cheese", "1/2 cucumber, diced", "1 tbsp hot honey, for drizzling", "1 tbsp jalapeño hot sauce, for drizzling"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["Avocado oil spray", "2 sweet potatoes, cubed", "Salt, pepper, and garlic salt, to taste", "1/2 red onion, diced", "1 lb ground beef", "1 packet taco seasoning", "1/3 cup water", "1 cup cottage cheese", "1/2 cucumber, diced", "1 tbsp hot honey, for drizzling", "1 tbsp jalapeño hot sauce, for drizzling"]}, {"title": "Roast the Sweet Potatoes", "text": "Preheat oven to 425°F. Spray the cubed sweet potatoes with avocado oil and season with salt, pepper, and garlic salt, then roast for about 20 minutes, until tender.", "timer": 1200, "uses": ["2 sweet potatoes, cubed", "Avocado oil spray", "Salt, pepper, and garlic salt, to taste"], "while": "While they roast, cook the beef (next step)."}, {"title": "Taco Beef", "text": "Sauté the diced onion for about 3 minutes, add the ground beef and brown, then stir in the taco seasoning and water and let thicken.", "timer": 180, "uses": ["1/2 red onion, diced", "1 lb ground beef", "1 packet taco seasoning", "1/3 cup water"]}, {"title": "Assemble & Serve", "text": "Assemble bowls with the sweet potatoes and ground beef, top with a serving of cottage cheese and diced cucumber, drizzle with hot honey and jalapeño hot sauce, and serve immediately.", "uses": ["1 cup cottage cheese", "1/2 cucumber, diced", "1 tbsp hot honey, for drizzling", "1 tbsp jalapeño hot sauce, for drizzling"]}]};
+let R = {"title": "Sweet Potato Cottage Cheese Ground Beef Bowl", "category": "Dinner", "description": "Roasted sweet potatoes and taco beef over cottage cheese with cucumber, hot honey and jalapeño hot sauce", "serves": 4, "prep": 15, "cook": 20, "video": "https://www.tiktok.com/@bayleennicole/video/7534541591113960717", "slug": "sweet-potato-cottage-cheese-ground-beef-bowl", "ingredients": ["Avocado oil spray", "2 sweet potatoes, cubed", "Salt, pepper, and garlic salt, to taste", "1/2 red onion, diced", "1 lb ground beef", "1 packet taco seasoning", "1/3 cup water", "1 cup cottage cheese", "1/2 cucumber, diced", "1 tbsp hot honey, for drizzling", "1 tbsp jalapeño hot sauce, for drizzling"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["Avocado oil spray", "2 sweet potatoes, cubed", "Salt, pepper, and garlic salt, to taste", "1/2 red onion, diced", "1 lb ground beef", "1 packet taco seasoning", "1/3 cup water", "1 cup cottage cheese", "1/2 cucumber, diced", "1 tbsp hot honey, for drizzling", "1 tbsp jalapeño hot sauce, for drizzling"]}, {"title": "Roast the Sweet Potatoes", "text": "Preheat oven to 425°F. Spray the cubed sweet potatoes with avocado oil and season with salt, pepper, and garlic salt, then roast for about 20 minutes, until tender.", "timer": 1200, "uses": ["2 sweet potatoes, cubed", "Avocado oil spray", "Salt, pepper, and garlic salt, to taste"], "while": "While they roast, cook the beef (next step)."}, {"title": "Taco Beef", "text": "Sauté the diced onion for about 3 minutes, add the ground beef and brown, then stir in the taco seasoning and water and let thicken.", "timer": 180, "uses": ["1/2 red onion, diced", "1 lb ground beef", "1 packet taco seasoning", "1/3 cup water"]}, {"title": "Assemble & Serve", "text": "Assemble bowls with the sweet potatoes and ground beef, top with a serving of cottage cheese and diced cucumber, drizzle with hot honey and jalapeño hot sauce, and serve immediately.", "uses": ["1 cup cottage cheese", "1/2 cucumber, diced", "1 tbsp hot honey, for drizzling", "1 tbsp jalapeño hot sauce, for drizzling"]}]};
 const $ = id => document.getElementById(id);
 // card text: no Celsius conversions, no period at the very end
 const tidy = t => (t||"").replace(/\s*\(\s*-?\d+\s*°?\s*C\s*\)/g,"").replace(/\s*\/\s*-?\d+\s*°\s*C\b/g,"").replace(/\.\s*$/,"");
@@ -139,7 +139,7 @@ if(R.video){$("watch").href=R.video;$("watch").hidden=false}
 $("desc").textContent=tidy(R.description); $("desc").hidden=!R.description;
 
 /* ---- steps ---- */
-const N=R.slides.length;
+let N=R.slides.length;
 function show(i){
   cur=Math.max(0,Math.min(N,i));
   $("intro").hidden=true; $("cook").hidden=false;
@@ -229,6 +229,17 @@ async function keepAwake(){if(!("wakeLock" in navigator)||lock||asking||document
 document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"){if(cur>=0)keepAwake();paintTimers()}});
 
 renderIntro();
+
+/* ---- edits published from the recipe planner (data/edits.json) ----
+   If this recipe was edited there, use the edited title, ingredients and the
+   cards the planner rebuilt from the new steps. Only before cooking starts. */
+fetch("../data/edits.json?t="+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.json():null).then(d=>{
+  const o=d&&d.recipes&&d.recipes[R.slug], c=o&&o.cook;
+  if(!c||cur!==-1) return;
+  if(c.title){ R.title=c.title; $("ttl").textContent=c.title; document.title=c.title; }
+  if(c.ingredients) R.ingredients=c.ingredients;
+  if(c.slides&&c.slides.length){ R.slides=c.slides; N=R.slides.length; }
+}).catch(()=>{});
 </script>
 
 </body></html>

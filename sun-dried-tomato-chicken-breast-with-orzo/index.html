@@ -95,7 +95,7 @@ ul.ing li{padding:5px 0}
 <div class="alarm" id="alarm" role="alert" hidden><span id="alarmTxt"></span><button id="alarmOk">OK</button></div>
 
 <script>
-const R = {"title": "Sun-Dried Tomato Chicken Breast with Orzo", "category": "Dinner", "description": "One-pan creamy chicken orzo with sun-dried tomatoes, spinach, coconut milk and Parmesan", "serves": 4, "prep": 15, "cook": 25, "video": "https://www.tiktok.com/@bayleennicole/video/7488882766579436846", "ingredients": ["1 tbsp olive oil", "1.5 lbs chicken breast, cubed", "3 cloves garlic, minced", "1 tsp paprika", "1 tsp onion powder", "1 tsp oregano", "1/2 cup sun dried tomatoes, chopped", "1 cup orzo", "2 cups chicken bone broth", "2 cups fresh spinach", "1 cup coconut milk", "1/2 cup Parmesan, grated"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["1 tbsp olive oil", "1.5 lbs chicken breast, cubed", "3 cloves garlic, minced", "1 tsp paprika", "1 tsp onion powder", "1 tsp oregano", "1/2 cup sun dried tomatoes, chopped", "1 cup orzo", "2 cups chicken bone broth", "2 cups fresh spinach", "1 cup coconut milk", "1/2 cup Parmesan, grated"]}, {"title": "Brown the Chicken", "text": "Heat olive oil in a large skillet over medium-high heat. Add cubed chicken breast and cook for 5 to 7 minutes, stirring occasionally, then add garlic, paprika, onion powder, and oregano.", "timer": 300, "uses": ["1 tbsp olive oil", "1.5 lbs chicken breast, cubed", "3 cloves garlic, minced", "1 tsp paprika", "1 tsp onion powder", "1 tsp oregano"]}, {"title": "Orzo & Broth", "text": "Once cooked through, add sun-dried tomatoes and orzo. Let the orzo toast for a few seconds, then add bone broth.", "uses": ["1/2 cup sun dried tomatoes, chopped", "1 cup orzo", "2 cups chicken bone broth"]}, {"title": "Simmer", "text": "Cover and let cook for 15 minutes or until liquid is absorbed and orzo is cooked.", "timer": 900}, {"title": "Finish", "text": "Add spinach and let it wilt, then add coconut milk and Parmesan, stirring until creamy and heated through.", "uses": ["2 cups fresh spinach", "1 cup coconut milk", "1/2 cup Parmesan, grated"]}]};
+let R = {"title": "Sun-Dried Tomato Chicken Breast with Orzo", "category": "Dinner", "description": "One-pan creamy chicken orzo with sun-dried tomatoes, spinach, coconut milk and Parmesan", "serves": 4, "prep": 15, "cook": 25, "video": "https://www.tiktok.com/@bayleennicole/video/7488882766579436846", "slug": "sun-dried-tomato-chicken-breast-with-orzo", "ingredients": ["1 tbsp olive oil", "1.5 lbs chicken breast, cubed", "3 cloves garlic, minced", "1 tsp paprika", "1 tsp onion powder", "1 tsp oregano", "1/2 cup sun dried tomatoes, chopped", "1 cup orzo", "2 cups chicken bone broth", "2 cups fresh spinach", "1 cup coconut milk", "1/2 cup Parmesan, grated"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["1 tbsp olive oil", "1.5 lbs chicken breast, cubed", "3 cloves garlic, minced", "1 tsp paprika", "1 tsp onion powder", "1 tsp oregano", "1/2 cup sun dried tomatoes, chopped", "1 cup orzo", "2 cups chicken bone broth", "2 cups fresh spinach", "1 cup coconut milk", "1/2 cup Parmesan, grated"]}, {"title": "Brown the Chicken", "text": "Heat olive oil in a large skillet over medium-high heat. Add cubed chicken breast and cook for 5 to 7 minutes, stirring occasionally, then add garlic, paprika, onion powder, and oregano.", "timer": 300, "uses": ["1 tbsp olive oil", "1.5 lbs chicken breast, cubed", "3 cloves garlic, minced", "1 tsp paprika", "1 tsp onion powder", "1 tsp oregano"]}, {"title": "Orzo & Broth", "text": "Once cooked through, add sun-dried tomatoes and orzo. Let the orzo toast for a few seconds, then add bone broth.", "uses": ["1/2 cup sun dried tomatoes, chopped", "1 cup orzo", "2 cups chicken bone broth"]}, {"title": "Simmer", "text": "Cover and let cook for 15 minutes or until liquid is absorbed and orzo is cooked.", "timer": 900}, {"title": "Finish", "text": "Add spinach and let it wilt, then add coconut milk and Parmesan, stirring until creamy and heated through.", "uses": ["2 cups fresh spinach", "1 cup coconut milk", "1/2 cup Parmesan, grated"]}]};
 const $ = id => document.getElementById(id);
 // card text: no Celsius conversions, no period at the very end
 const tidy = t => (t||"").replace(/\s*\(\s*-?\d+\s*°?\s*C\s*\)/g,"").replace(/\s*\/\s*-?\d+\s*°\s*C\b/g,"").replace(/\.\s*$/,"");
@@ -139,7 +139,7 @@ if(R.video){$("watch").href=R.video;$("watch").hidden=false}
 $("desc").textContent=tidy(R.description); $("desc").hidden=!R.description;
 
 /* ---- steps ---- */
-const N=R.slides.length;
+let N=R.slides.length;
 function show(i){
   cur=Math.max(0,Math.min(N,i));
   $("intro").hidden=true; $("cook").hidden=false;
@@ -229,6 +229,17 @@ async function keepAwake(){if(!("wakeLock" in navigator)||lock||asking||document
 document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"){if(cur>=0)keepAwake();paintTimers()}});
 
 renderIntro();
+
+/* ---- edits published from the recipe planner (data/edits.json) ----
+   If this recipe was edited there, use the edited title, ingredients and the
+   cards the planner rebuilt from the new steps. Only before cooking starts. */
+fetch("../data/edits.json?t="+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.json():null).then(d=>{
+  const o=d&&d.recipes&&d.recipes[R.slug], c=o&&o.cook;
+  if(!c||cur!==-1) return;
+  if(c.title){ R.title=c.title; $("ttl").textContent=c.title; document.title=c.title; }
+  if(c.ingredients) R.ingredients=c.ingredients;
+  if(c.slides&&c.slides.length){ R.slides=c.slides; N=R.slides.length; }
+}).catch(()=>{});
 </script>
 
 </body></html>

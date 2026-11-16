@@ -95,7 +95,7 @@ ul.ing li{padding:5px 0}
 <div class="alarm" id="alarm" role="alert" hidden><span id="alarmTxt"></span><button id="alarmOk">OK</button></div>
 
 <script>
-const R = {"title": "Buffalo Chicken Wrap", "category": "Lunch", "description": "Buffalo chicken with sautéed peppers, onion and cauliflower in a lavash wrap with feta and ranch", "serves": 2, "prep": 15, "cook": 10, "video": "https://www.tiktok.com/@bayleennicole/video/7518155419685047566", "ingredients": ["1 bell pepper, diced", "1/2 white onion, diced", "1 cup cauliflower, chopped", "2 cups poached chicken, shredded", "3/4 cup mild buffalo sauce", "2 lavash wraps", "4 lettuce leaves", "1/4 cup crumbled feta", "2 tbsp ranch or mayo, for drizzling"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["1 bell pepper, diced", "1/2 white onion, diced", "1 cup cauliflower, chopped", "2 cups poached chicken, shredded", "3/4 cup mild buffalo sauce", "2 lavash wraps", "4 lettuce leaves", "1/4 cup crumbled feta", "2 tbsp ranch or mayo, for drizzling"]}, {"title": "Sauté the Vegetables", "text": "Sauté the bell pepper, onion, and cauliflower in a pan until softened.", "uses": ["1 bell pepper, diced", "1/2 white onion, diced", "1 cup cauliflower, chopped"]}, {"title": "Buffalo Chicken", "text": "Shred the poached chicken and toss with the buffalo sauce, then mix in the sautéed vegetables.", "uses": ["2 cups poached chicken, shredded", "3/4 cup mild buffalo sauce"]}, {"title": "Fill the Wraps", "text": "Lay out the lavash wraps, add a couple pieces of lettuce, and top with the chicken mixture and crumbled feta, then drizzle with ranch or mayo.", "uses": ["2 lavash wraps", "4 lettuce leaves", "1/4 cup crumbled feta", "2 tbsp ranch or mayo, for drizzling"]}, {"title": "Roll, Toast & Serve", "text": "Roll up the wraps, toast on each side in a pan until golden if desired, then slice and serve."}]};
+let R = {"title": "Buffalo Chicken Wrap", "category": "Lunch", "description": "Buffalo chicken with sautéed peppers, onion and cauliflower in a lavash wrap with feta and ranch", "serves": 2, "prep": 15, "cook": 10, "video": "https://www.tiktok.com/@bayleennicole/video/7518155419685047566", "slug": "buffalo-chicken-wrap", "ingredients": ["1 bell pepper, diced", "1/2 white onion, diced", "1 cup cauliflower, chopped", "2 cups poached chicken, shredded", "3/4 cup mild buffalo sauce", "2 lavash wraps", "4 lettuce leaves", "1/4 cup crumbled feta", "2 tbsp ranch or mayo, for drizzling"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["1 bell pepper, diced", "1/2 white onion, diced", "1 cup cauliflower, chopped", "2 cups poached chicken, shredded", "3/4 cup mild buffalo sauce", "2 lavash wraps", "4 lettuce leaves", "1/4 cup crumbled feta", "2 tbsp ranch or mayo, for drizzling"]}, {"title": "Sauté the Vegetables", "text": "Sauté the bell pepper, onion, and cauliflower in a pan until softened.", "uses": ["1 bell pepper, diced", "1/2 white onion, diced", "1 cup cauliflower, chopped"]}, {"title": "Buffalo Chicken", "text": "Shred the poached chicken and toss with the buffalo sauce, then mix in the sautéed vegetables.", "uses": ["2 cups poached chicken, shredded", "3/4 cup mild buffalo sauce"]}, {"title": "Fill the Wraps", "text": "Lay out the lavash wraps, add a couple pieces of lettuce, and top with the chicken mixture and crumbled feta, then drizzle with ranch or mayo.", "uses": ["2 lavash wraps", "4 lettuce leaves", "1/4 cup crumbled feta", "2 tbsp ranch or mayo, for drizzling"]}, {"title": "Roll, Toast & Serve", "text": "Roll up the wraps, toast on each side in a pan until golden if desired, then slice and serve."}]};
 const $ = id => document.getElementById(id);
 // card text: no Celsius conversions, no period at the very end
 const tidy = t => (t||"").replace(/\s*\(\s*-?\d+\s*°?\s*C\s*\)/g,"").replace(/\s*\/\s*-?\d+\s*°\s*C\b/g,"").replace(/\.\s*$/,"");
@@ -139,7 +139,7 @@ if(R.video){$("watch").href=R.video;$("watch").hidden=false}
 $("desc").textContent=tidy(R.description); $("desc").hidden=!R.description;
 
 /* ---- steps ---- */
-const N=R.slides.length;
+let N=R.slides.length;
 function show(i){
   cur=Math.max(0,Math.min(N,i));
   $("intro").hidden=true; $("cook").hidden=false;
@@ -229,6 +229,17 @@ async function keepAwake(){if(!("wakeLock" in navigator)||lock||asking||document
 document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"){if(cur>=0)keepAwake();paintTimers()}});
 
 renderIntro();
+
+/* ---- edits published from the recipe planner (data/edits.json) ----
+   If this recipe was edited there, use the edited title, ingredients and the
+   cards the planner rebuilt from the new steps. Only before cooking starts. */
+fetch("../data/edits.json?t="+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.json():null).then(d=>{
+  const o=d&&d.recipes&&d.recipes[R.slug], c=o&&o.cook;
+  if(!c||cur!==-1) return;
+  if(c.title){ R.title=c.title; $("ttl").textContent=c.title; document.title=c.title; }
+  if(c.ingredients) R.ingredients=c.ingredients;
+  if(c.slides&&c.slides.length){ R.slides=c.slides; N=R.slides.length; }
+}).catch(()=>{});
 </script>
 
 </body></html>

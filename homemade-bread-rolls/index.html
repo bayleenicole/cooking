@@ -95,7 +95,7 @@ ul.ing li{padding:5px 0}
 <div class="alarm" id="alarm" role="alert" hidden><span id="alarmTxt"></span><button id="alarmOk">OK</button></div>
 
 <script>
-const R = {"title": "Homemade Bread Rolls", "category": "Dinner", "description": "Soft, buttery homemade bread rolls with a glossy egg wash", "serves": 6, "prep": 15, "cook": 20, "video": "https://www.tiktok.com/@bayleennicole/video/7451425864161463594", "ingredients": ["For the bread:", "500 g bread flour (roughly 4 cups)", "1 packet of instant yeast (2.5 tsp)", "2 tbsp sugar", "1 1/4 cups + 2 tbsp water (110°F)", "1 tsp salt", "4 tbsp room temp butter", "1 egg", "1 tbsp milk"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["§Bread", "500 g bread flour (roughly 4 cups)", "1 packet of instant yeast (2.5 tsp)", "2 tbsp sugar", "1 1/4 cups + 2 tbsp water (110°F)", "1 tsp salt", "4 tbsp room temp butter"]}, {"title": "Mix", "text": "In a mixer, add 2 cups flour, yeast, sugar, and water, then mix on low for 5 minutes.", "timer": 300, "uses": ["2 cups bread flour", "1 packet of instant yeast (2.5 tsp)", "2 tbsp sugar", "1 1/4 cups + 2 tbsp water (110°F)"]}, {"title": "Knead", "text": "Add in salt and the remaining flour, then mix for another 5 minutes.", "timer": 300, "uses": ["Remaining bread flour", "1 tsp salt"]}, {"title": "Butter", "text": "While mixing on low, add 1 tbsp of butter at a time until each cube is fully incorporated.", "uses": ["4 tbsp room temp butter"]}, {"title": "Rise", "text": "Transfer the dough to a greased bowl, cover, and let rise for 1 hour.", "timer": 3600}, {"title": "Gather Ingredients", "gather": true, "text": "While you wait, get these out for the next part", "uses": ["§Bread", "1 egg", "1 tbsp milk"]}, {"title": "Shape", "text": "Lightly flour your surface and divide dough into 6 equal parts. Shape each part by pressing dough into a rectangular shape, rotating 180 degrees, folding into thirds, and pinching each side together to make a seamless line."}, {"title": "Proof", "text": "Transfer all 6 rolls to a lined baking sheet, cover with greased Saran Wrap, and proof for 30-40 minutes, preheating the oven to 375°F while they proof.", "timer": 1800, "while": "While the rolls proof, preheat the oven to 375°F."}, {"title": "Egg Wash", "text": "Remove cover, mix egg and milk together, and lightly spread the egg wash over each roll.", "uses": ["1 egg", "1 tbsp milk"]}, {"title": "Bake", "text": "Bake in the oven for 20 minutes at 375°F.", "timer": 1200}]};
+let R = {"title": "Homemade Bread Rolls", "category": "Dinner", "description": "Soft, buttery homemade bread rolls with a glossy egg wash", "serves": 6, "prep": 15, "cook": 20, "video": "https://www.tiktok.com/@bayleennicole/video/7451425864161463594", "slug": "homemade-bread-rolls", "ingredients": ["For the bread:", "500 g bread flour (roughly 4 cups)", "1 packet of instant yeast (2.5 tsp)", "2 tbsp sugar", "1 1/4 cups + 2 tbsp water (110°F)", "1 tsp salt", "4 tbsp room temp butter", "1 egg", "1 tbsp milk"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["§Bread", "500 g bread flour (roughly 4 cups)", "1 packet of instant yeast (2.5 tsp)", "2 tbsp sugar", "1 1/4 cups + 2 tbsp water (110°F)", "1 tsp salt", "4 tbsp room temp butter"]}, {"title": "Mix", "text": "In a mixer, add 2 cups flour, yeast, sugar, and water, then mix on low for 5 minutes.", "timer": 300, "uses": ["2 cups bread flour", "1 packet of instant yeast (2.5 tsp)", "2 tbsp sugar", "1 1/4 cups + 2 tbsp water (110°F)"]}, {"title": "Knead", "text": "Add in salt and the remaining flour, then mix for another 5 minutes.", "timer": 300, "uses": ["Remaining bread flour", "1 tsp salt"]}, {"title": "Butter", "text": "While mixing on low, add 1 tbsp of butter at a time until each cube is fully incorporated.", "uses": ["4 tbsp room temp butter"]}, {"title": "Rise", "text": "Transfer the dough to a greased bowl, cover, and let rise for 1 hour.", "timer": 3600}, {"title": "Gather Ingredients", "gather": true, "text": "While you wait, get these out for the next part", "uses": ["§Bread", "1 egg", "1 tbsp milk"]}, {"title": "Shape", "text": "Lightly flour your surface and divide dough into 6 equal parts. Shape each part by pressing dough into a rectangular shape, rotating 180 degrees, folding into thirds, and pinching each side together to make a seamless line."}, {"title": "Proof", "text": "Transfer all 6 rolls to a lined baking sheet, cover with greased Saran Wrap, and proof for 30-40 minutes, preheating the oven to 375°F while they proof.", "timer": 1800, "while": "While the rolls proof, preheat the oven to 375°F."}, {"title": "Egg Wash", "text": "Remove cover, mix egg and milk together, and lightly spread the egg wash over each roll.", "uses": ["1 egg", "1 tbsp milk"]}, {"title": "Bake", "text": "Bake in the oven for 20 minutes at 375°F.", "timer": 1200}]};
 const $ = id => document.getElementById(id);
 // card text: no Celsius conversions, no period at the very end
 const tidy = t => (t||"").replace(/\s*\(\s*-?\d+\s*°?\s*C\s*\)/g,"").replace(/\s*\/\s*-?\d+\s*°\s*C\b/g,"").replace(/\.\s*$/,"");
@@ -139,7 +139,7 @@ if(R.video){$("watch").href=R.video;$("watch").hidden=false}
 $("desc").textContent=tidy(R.description); $("desc").hidden=!R.description;
 
 /* ---- steps ---- */
-const N=R.slides.length;
+let N=R.slides.length;
 function show(i){
   cur=Math.max(0,Math.min(N,i));
   $("intro").hidden=true; $("cook").hidden=false;
@@ -229,6 +229,17 @@ async function keepAwake(){if(!("wakeLock" in navigator)||lock||asking||document
 document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"){if(cur>=0)keepAwake();paintTimers()}});
 
 renderIntro();
+
+/* ---- edits published from the recipe planner (data/edits.json) ----
+   If this recipe was edited there, use the edited title, ingredients and the
+   cards the planner rebuilt from the new steps. Only before cooking starts. */
+fetch("../data/edits.json?t="+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.json():null).then(d=>{
+  const o=d&&d.recipes&&d.recipes[R.slug], c=o&&o.cook;
+  if(!c||cur!==-1) return;
+  if(c.title){ R.title=c.title; $("ttl").textContent=c.title; document.title=c.title; }
+  if(c.ingredients) R.ingredients=c.ingredients;
+  if(c.slides&&c.slides.length){ R.slides=c.slides; N=R.slides.length; }
+}).catch(()=>{});
 </script>
 
 </body></html>

@@ -95,7 +95,7 @@ ul.ing li{padding:5px 0}
 <div class="alarm" id="alarm" role="alert" hidden><span id="alarmTxt"></span><button id="alarmOk">OK</button></div>
 
 <script>
-const R = {"title": "BLT Pasta Salad", "category": "Lunch", "description": "Pasta tossed with crispy bacon, cherry tomatoes and romaine in a tangy buttermilk mayo dressing", "serves": 4, "prep": 15, "cook": 15, "video": "https://www.tiktok.com/@bayleennicole/video/7377859453275639071", "ingredients": ["12 oz short pasta (rotini or penne)", "8 slices bacon", "1/2 cup mayo", "2 tbsp buttermilk or milk", "1 tbsp red wine vinegar", "Salt and pepper, to taste", "2 cups cherry tomatoes, halved", "3 cups chopped romaine lettuce"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["12 oz short pasta (rotini or penne)", "8 slices bacon", "1/2 cup mayo", "2 tbsp buttermilk or milk", "1 tbsp red wine vinegar", "Salt and pepper, to taste", "2 cups cherry tomatoes, halved", "3 cups chopped romaine lettuce"]}, {"title": "Cook the Pasta", "text": "Cook the pasta in salted boiling water according to package directions, then drain and let cool.", "uses": ["12 oz short pasta (rotini or penne)"]}, {"title": "Bacon", "text": "Cook the bacon until crispy, then crumble.", "uses": ["8 slices bacon"]}, {"title": "Dressing", "text": "Whisk together the mayo, buttermilk, red wine vinegar, salt, and pepper for the dressing.", "uses": ["1/2 cup mayo", "2 tbsp buttermilk or milk", "1 tbsp red wine vinegar", "Salt and pepper, to taste"]}, {"title": "Toss & Serve", "text": "In a large bowl, combine the pasta, bacon, cherry tomatoes, and romaine, then toss with the dressing just before serving.", "uses": ["2 cups cherry tomatoes, halved", "3 cups chopped romaine lettuce"]}]};
+let R = {"title": "BLT Pasta Salad", "category": "Lunch", "description": "Pasta tossed with crispy bacon, cherry tomatoes and romaine in a tangy buttermilk mayo dressing", "serves": 4, "prep": 15, "cook": 15, "video": "https://www.tiktok.com/@bayleennicole/video/7377859453275639071", "slug": "blt-pasta-salad", "ingredients": ["12 oz short pasta (rotini or penne)", "8 slices bacon", "1/2 cup mayo", "2 tbsp buttermilk or milk", "1 tbsp red wine vinegar", "Salt and pepper, to taste", "2 cups cherry tomatoes, halved", "3 cups chopped romaine lettuce"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["12 oz short pasta (rotini or penne)", "8 slices bacon", "1/2 cup mayo", "2 tbsp buttermilk or milk", "1 tbsp red wine vinegar", "Salt and pepper, to taste", "2 cups cherry tomatoes, halved", "3 cups chopped romaine lettuce"]}, {"title": "Cook the Pasta", "text": "Cook the pasta in salted boiling water according to package directions, then drain and let cool.", "uses": ["12 oz short pasta (rotini or penne)"]}, {"title": "Bacon", "text": "Cook the bacon until crispy, then crumble.", "uses": ["8 slices bacon"]}, {"title": "Dressing", "text": "Whisk together the mayo, buttermilk, red wine vinegar, salt, and pepper for the dressing.", "uses": ["1/2 cup mayo", "2 tbsp buttermilk or milk", "1 tbsp red wine vinegar", "Salt and pepper, to taste"]}, {"title": "Toss & Serve", "text": "In a large bowl, combine the pasta, bacon, cherry tomatoes, and romaine, then toss with the dressing just before serving.", "uses": ["2 cups cherry tomatoes, halved", "3 cups chopped romaine lettuce"]}]};
 const $ = id => document.getElementById(id);
 // card text: no Celsius conversions, no period at the very end
 const tidy = t => (t||"").replace(/\s*\(\s*-?\d+\s*°?\s*C\s*\)/g,"").replace(/\s*\/\s*-?\d+\s*°\s*C\b/g,"").replace(/\.\s*$/,"");
@@ -139,7 +139,7 @@ if(R.video){$("watch").href=R.video;$("watch").hidden=false}
 $("desc").textContent=tidy(R.description); $("desc").hidden=!R.description;
 
 /* ---- steps ---- */
-const N=R.slides.length;
+let N=R.slides.length;
 function show(i){
   cur=Math.max(0,Math.min(N,i));
   $("intro").hidden=true; $("cook").hidden=false;
@@ -229,6 +229,17 @@ async function keepAwake(){if(!("wakeLock" in navigator)||lock||asking||document
 document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"){if(cur>=0)keepAwake();paintTimers()}});
 
 renderIntro();
+
+/* ---- edits published from the recipe planner (data/edits.json) ----
+   If this recipe was edited there, use the edited title, ingredients and the
+   cards the planner rebuilt from the new steps. Only before cooking starts. */
+fetch("../data/edits.json?t="+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.json():null).then(d=>{
+  const o=d&&d.recipes&&d.recipes[R.slug], c=o&&o.cook;
+  if(!c||cur!==-1) return;
+  if(c.title){ R.title=c.title; $("ttl").textContent=c.title; document.title=c.title; }
+  if(c.ingredients) R.ingredients=c.ingredients;
+  if(c.slides&&c.slides.length){ R.slides=c.slides; N=R.slides.length; }
+}).catch(()=>{});
 </script>
 
 </body></html>

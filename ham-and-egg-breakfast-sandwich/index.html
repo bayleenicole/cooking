@@ -95,7 +95,7 @@ ul.ing li{padding:5px 0}
 <div class="alarm" id="alarm" role="alert" hidden><span id="alarmTxt"></span><button id="alarmOk">OK</button></div>
 
 <script>
-const R = {"title": "Ham & Egg Breakfast Sandwich", "category": "Breakfast", "description": "Eggs steamed over crispy ham on a toasted bun with cream cheese, tomato, red onion and turkey bacon", "serves": 1, "prep": 5, "cook": 10, "video": "https://www.tiktok.com/@bayleennicole/video/7454339595711450414", "ingredients": ["1 homemade bun, halved", "1 slice ham, torn", "2 eggs", "Splash of water", "1 tbsp cream cheese", "1/4 red onion, sliced", "1 slice tomato", "2 slices turkey bacon, cooked", "Squeeze of lemon"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["1 homemade bun, halved", "1 slice ham, torn", "2 eggs", "Splash of water", "1 tbsp cream cheese", "1/4 red onion, sliced", "1 slice tomato", "2 slices turkey bacon, cooked", "Squeeze of lemon"]}, {"title": "Toast the Bun", "text": "Toast the halved bun.", "uses": ["1 homemade bun, halved"]}, {"title": "Ham & Eggs", "text": "Heat a pan, add the torn ham, and crack the eggs into the pan on top of the ham.", "uses": ["1 slice ham, torn", "2 eggs"]}, {"title": "Steam", "text": "Add a splash of water, cover, and cook until the eggs are set.", "uses": ["Splash of water"]}, {"title": "Bun Toppings", "text": "Spread cream cheese on the toasted bun, then add the sliced red onion and tomato.", "uses": ["1 tbsp cream cheese", "1/4 red onion, sliced", "1 slice tomato"]}, {"title": "Assemble & Serve", "text": "Top with the ham and eggs, add the turkey bacon, finish with a squeeze of lemon, and serve immediately.", "uses": ["2 slices turkey bacon, cooked", "Squeeze of lemon"]}]};
+let R = {"title": "Ham & Egg Breakfast Sandwich", "category": "Breakfast", "description": "Eggs steamed over crispy ham on a toasted bun with cream cheese, tomato, red onion and turkey bacon", "serves": 1, "prep": 5, "cook": 10, "video": "https://www.tiktok.com/@bayleennicole/video/7454339595711450414", "slug": "ham-and-egg-breakfast-sandwich", "ingredients": ["1 homemade bun, halved", "1 slice ham, torn", "2 eggs", "Splash of water", "1 tbsp cream cheese", "1/4 red onion, sliced", "1 slice tomato", "2 slices turkey bacon, cooked", "Squeeze of lemon"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["1 homemade bun, halved", "1 slice ham, torn", "2 eggs", "Splash of water", "1 tbsp cream cheese", "1/4 red onion, sliced", "1 slice tomato", "2 slices turkey bacon, cooked", "Squeeze of lemon"]}, {"title": "Toast the Bun", "text": "Toast the halved bun.", "uses": ["1 homemade bun, halved"]}, {"title": "Ham & Eggs", "text": "Heat a pan, add the torn ham, and crack the eggs into the pan on top of the ham.", "uses": ["1 slice ham, torn", "2 eggs"]}, {"title": "Steam", "text": "Add a splash of water, cover, and cook until the eggs are set.", "uses": ["Splash of water"]}, {"title": "Bun Toppings", "text": "Spread cream cheese on the toasted bun, then add the sliced red onion and tomato.", "uses": ["1 tbsp cream cheese", "1/4 red onion, sliced", "1 slice tomato"]}, {"title": "Assemble & Serve", "text": "Top with the ham and eggs, add the turkey bacon, finish with a squeeze of lemon, and serve immediately.", "uses": ["2 slices turkey bacon, cooked", "Squeeze of lemon"]}]};
 const $ = id => document.getElementById(id);
 // card text: no Celsius conversions, no period at the very end
 const tidy = t => (t||"").replace(/\s*\(\s*-?\d+\s*°?\s*C\s*\)/g,"").replace(/\s*\/\s*-?\d+\s*°\s*C\b/g,"").replace(/\.\s*$/,"");
@@ -139,7 +139,7 @@ if(R.video){$("watch").href=R.video;$("watch").hidden=false}
 $("desc").textContent=tidy(R.description); $("desc").hidden=!R.description;
 
 /* ---- steps ---- */
-const N=R.slides.length;
+let N=R.slides.length;
 function show(i){
   cur=Math.max(0,Math.min(N,i));
   $("intro").hidden=true; $("cook").hidden=false;
@@ -229,6 +229,17 @@ async function keepAwake(){if(!("wakeLock" in navigator)||lock||asking||document
 document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"){if(cur>=0)keepAwake();paintTimers()}});
 
 renderIntro();
+
+/* ---- edits published from the recipe planner (data/edits.json) ----
+   If this recipe was edited there, use the edited title, ingredients and the
+   cards the planner rebuilt from the new steps. Only before cooking starts. */
+fetch("../data/edits.json?t="+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.json():null).then(d=>{
+  const o=d&&d.recipes&&d.recipes[R.slug], c=o&&o.cook;
+  if(!c||cur!==-1) return;
+  if(c.title){ R.title=c.title; $("ttl").textContent=c.title; document.title=c.title; }
+  if(c.ingredients) R.ingredients=c.ingredients;
+  if(c.slides&&c.slides.length){ R.slides=c.slides; N=R.slides.length; }
+}).catch(()=>{});
 </script>
 
 </body></html>

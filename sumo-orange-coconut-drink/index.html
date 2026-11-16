@@ -95,7 +95,7 @@ ul.ing li{padding:5px 0}
 <div class="alarm" id="alarm" role="alert" hidden><span id="alarmTxt"></span><button id="alarmOk">OK</button></div>
 
 <script>
-const R = {"title": "Sumo Orange Coconut Drink", "category": "Drinks & Coffee", "description": "A creamy, refreshing blended sumo orange and coconut cream drink, strained over ice", "serves": 2, "prep": 5, "cook": 0, "video": "https://www.tiktok.com/@bayleennicole/video/7631211582378216718", "ingredients": ["1 sumo orange", "12 oz water", "3 tbsp coconut cream", "1 tbsp coconut sugar or sweetener of choice", "Pinch of high mineral salt", "1 cup ice cubes"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["1 sumo orange", "12 oz water", "3 tbsp coconut cream", "1 tbsp coconut sugar or sweetener of choice", "Pinch of high mineral salt", "1 cup ice cubes"]}, {"title": "Blend", "text": "Peel the sumo orange, then combine it in a blender with 12 oz water, 3 tbsp coconut cream, 1 tbsp coconut sugar or sweetener of choice, and a pinch of high mineral salt. Blend together on high speed for 45 seconds until completely smooth.", "timer": 45, "uses": ["1 sumo orange", "12 oz water", "3 tbsp coconut cream", "1 tbsp coconut sugar or sweetener of choice", "Pinch of high mineral salt"]}, {"title": "Strain & Serve", "text": "Strain the mixture through a fine-mesh strainer into a glass filled with ice cubes.", "uses": ["1 cup ice cubes"]}]};
+let R = {"title": "Sumo Orange Coconut Drink", "category": "Drinks & Coffee", "description": "A creamy, refreshing blended sumo orange and coconut cream drink, strained over ice", "serves": 2, "prep": 5, "cook": 0, "video": "https://www.tiktok.com/@bayleennicole/video/7631211582378216718", "slug": "sumo-orange-coconut-drink", "ingredients": ["1 sumo orange", "12 oz water", "3 tbsp coconut cream", "1 tbsp coconut sugar or sweetener of choice", "Pinch of high mineral salt", "1 cup ice cubes"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["1 sumo orange", "12 oz water", "3 tbsp coconut cream", "1 tbsp coconut sugar or sweetener of choice", "Pinch of high mineral salt", "1 cup ice cubes"]}, {"title": "Blend", "text": "Peel the sumo orange, then combine it in a blender with 12 oz water, 3 tbsp coconut cream, 1 tbsp coconut sugar or sweetener of choice, and a pinch of high mineral salt. Blend together on high speed for 45 seconds until completely smooth.", "timer": 45, "uses": ["1 sumo orange", "12 oz water", "3 tbsp coconut cream", "1 tbsp coconut sugar or sweetener of choice", "Pinch of high mineral salt"]}, {"title": "Strain & Serve", "text": "Strain the mixture through a fine-mesh strainer into a glass filled with ice cubes.", "uses": ["1 cup ice cubes"]}]};
 const $ = id => document.getElementById(id);
 // card text: no Celsius conversions, no period at the very end
 const tidy = t => (t||"").replace(/\s*\(\s*-?\d+\s*°?\s*C\s*\)/g,"").replace(/\s*\/\s*-?\d+\s*°\s*C\b/g,"").replace(/\.\s*$/,"");
@@ -139,7 +139,7 @@ if(R.video){$("watch").href=R.video;$("watch").hidden=false}
 $("desc").textContent=tidy(R.description); $("desc").hidden=!R.description;
 
 /* ---- steps ---- */
-const N=R.slides.length;
+let N=R.slides.length;
 function show(i){
   cur=Math.max(0,Math.min(N,i));
   $("intro").hidden=true; $("cook").hidden=false;
@@ -229,6 +229,17 @@ async function keepAwake(){if(!("wakeLock" in navigator)||lock||asking||document
 document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"){if(cur>=0)keepAwake();paintTimers()}});
 
 renderIntro();
+
+/* ---- edits published from the recipe planner (data/edits.json) ----
+   If this recipe was edited there, use the edited title, ingredients and the
+   cards the planner rebuilt from the new steps. Only before cooking starts. */
+fetch("../data/edits.json?t="+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.json():null).then(d=>{
+  const o=d&&d.recipes&&d.recipes[R.slug], c=o&&o.cook;
+  if(!c||cur!==-1) return;
+  if(c.title){ R.title=c.title; $("ttl").textContent=c.title; document.title=c.title; }
+  if(c.ingredients) R.ingredients=c.ingredients;
+  if(c.slides&&c.slides.length){ R.slides=c.slides; N=R.slides.length; }
+}).catch(()=>{});
 </script>
 
 </body></html>

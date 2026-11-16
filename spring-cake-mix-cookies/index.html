@@ -95,7 +95,7 @@ ul.ing li{padding:5px 0}
 <div class="alarm" id="alarm" role="alert" hidden><span id="alarmTxt"></span><button id="alarmOk">OK</button></div>
 
 <script>
-const R = {"title": "Spring Cake Mix Cookies", "category": "Dessert", "description": "Soft, chewy cake mix cookies loaded with sprinkles and M&M's", "serves": 6, "prep": 15, "cook": 10, "video": "https://www.tiktok.com/@bayleennicole/video/7352964458513239342", "ingredients": ["1 box classic white cake mix", "2 eggs", "Splash of vanilla extract", "1/3 cup vegetable oil", "1/4 cup sprinkles", "1/4 cup M&M’s"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["1 box classic white cake mix", "2 eggs", "Splash of vanilla extract", "1/3 cup vegetable oil", "1/4 cup sprinkles", "1/4 cup M&M’s"]}, {"title": "Preheat", "text": "Preheat oven to 350°F and line a baking sheet with parchment paper."}, {"title": "Dough", "text": "Combine the cake mix, eggs, vanilla, and oil in a large bowl and mix well until a uniform dough forms, then fold in the sprinkles and M&M’s until evenly distributed.", "uses": ["1 box classic white cake mix", "2 eggs", "Splash of vanilla extract", "1/3 cup vegetable oil", "1/4 cup sprinkles", "1/4 cup M&M’s"]}, {"title": "Roll", "text": "Roll the dough into 1-inch balls and place them 2 inches apart on the prepared baking sheet."}, {"title": "Bake", "text": "Bake for 8-10 minutes, until the edges are set.", "timer": 480}, {"title": "Cool", "text": "Let cool slightly on the baking sheet for 5 minutes before serving or transferring to a wire rack.", "timer": 300}]};
+let R = {"title": "Spring Cake Mix Cookies", "category": "Dessert", "description": "Soft, chewy cake mix cookies loaded with sprinkles and M&M's", "serves": 6, "prep": 15, "cook": 10, "video": "https://www.tiktok.com/@bayleennicole/video/7352964458513239342", "slug": "spring-cake-mix-cookies", "ingredients": ["1 box classic white cake mix", "2 eggs", "Splash of vanilla extract", "1/3 cup vegetable oil", "1/4 cup sprinkles", "1/4 cup M&M’s"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["1 box classic white cake mix", "2 eggs", "Splash of vanilla extract", "1/3 cup vegetable oil", "1/4 cup sprinkles", "1/4 cup M&M’s"]}, {"title": "Preheat", "text": "Preheat oven to 350°F and line a baking sheet with parchment paper."}, {"title": "Dough", "text": "Combine the cake mix, eggs, vanilla, and oil in a large bowl and mix well until a uniform dough forms, then fold in the sprinkles and M&M’s until evenly distributed.", "uses": ["1 box classic white cake mix", "2 eggs", "Splash of vanilla extract", "1/3 cup vegetable oil", "1/4 cup sprinkles", "1/4 cup M&M’s"]}, {"title": "Roll", "text": "Roll the dough into 1-inch balls and place them 2 inches apart on the prepared baking sheet."}, {"title": "Bake", "text": "Bake for 8-10 minutes, until the edges are set.", "timer": 480}, {"title": "Cool", "text": "Let cool slightly on the baking sheet for 5 minutes before serving or transferring to a wire rack.", "timer": 300}]};
 const $ = id => document.getElementById(id);
 // card text: no Celsius conversions, no period at the very end
 const tidy = t => (t||"").replace(/\s*\(\s*-?\d+\s*°?\s*C\s*\)/g,"").replace(/\s*\/\s*-?\d+\s*°\s*C\b/g,"").replace(/\.\s*$/,"");
@@ -139,7 +139,7 @@ if(R.video){$("watch").href=R.video;$("watch").hidden=false}
 $("desc").textContent=tidy(R.description); $("desc").hidden=!R.description;
 
 /* ---- steps ---- */
-const N=R.slides.length;
+let N=R.slides.length;
 function show(i){
   cur=Math.max(0,Math.min(N,i));
   $("intro").hidden=true; $("cook").hidden=false;
@@ -229,6 +229,17 @@ async function keepAwake(){if(!("wakeLock" in navigator)||lock||asking||document
 document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"){if(cur>=0)keepAwake();paintTimers()}});
 
 renderIntro();
+
+/* ---- edits published from the recipe planner (data/edits.json) ----
+   If this recipe was edited there, use the edited title, ingredients and the
+   cards the planner rebuilt from the new steps. Only before cooking starts. */
+fetch("../data/edits.json?t="+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.json():null).then(d=>{
+  const o=d&&d.recipes&&d.recipes[R.slug], c=o&&o.cook;
+  if(!c||cur!==-1) return;
+  if(c.title){ R.title=c.title; $("ttl").textContent=c.title; document.title=c.title; }
+  if(c.ingredients) R.ingredients=c.ingredients;
+  if(c.slides&&c.slides.length){ R.slides=c.slides; N=R.slides.length; }
+}).catch(()=>{});
 </script>
 
 </body></html>

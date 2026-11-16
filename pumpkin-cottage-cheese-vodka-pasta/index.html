@@ -95,7 +95,7 @@ ul.ing li{padding:5px 0}
 <div class="alarm" id="alarm" role="alert" hidden><span id="alarmTxt"></span><button id="alarmOk">OK</button></div>
 
 <script>
-const R = {"title": "Pumpkin Cottage Cheese Vodka Pasta", "category": "Dinner", "description": "A creamy pumpkin vodka sauce blended with cottage cheese, tossed with pasta, Parmesan and chili flakes", "serves": 3, "prep": 10, "cook": 15, "video": "https://www.tiktok.com/@bayleennicole/video/7281354168546250026", "ingredients": ["8 oz pasta", "1 cup pasta water", "2 tbsp olive oil", "1/2 cup chopped white onion", "3 cloves garlic, minced", "3-4 tbsp tomato paste", "1/4 cup vodka", "1 cup pumpkin", "1 cup cottage cheese", "1/4 cup parm", "1/2 tsp red pepper flakes"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["8 oz pasta", "1 cup pasta water", "2 tbsp olive oil", "1/2 cup chopped white onion", "3 cloves garlic, minced", "3-4 tbsp tomato paste", "1/4 cup vodka", "1 cup pumpkin", "1 cup cottage cheese", "1/4 cup parm", "1/2 tsp red pepper flakes"]}, {"title": "Cook the Pasta", "text": "Cook pasta in a large pot of boiling salted water until al dente. Reserve 1 cup of pasta water, then drain.", "uses": ["8 oz pasta", "1 cup pasta water"]}, {"title": "Sauce Base", "text": "Heat olive oil in a pan over medium heat. Cook onion, garlic, and tomato paste for 5 minutes.", "timer": 300, "uses": ["2 tbsp olive oil", "1/2 cup chopped white onion", "3 cloves garlic, minced", "3-4 tbsp tomato paste"]}, {"title": "Vodka", "text": "Add vodka and cook for 2 minutes more.", "timer": 120, "uses": ["1/4 cup vodka"]}, {"title": "Pumpkin & Blend", "text": "Add pumpkin and stir, then blend the pumpkin sauce mixture with cottage cheese until smooth.", "uses": ["1 cup pumpkin", "1 cup cottage cheese"]}, {"title": "Combine", "text": "Add the sauce back to the pan along with the reserved pasta water, then stir in the cooked noodles."}, {"title": "Top & Serve", "text": "Top with Parmesan and red pepper flakes.", "uses": ["1/4 cup parm", "1/2 tsp red pepper flakes"]}]};
+let R = {"title": "Pumpkin Cottage Cheese Vodka Pasta", "category": "Dinner", "description": "A creamy pumpkin vodka sauce blended with cottage cheese, tossed with pasta, Parmesan and chili flakes", "serves": 3, "prep": 10, "cook": 15, "video": "https://www.tiktok.com/@bayleennicole/video/7281354168546250026", "slug": "pumpkin-cottage-cheese-vodka-pasta", "ingredients": ["8 oz pasta", "1 cup pasta water", "2 tbsp olive oil", "1/2 cup chopped white onion", "3 cloves garlic, minced", "3-4 tbsp tomato paste", "1/4 cup vodka", "1 cup pumpkin", "1 cup cottage cheese", "1/4 cup parm", "1/2 tsp red pepper flakes"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start", "uses": ["8 oz pasta", "1 cup pasta water", "2 tbsp olive oil", "1/2 cup chopped white onion", "3 cloves garlic, minced", "3-4 tbsp tomato paste", "1/4 cup vodka", "1 cup pumpkin", "1 cup cottage cheese", "1/4 cup parm", "1/2 tsp red pepper flakes"]}, {"title": "Cook the Pasta", "text": "Cook pasta in a large pot of boiling salted water until al dente. Reserve 1 cup of pasta water, then drain.", "uses": ["8 oz pasta", "1 cup pasta water"]}, {"title": "Sauce Base", "text": "Heat olive oil in a pan over medium heat. Cook onion, garlic, and tomato paste for 5 minutes.", "timer": 300, "uses": ["2 tbsp olive oil", "1/2 cup chopped white onion", "3 cloves garlic, minced", "3-4 tbsp tomato paste"]}, {"title": "Vodka", "text": "Add vodka and cook for 2 minutes more.", "timer": 120, "uses": ["1/4 cup vodka"]}, {"title": "Pumpkin & Blend", "text": "Add pumpkin and stir, then blend the pumpkin sauce mixture with cottage cheese until smooth.", "uses": ["1 cup pumpkin", "1 cup cottage cheese"]}, {"title": "Combine", "text": "Add the sauce back to the pan along with the reserved pasta water, then stir in the cooked noodles."}, {"title": "Top & Serve", "text": "Top with Parmesan and red pepper flakes.", "uses": ["1/4 cup parm", "1/2 tsp red pepper flakes"]}]};
 const $ = id => document.getElementById(id);
 // card text: no Celsius conversions, no period at the very end
 const tidy = t => (t||"").replace(/\s*\(\s*-?\d+\s*°?\s*C\s*\)/g,"").replace(/\s*\/\s*-?\d+\s*°\s*C\b/g,"").replace(/\.\s*$/,"");
@@ -139,7 +139,7 @@ if(R.video){$("watch").href=R.video;$("watch").hidden=false}
 $("desc").textContent=tidy(R.description); $("desc").hidden=!R.description;
 
 /* ---- steps ---- */
-const N=R.slides.length;
+let N=R.slides.length;
 function show(i){
   cur=Math.max(0,Math.min(N,i));
   $("intro").hidden=true; $("cook").hidden=false;
@@ -229,6 +229,17 @@ async function keepAwake(){if(!("wakeLock" in navigator)||lock||asking||document
 document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"){if(cur>=0)keepAwake();paintTimers()}});
 
 renderIntro();
+
+/* ---- edits published from the recipe planner (data/edits.json) ----
+   If this recipe was edited there, use the edited title, ingredients and the
+   cards the planner rebuilt from the new steps. Only before cooking starts. */
+fetch("../data/edits.json?t="+Date.now(),{cache:"no-store"}).then(r=>r.ok?r.json():null).then(d=>{
+  const o=d&&d.recipes&&d.recipes[R.slug], c=o&&o.cook;
+  if(!c||cur!==-1) return;
+  if(c.title){ R.title=c.title; $("ttl").textContent=c.title; document.title=c.title; }
+  if(c.ingredients) R.ingredients=c.ingredients;
+  if(c.slides&&c.slides.length){ R.slides=c.slides; N=R.slides.length; }
+}).catch(()=>{});
 </script>
 
 </body></html>
