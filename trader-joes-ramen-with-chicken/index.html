@@ -1,0 +1,220 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+</head><body>
+<title>Trader Joe’s Ramen with Chicken</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<meta name="robots" content="noindex, nofollow">
+<style>
+/* Layout: plain white page. Each step is a centered title + text and nothing else; tap the right side to go forward, the left side to go back. */
+:root{
+  --bg:#f6f0e4; --fg:#524c40; --muted:#8c8475; --line:#e2dbcd; --done:#3d6b4f;
+  --font:-apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",Helvetica,Arial,sans-serif;
+  color-scheme:light;
+}
+[hidden]{display:none!important}
+html,body{height:100%}
+body{background:var(--bg);color:var(--fg);font:400 18px/1.6 var(--font);-webkit-text-size-adjust:100%;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer;-webkit-tap-highlight-color:transparent}
+button:focus-visible{outline:2px solid var(--fg);outline-offset:3px}
+.q{font-variant-numeric:tabular-nums}
+
+/* title screen: same plain look, centered */
+#intro{min-height:100%;max-width:640px;margin:0 auto;padding-block:40px;text-align:center;display:flex;flex-direction:column;justify-content:center;align-items:center;box-sizing:border-box}
+h1{font:600 clamp(30px,7vw,44px)/1.15 var(--font);margin:0 0 14px;text-wrap:balance;letter-spacing:-.01em}
+.desc{margin:0 auto 10px;max-width:34em}
+.meta{color:var(--muted);font-size:16px;margin:0 0 28px}
+.serves{display:inline-flex;align-items:center;gap:14px;font-size:17px;margin-bottom:34px}
+.serves button{width:44px;height:44px;border:1px solid var(--line);border-radius:50%;font-size:22px;line-height:1}
+.serves button:disabled{opacity:.35}
+.serves output{min-width:2ch;font-weight:600;font-variant-numeric:tabular-nums}
+.sec{color:var(--muted);font-size:15px;margin:22px 0 4px}
+ul.ing{list-style:none;margin:0;padding:0}
+ul.ing li{padding:5px 0}
+.go{margin-top:40px;font-size:19px;font-weight:600;border:1px solid var(--fg);border-radius:999px;padding:16px 44px}
+
+/* step screens */
+#cook{position:fixed;inset:0;display:flex;flex-direction:column;
+  padding:calc(14px + env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) calc(10px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));
+  background:var(--bg);user-select:none;-webkit-user-select:none}
+.count{text-align:center;color:var(--muted);font-size:14px;font-variant-numeric:tabular-nums;min-height:22px}
+.tray{display:flex;justify-content:center;flex-wrap:wrap;gap:6px 14px;font-size:14px;color:var(--muted);min-height:22px}
+.tray button{font-variant-numeric:tabular-nums;color:var(--muted);text-decoration:underline;text-underline-offset:3px}
+.tray button.done{color:var(--done)}
+.stage{flex:1;overflow-y:auto;display:flex;touch-action:pan-y}
+.step{margin:auto;max-width:640px;text-align:center;padding-block:24px}
+.step h2{font:600 clamp(32px,8vw,46px)/1.15 var(--font);margin:0 0 22px;letter-spacing:-.01em;text-wrap:balance}
+.step p{font-size:clamp(20px,4.6vw,22px);line-height:1.7;margin:0}
+.step .while{color:var(--muted);font-size:17px;margin-top:20px}
+.step .uses{color:var(--muted);font-size:16px;line-height:1.6;margin-top:22px}
+.tbtn{margin-top:26px;font-size:18px;font-weight:600;border:1px solid var(--fg);border-radius:999px;padding:14px 30px;font-variant-numeric:tabular-nums}
+.tbox{margin-top:24px;min-height:52px}
+.tlink{font-size:17px;color:var(--muted);text-decoration:underline;text-underline-offset:4px;padding:12px 8px}
+.pick{display:inline-flex;align-items:center;gap:14px;font-variant-numeric:tabular-nums}
+.pick .pm{width:52px;height:52px;border:1px solid var(--line);border-radius:50%;font-size:24px;line-height:1}
+.pick .mins{min-width:4.2em;font-size:22px;font-weight:600}
+.tbox .ok{border:1px solid var(--fg);border-radius:999px;padding:12px 24px;font-weight:600}
+.tbox .no{color:var(--muted);padding:12px 4px}
+.trun{font-size:22px;font-weight:600;font-variant-numeric:tabular-nums}
+.trun button{font-size:16px;font-weight:400;color:var(--muted);text-decoration:underline;text-underline-offset:4px;margin-left:12px;padding:10px 4px}
+.trun.fin{color:var(--done)}
+.nav{display:flex;justify-content:space-between}
+.nav button{min-height:52px;min-width:88px;padding:0 6px;font-size:17px;color:var(--muted)}
+.nav button:disabled{visibility:hidden}
+.alarm{position:fixed;left:0;right:0;top:0;z-index:20;text-align:center;
+  padding:calc(14px + env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) 14px max(16px,env(safe-area-inset-left,0px));
+  background:var(--done);color:var(--bg);font-weight:600}
+.alarm button{margin-left:12px;color:var(--bg);text-decoration:underline;font-weight:600}
+</style>
+
+<section id="intro">
+  <h1 id="ttl"></h1>
+  <p class="desc" id="desc"></p>
+  <button class="go" id="start">Start Cooking</button>
+</section>
+<section id="cook" hidden>
+  <div class="count" id="count"></div>
+  <div class="tray" id="tray"></div>
+  <div class="stage" id="stage"></div>
+  <div class="nav">
+    <button id="back">‹ Back</button>
+    <button id="next">Next ›</button>
+  </div>
+</section>
+<div class="alarm" id="alarm" role="alert" hidden><span id="alarmTxt"></span><button id="alarmOk">OK</button></div>
+
+<script>
+const R = {"title": "Trader Joe’s Ramen with Chicken", "category": "Lunch", "description": "", "serves": 1, "prep": 5, "cook": 5, "ingredients": ["1 package Trader Joe’s ramen", "1 cup cooked chicken, sliced", "1 cheese stick", "5 cornichons, for serving"], "slides": [{"title": "Step 1", "text": "Boil the ramen noodles according to package directions, then mix in the included seasoning packet."}, {"title": "Step 2", "text": "Add the sliced cooked chicken."}, {"title": "Step 3", "text": "Serve with a cheese stick and cornichons on the side."}]};
+const $ = id => document.getElementById(id);
+// card text: no Celsius conversions, no period at the very end
+const tidy = t => (t||"").replace(/\s*\(\s*-?\d+\s*°?\s*C\s*\)/g,"").replace(/\s*\/\s*-?\d+\s*°\s*C\b/g,"").replace(/\.\s*$/,"");
+let servings = R.serves, cur = -1, lastStep = null;            // -1 = title screen, R.slides.length = final slide
+const timers = {};                             // slide index -> {end, label, done}
+
+/* ---- amounts ---- */
+const FR = [[0,""],[1/8,"1/8"],[1/4,"1/4"],[1/3,"1/3"],[3/8,"3/8"],[1/2,"1/2"],[5/8,"5/8"],[2/3,"2/3"],[3/4,"3/4"],[7/8,"7/8"],[1,""]];
+function parseNum(s){ s=s.trim(); let t=0; for(const p of s.split(/\s+/)){ if(p.includes("/")){const [a,b]=p.split("/");t+=a/b}else t+=+p } return t }
+function fmt(v){
+  if(v<=0) return "0";
+  let w=Math.floor(v), f=v-w, best=FR[0];
+  for(const c of FR) if(Math.abs(c[0]-f)<Math.abs(best[0]-f)) best=c;
+  if(best[0]===1){w+=1;best=FR[0]}
+  if(w===0 && !best[1]) return "1/8";
+  return [w||"",best[1]].filter(Boolean).join(" ");
+}
+const UNITS=["cup","tablespoon","teaspoon","clove","slice","pound","ounce","can","jar","bag","scoop","lemon","lime","egg","breast","thigh","fillet","link","sheet","stalk","sprig","piece","package","box","potato","tortilla","pat"];
+function fixPlural(qty, rest){
+  return rest.replace(/^(\s+(?:small |large |medium |thin |thick )?)([a-z]+)/i,(m,pre,w)=>{
+    const base=w.toLowerCase().replace(/(es|s)$/,""), b2=w.toLowerCase().replace(/s$/,"");
+    const u=UNITS.find(x=>x===b2||x===base); if(!u) return m;
+    return pre+(qty>1 ? (u==="potato"?"potatoes":u+"s") : u);
+  });
+}
+function scale(str){
+  const k=servings/R.serves, parts=str.split(/\[\[([^\]]+)\]\]/);
+  for(let i=1;i<parts.length;i+=2){
+    const vals=parts[i].split("-").map(parseNum).map(x=>x*k);
+    parts[i]=`<span class="q">${vals.map(fmt).join("-")}</span>`;
+    parts[i+1]=fixPlural(Math.max(...vals),parts[i+1]||"");
+  }
+  return parts.map((p,i)=>i%2?p:esc(p)).join("");
+}
+function esc(s){return s.replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]))}
+
+/* ---- title screen ---- */
+function renderIntro(){}
+$("ttl").textContent=R.title;
+$("desc").textContent=R.description;
+
+/* ---- steps ---- */
+const N=R.slides.length;
+function show(i){
+  cur=Math.max(0,Math.min(N,i));
+  $("intro").hidden=true; $("cook").hidden=false;
+  $("count").textContent=cur<N?`${cur+1} of ${N}`:"";
+  $("back").textContent=cur===0?"‹ Start":"‹ Back"; $("next").disabled=cur===N;
+  const st=$("stage");
+  if(cur===N){
+    st.innerHTML=`<div class="step"><h2>Enjoy!</h2><button class="tbtn" id="again">Back to start</button></div>`;
+    $("again").onclick=toIntro;
+  } else {
+    const s=R.slides[cur];
+    let h=`<div class="step"><h2>${esc(s.title)}</h2><p>${scale(tidy(s.text))}</p>`;
+    if(s.timer) h+=`<div class="tbox" id="tbox"></div>`;
+    if(s.while) h+=`<p class="while">${scale(tidy(s.while))}</p>`;
+    if(s.uses&&s.uses.length) h+=`<p class="uses">${s.uses.map(scale).join("<br>")}</p>`;
+    st.innerHTML=h+`</div>`;
+    picking=false;
+  }
+  st.scrollTop=0;
+  paintTimers();
+}
+function toIntro(){lastStep=cur<N?cur:0;cur=-1;$("cook").hidden=true;$("intro").hidden=false;renderIntro();scrollTo(0,0)}
+$("back").onclick=()=>cur===0?toIntro():show(cur-1);
+$("next").onclick=()=>show(cur+1);
+$("start").onclick=()=>{unlockAudio();keepAwake();show(lastStep??0)};
+document.addEventListener("keydown",e=>{if(cur<0)return;if(e.key==="ArrowRight")show(cur+1);if(e.key==="ArrowLeft"&&cur>0)show(cur-1)});
+
+/* tap the right side to go forward, the left side to go back; swipes work too */
+$("stage").addEventListener("click",e=>{
+  if(e.target.closest("button")||getSelection().toString()) return;
+  if(e.clientX>innerWidth/2){ if(cur<N) show(cur+1) } else if(cur>0) show(cur-1);
+});
+let sx=0,sy=0,swiped=false;
+$("cook").addEventListener("touchstart",e=>{sx=e.touches[0].clientX;sy=e.touches[0].clientY},{passive:true});
+$("cook").addEventListener("touchend",e=>{
+  const dx=e.changedTouches[0].clientX-sx, dy=e.changedTouches[0].clientY-sy;
+  if(Math.abs(dx)>60&&Math.abs(dx)>Math.abs(dy)*1.5){ e.preventDefault(); if(dx<0&&cur<N)show(cur+1); else if(dx>0&&cur>0)show(cur-1) }
+});
+
+/* ---- timers (count from an end time, so they stay right across slides and screen locks) ---- */
+const mmss=s=>{s=Math.max(0,Math.ceil(s));const h=Math.floor(s/3600),m=Math.floor(s%3600/60),x=s%60;return (h?h+":"+String(m).padStart(2,"0"):m)+":"+String(x).padStart(2,"0")};
+let picking=false, pickMin=5;
+const upMin=m=>m<10?m+1:(Math.floor(m/5)+1)*5, downMin=m=>m<=10?m-1:(Math.ceil(m/5)-1)*5;
+function paintTimers(){
+  const now=Date.now(); let tray="";
+  for(const [i,t] of Object.entries(timers)){
+    const left=(t.end-now)/1000;
+    if(!t.done&&left<=0){t.done=true;ring(t.label)}
+    if(+i!==cur) tray+=`<button class="${t.done?"done":""}" data-i="${i}">${esc(t.label)} · ${t.done?"done":mmss(left)}</button>`;
+  }
+  $("tray").innerHTML=tray;
+  $("tray").querySelectorAll("button").forEach(b=>b.onclick=()=>show(+b.dataset.i));
+  const box=$("tbox"); if(!box||cur<0||cur>=N) return;
+  const t=timers[cur]; let h;
+  if(t) h=`<div class="trun${t.done?" fin":""}">${t.done?"Time's up":mmss((t.end-now)/1000)}<button id="tcancel">${t.done?"Dismiss":"Cancel"}</button></div>`;
+  else h=`<button class="ok" id="tgo">Start ${mmss(R.slides[cur].timer)} timer</button>`;
+  if(box.dataset.h===h) return;                 // only redraw when something changed
+  box.dataset.h=h; box.innerHTML=h;
+  const on=(id,f)=>{const e=$(id);if(e)e.onclick=f};
+  on("tgo",()=>{timers[cur]={end:Date.now()+R.slides[cur].timer*1000,label:R.slides[cur].title,done:false};paintTimers()});
+  on("tcancel",()=>{delete timers[cur];paintTimers()});
+}
+setInterval(()=>{if(Object.keys(timers).length)paintTimers()},250);
+
+/* ---- sound, vibration, alarm banner ---- */
+let ac=null, ringing=null;
+function unlockAudio(){try{ac=ac||new (window.AudioContext||window.webkitAudioContext)();ac.resume()}catch(e){}}
+function beep(){ if(!ac) return; const t=ac.currentTime;
+  for(let k=0;k<3;k++){const o=ac.createOscillator(),g=ac.createGain();o.type="sine";o.frequency.value=880;
+    g.gain.setValueAtTime(0,t+k*.3);g.gain.linearRampToValueAtTime(.4,t+k*.3+.02);g.gain.linearRampToValueAtTime(0,t+k*.3+.22);
+    o.connect(g).connect(ac.destination);o.start(t+k*.3);o.stop(t+k*.3+.25)} }
+function ring(label){
+  $("alarmTxt").textContent=`${label} is done`; $("alarm").hidden=false;
+  try{navigator.vibrate&&navigator.vibrate([400,200,400,200,400])}catch(e){}
+  let n=0; beep(); clearInterval(ringing);
+  ringing=setInterval(()=>{if(++n>=20)return stopRing();beep();try{navigator.vibrate&&navigator.vibrate(400)}catch(e){}},2000);
+}
+function stopRing(){clearInterval(ringing);ringing=null;$("alarm").hidden=true}
+$("alarmOk").onclick=stopRing;
+
+/* ---- keep the screen awake while cooking ---- */
+let lock=null;
+async function keepAwake(){try{if("wakeLock" in navigator&&!lock){lock=await navigator.wakeLock.request("screen");lock.addEventListener("release",()=>lock=null)}}catch(e){}}
+document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"){if(cur>=0)keepAwake();paintTimers()}});
+
+renderIntro();
+</script>
+
+</body></html>
