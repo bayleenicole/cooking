@@ -5,11 +5,15 @@
 <title>Marinated Steak with Spring Pasta Salad</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&display=swap">
 <style>
 /* Layout: plain white page. Each step is a centered title + text and nothing else; tap the right side to go forward, the left side to go back. */
 :root{
-  --bg:#f6f0e4; --fg:#524c40; --muted:#8c8475; --line:#e2dbcd; --done:#3d6b4f;
-  --font:-apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",Helvetica,Arial,sans-serif;
+  --bg:#f6f0e4; --fg:#534c3e; --muted:#8c8475; --line:#e2dbcd; --done:#3d6b4f;
+  --font:"SF Pro Display",-apple-system,BlinkMacSystemFont,system-ui,Inter,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  --display:"DM Serif Display",Georgia,"Times New Roman",serif;
   color-scheme:light;
 }
 [hidden]{display:none!important}
@@ -22,7 +26,7 @@ button:focus-visible{outline:2px solid var(--fg);outline-offset:3px}
 
 /* title screen: same plain look, centered */
 #intro{min-height:100%;max-width:640px;margin:0 auto;padding-block:40px;text-align:center;display:flex;flex-direction:column;justify-content:center;align-items:center;box-sizing:border-box}
-h1{font:600 clamp(30px,7vw,44px)/1.15 var(--font);margin:0 0 14px;text-wrap:balance;letter-spacing:-.01em}
+h1{font:400 clamp(32px,8vw,46px)/1.15 var(--display);margin:0 0 14px;text-wrap:balance}
 .desc{margin:0 auto 10px;max-width:34em}
 .meta{color:var(--muted);font-size:16px;margin:0 0 28px}
 .serves{display:inline-flex;align-items:center;gap:14px;font-size:17px;margin-bottom:34px}
@@ -44,7 +48,10 @@ ul.ing li{padding:5px 0}
 .tray button.done{color:var(--done)}
 .stage{flex:1;overflow-y:auto;display:flex;touch-action:pan-y}
 .step{margin:auto;max-width:640px;text-align:center;padding-block:24px}
-.step h2{font:600 clamp(32px,8vw,46px)/1.15 var(--font);margin:0 0 22px;letter-spacing:-.01em;text-wrap:balance}
+.step h2{font:400 clamp(34px,8.5vw,48px)/1.15 var(--display);margin:0 0 22px;text-wrap:balance}
+.step .glist{list-style:none;margin:20px 0 0;padding:0;font-size:clamp(17px,4.2vw,19px);line-height:1.35}
+.step .glist li{padding:4px 0}
+.step .glist .gsec{color:var(--muted);font-size:15px;padding-top:14px}
 .step p{font-size:clamp(20px,4.6vw,22px);line-height:1.7;margin:0}
 .step .while{color:var(--muted);font-size:17px;margin-top:20px}
 .step .uses{color:var(--muted);font-size:16px;line-height:1.6;margin-top:22px}
@@ -85,7 +92,7 @@ ul.ing li{padding:5px 0}
 <div class="alarm" id="alarm" role="alert" hidden><span id="alarmTxt"></span><button id="alarmOk">OK</button></div>
 
 <script>
-const R = {"title": "Marinated Steak with Spring Pasta Salad", "category": "Lunch", "description": "Balsamic soy marinated steak with a spring pasta salad of peas, asparagus, herbs and feta in a warm shallot dressing.", "serves": 4, "prep": 15, "cook": 20, "ingredients": ["For the steak:", "1.5 lbs steak", "2 tbsp olive oil", "2 tbsp soy sauce", "2 tbsp balsamic vinegar", "1 tsp Paprika", "2 cloves Fresh minced garlic", "For the pasta salad:", "8 oz Pasta (I used protein pasta)", "2 cups Arugula", "1 cup Peas", "1 bunch Asparagus, trimmed and chopped", "1/4 cup Fresh mint, chopped", "1/4 cup Fresh basil, chopped", "1/2 cup Feta cheese, crumbled", "For the dressing:", "1 shallot sliced", "1/3 cup olive oil", "2-3 tbsp red wine vinegar", "1 tsp Dijon", "Juice and zest of 1/2 a lemon", "1/2 tsp salt", "1/4 tsp pepper"], "slides": [{"title": "Marinate the Steak", "text": "In a shallow dish or zip-top bag, combine 2 tbsp olive oil, 2 tbsp soy sauce, 2 tbsp balsamic vinegar, 1 tsp paprika, and 2 cloves fresh minced garlic. Add 1.5 lbs steak and let marinate for at least 30 minutes.", "timer": 1800, "uses": ["2 tbsp olive oil", "2 tbsp soy sauce", "2 tbsp balsamic vinegar", "1 tsp Paprika", "2 cloves Fresh minced garlic", "1.5 lbs steak"], "while": "While the steak marinates, make the pasta and dressing (steps 4 and 5)."}, {"title": "Cook the Steak", "text": "Heat a cast iron skillet over medium-high heat and cook the steak for 5-7 minutes on each side.", "timer": 300}, {"title": "Rest the Steak", "text": "Remove steak from heat and let rest for 10 minutes before slicing.", "timer": 600}, {"title": "Pasta & Vegetables", "text": "Bring a large pot of salted water to a boil and cook 8 oz pasta according to package directions, adding 1 cup peas and 1 bunch chopped asparagus during the final 2 minutes of boiling, then drain and rinse under cold water.", "uses": ["8 oz Pasta (I used protein pasta)", "1 cup Peas", "1 bunch Asparagus, trimmed and chopped"]}, {"title": "Warm Shallot Dressing", "text": "Heat 1/3 cup olive oil on the stove, add 1 sliced shallot, and cook until golden. Remove from heat, add 2-3 tbsp red wine vinegar, 1 tsp Dijon, juice and zest of 1/2 a lemon, 1/2 tsp salt, and 1/4 tsp pepper, then whisk to combine.", "uses": ["1/3 cup olive oil", "1 shallot sliced", "2-3 tbsp red wine vinegar", "1 tsp Dijon", "Juice and zest of 1/2 a lemon", "1/2 tsp salt", "1/4 tsp pepper"]}, {"title": "Toss & Serve", "text": "In a large bowl, toss together the cooked pasta, peas, asparagus, 2 cups arugula, 1/4 cup fresh mint, 1/4 cup fresh basil, and 1/2 cup feta cheese. Pour the warm dressing over the salad, toss to coat, and serve alongside the sliced steak.", "uses": ["2 cups Arugula", "1/4 cup Fresh mint, chopped", "1/4 cup Fresh basil, chopped", "1/2 cup Feta cheese, crumbled"]}]};
+const R = {"title": "Marinated Steak with Spring Pasta Salad", "category": "Lunch", "description": "Balsamic soy marinated steak with a spring pasta salad of peas, asparagus, herbs and feta in a warm shallot dressing.", "serves": 4, "prep": 15, "cook": 20, "ingredients": ["For the steak:", "1.5 lbs steak", "2 tbsp olive oil", "2 tbsp soy sauce", "2 tbsp balsamic vinegar", "1 tsp Paprika", "2 cloves Fresh minced garlic", "For the pasta salad:", "8 oz Pasta (I used protein pasta)", "2 cups Arugula", "1 cup Peas", "1 bunch Asparagus, trimmed and chopped", "1/4 cup Fresh mint, chopped", "1/4 cup Fresh basil, chopped", "1/2 cup Feta cheese, crumbled", "For the dressing:", "1 shallot sliced", "1/3 cup olive oil", "2-3 tbsp red wine vinegar", "1 tsp Dijon", "Juice and zest of 1/2 a lemon", "1/2 tsp salt", "1/4 tsp pepper"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start.", "uses": ["§Steak", "1.5 lbs steak", "2 tbsp olive oil", "2 tbsp soy sauce", "2 tbsp balsamic vinegar", "1 tsp Paprika", "2 cloves Fresh minced garlic", "§Pasta salad", "8 oz Pasta (I used protein pasta)", "2 cups Arugula", "1 cup Peas", "1 bunch Asparagus, trimmed and chopped", "1/4 cup Fresh mint, chopped", "1/4 cup Fresh basil, chopped", "1/2 cup Feta cheese, crumbled", "§Dressing", "1 shallot sliced", "1/3 cup olive oil", "2-3 tbsp red wine vinegar", "1 tsp Dijon", "Juice and zest of 1/2 a lemon", "1/2 tsp salt", "1/4 tsp pepper"]}, {"title": "Marinate the Steak", "text": "In a shallow dish or zip-top bag, combine 2 tbsp olive oil, 2 tbsp soy sauce, 2 tbsp balsamic vinegar, 1 tsp paprika, and 2 cloves fresh minced garlic. Add 1.5 lbs steak and let marinate for at least 30 minutes.", "timer": 1800, "uses": ["2 tbsp olive oil", "2 tbsp soy sauce", "2 tbsp balsamic vinegar", "1 tsp Paprika", "2 cloves Fresh minced garlic", "1.5 lbs steak"], "while": "While the steak marinates, make the pasta and dressing (steps 4 and 5)."}, {"title": "Cook the Steak", "text": "Heat a cast iron skillet over medium-high heat and cook the steak for 5-7 minutes on each side.", "timer": 300}, {"title": "Rest the Steak", "text": "Remove steak from heat and let rest for 10 minutes before slicing.", "timer": 600}, {"title": "Pasta & Vegetables", "text": "Bring a large pot of salted water to a boil and cook 8 oz pasta according to package directions, adding 1 cup peas and 1 bunch chopped asparagus during the final 2 minutes of boiling, then drain and rinse under cold water.", "uses": ["8 oz Pasta (I used protein pasta)", "1 cup Peas", "1 bunch Asparagus, trimmed and chopped"]}, {"title": "Warm Shallot Dressing", "text": "Heat 1/3 cup olive oil on the stove, add 1 sliced shallot, and cook until golden. Remove from heat, add 2-3 tbsp red wine vinegar, 1 tsp Dijon, juice and zest of 1/2 a lemon, 1/2 tsp salt, and 1/4 tsp pepper, then whisk to combine.", "uses": ["1/3 cup olive oil", "1 shallot sliced", "2-3 tbsp red wine vinegar", "1 tsp Dijon", "Juice and zest of 1/2 a lemon", "1/2 tsp salt", "1/4 tsp pepper"]}, {"title": "Toss & Serve", "text": "In a large bowl, toss together the cooked pasta, peas, asparagus, 2 cups arugula, 1/4 cup fresh mint, 1/4 cup fresh basil, and 1/2 cup feta cheese. Pour the warm dressing over the salad, toss to coat, and serve alongside the sliced steak.", "uses": ["2 cups Arugula", "1/4 cup Fresh mint, chopped", "1/4 cup Fresh basil, chopped", "1/2 cup Feta cheese, crumbled"]}]};
 const $ = id => document.getElementById(id);
 // card text: no Celsius conversions, no period at the very end
 const tidy = t => (t||"").replace(/\s*\(\s*-?\d+\s*°?\s*C\s*\)/g,"").replace(/\s*\/\s*-?\d+\s*°\s*C\b/g,"").replace(/\.\s*$/,"");
@@ -143,7 +150,8 @@ function show(i){
     let h=`<div class="step"><h2>${esc(s.title)}</h2><p>${scale(tidy(s.text))}</p>`;
     if(s.timer) h+=`<div class="tbox" id="tbox"></div>`;
     if(s.while) h+=`<p class="while">${scale(tidy(s.while))}</p>`;
-    if(s.uses&&s.uses.length) h+=`<p class="uses">${s.uses.map(scale).join("<br>")}</p>`;
+    if(s.gather) h+=`<ul class="glist">${s.uses.map(u=>u.startsWith("§")?`<li class="gsec">${esc(u.slice(1))}</li>`:`<li>${scale(u)}</li>`).join("")}</ul>`;
+    else if(s.uses&&s.uses.length) h+=`<p class="uses">${s.uses.map(scale).join("<br>")}</p>`;
     st.innerHTML=h+`</div>`;
     picking=false;
   }

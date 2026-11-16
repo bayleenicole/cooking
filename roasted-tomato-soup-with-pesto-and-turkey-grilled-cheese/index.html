@@ -5,11 +5,15 @@
 <title>Roasted Tomato Soup with Pesto and Turkey Grilled Cheese</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&display=swap">
 <style>
 /* Layout: plain white page. Each step is a centered title + text and nothing else; tap the right side to go forward, the left side to go back. */
 :root{
-  --bg:#f6f0e4; --fg:#524c40; --muted:#8c8475; --line:#e2dbcd; --done:#3d6b4f;
-  --font:-apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",Helvetica,Arial,sans-serif;
+  --bg:#f6f0e4; --fg:#534c3e; --muted:#8c8475; --line:#e2dbcd; --done:#3d6b4f;
+  --font:"SF Pro Display",-apple-system,BlinkMacSystemFont,system-ui,Inter,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  --display:"DM Serif Display",Georgia,"Times New Roman",serif;
   color-scheme:light;
 }
 [hidden]{display:none!important}
@@ -22,7 +26,7 @@ button:focus-visible{outline:2px solid var(--fg);outline-offset:3px}
 
 /* title screen: same plain look, centered */
 #intro{min-height:100%;max-width:640px;margin:0 auto;padding-block:40px;text-align:center;display:flex;flex-direction:column;justify-content:center;align-items:center;box-sizing:border-box}
-h1{font:600 clamp(30px,7vw,44px)/1.15 var(--font);margin:0 0 14px;text-wrap:balance;letter-spacing:-.01em}
+h1{font:400 clamp(32px,8vw,46px)/1.15 var(--display);margin:0 0 14px;text-wrap:balance}
 .desc{margin:0 auto 10px;max-width:34em}
 .meta{color:var(--muted);font-size:16px;margin:0 0 28px}
 .serves{display:inline-flex;align-items:center;gap:14px;font-size:17px;margin-bottom:34px}
@@ -44,7 +48,10 @@ ul.ing li{padding:5px 0}
 .tray button.done{color:var(--done)}
 .stage{flex:1;overflow-y:auto;display:flex;touch-action:pan-y}
 .step{margin:auto;max-width:640px;text-align:center;padding-block:24px}
-.step h2{font:600 clamp(32px,8vw,46px)/1.15 var(--font);margin:0 0 22px;letter-spacing:-.01em;text-wrap:balance}
+.step h2{font:400 clamp(34px,8.5vw,48px)/1.15 var(--display);margin:0 0 22px;text-wrap:balance}
+.step .glist{list-style:none;margin:20px 0 0;padding:0;font-size:clamp(17px,4.2vw,19px);line-height:1.35}
+.step .glist li{padding:4px 0}
+.step .glist .gsec{color:var(--muted);font-size:15px;padding-top:14px}
 .step p{font-size:clamp(20px,4.6vw,22px);line-height:1.7;margin:0}
 .step .while{color:var(--muted);font-size:17px;margin-top:20px}
 .step .uses{color:var(--muted);font-size:16px;line-height:1.6;margin-top:22px}
@@ -85,7 +92,7 @@ ul.ing li{padding:5px 0}
 <div class="alarm" id="alarm" role="alert" hidden><span id="alarmTxt"></span><button id="alarmOk">OK</button></div>
 
 <script>
-const R = {"title": "Roasted Tomato Soup with Pesto and Turkey Grilled Cheese", "category": "Dinner", "description": "Oven-roasted tomato soup blended with Parmesan and cottage cheese, with a pesto, turkey and three-cheese grilled cheese for dipping.", "serves": 4, "prep": 20, "cook": 50, "ingredients": ["For the soup:", "3 lbs Tomatoes", "1 White onion", "1 Bell pepper", "1 head Garlic", "2 tbsp olive oil", "1 tsp oregano", "Salt and pepper to taste", "1/4 cup Parmesan", "1/2 cup cottage cheese (for protein and creaminess)", "1/4 cup fresh basil", "3 cups chicken broth", "For the pesto:", "4 cups of basil", "1/2 cup olive oil", "1/3 cup pine nuts", "2 cloves Garlic", "1/2 cup Parmesan", "salt and pepper to taste", "For the grilled cheese:", "4 slices bread", "1/2 cup Shredded mozzarella", "1/2 cup Shredded cheddar (I used unexpected cheddar from)", "2 slices Provolone", "4 oz Turkey for protein", "2 tbsp butter", "2 tbsp prepared pesto (from above)"], "slides": [{"title": "Soup: Prep", "text": "Preheat the oven to 400°F. Chop the tomatoes, whole onion, and bell pepper, and cut the top off the head of garlic.", "uses": ["3 lbs Tomatoes", "1 White onion", "1 Bell pepper", "1 head Garlic"]}, {"title": "Soup: Season", "text": "Place them all on a baking sheet drizzled with 2 tbsp olive oil, oregano, salt, and pepper.", "uses": ["2 tbsp olive oil", "1 tsp oregano", "Salt and pepper to taste"]}, {"title": "Soup: Roast", "text": "Bake for 40-50 minutes.", "timer": 2400, "while": "While the vegetables roast, make the pesto and assemble the sandwiches (next two steps)."}, {"title": "Pesto: Blend", "text": "To make the pesto, blend 4 cups basil, 1/2 cup olive oil, 1/3 cup pine nuts, and 2 cloves garlic in a blender, then add 1/2 cup Parmesan, salt, and pepper to taste, and blend again until smooth.", "uses": ["4 cups of basil", "1/2 cup olive oil", "1/3 cup pine nuts", "2 cloves Garlic", "1/2 cup Parmesan", "Salt and pepper to taste"]}, {"title": "Grilled Cheese: Assemble", "text": "Assemble the sandwiches by spreading butter on one side of each bread slice, spreading a layer of prepared pesto on the unbuttered side of two slices, and layering with shredded mozzarella, shredded cheddar, provolone, and turkey before topping with the remaining bread slices buttered-side out.", "uses": ["4 slices bread", "2 tbsp butter", "2 tbsp pesto (from step 4)", "1/2 cup Shredded mozzarella", "1/2 cup Shredded cheddar", "2 slices Provolone", "4 oz Turkey"]}, {"title": "Soup: Blend", "text": "Transfer the roasted vegetables to a blender along with 1/4 cup Parmesan, 1/2 cup cottage cheese, 1/4 cup fresh basil, and a splash of chicken broth, then blend until smooth.", "uses": ["1/4 cup Parmesan", "1/2 cup cottage cheese", "1/4 cup fresh basil", "Splash of chicken broth"]}, {"title": "Soup: Heat", "text": "Transfer to a pot, stir in additional chicken broth to reach your desired consistency, and bring to a boil.", "uses": ["Up to 3 cups chicken broth"], "while": "While the soup heats, start the grilled cheese (next step)."}, {"title": "Grilled Cheese: Cook", "text": "Cook the assembled grilled cheese sandwiches in a skillet over medium heat for 3-4 minutes per side until the bread is golden brown and the cheese is fully melted.", "timer": 180}]};
+const R = {"title": "Roasted Tomato Soup with Pesto and Turkey Grilled Cheese", "category": "Dinner", "description": "Oven-roasted tomato soup blended with Parmesan and cottage cheese, with a pesto, turkey and three-cheese grilled cheese for dipping.", "serves": 4, "prep": 20, "cook": 50, "ingredients": ["For the soup:", "3 lbs Tomatoes", "1 White onion", "1 Bell pepper", "1 head Garlic", "2 tbsp olive oil", "1 tsp oregano", "Salt and pepper to taste", "1/4 cup Parmesan", "1/2 cup cottage cheese (for protein and creaminess)", "1/4 cup fresh basil", "3 cups chicken broth", "For the pesto:", "4 cups of basil", "1/2 cup olive oil", "1/3 cup pine nuts", "2 cloves Garlic", "1/2 cup Parmesan", "salt and pepper to taste", "For the grilled cheese:", "4 slices bread", "1/2 cup Shredded mozzarella", "1/2 cup Shredded cheddar (I used unexpected cheddar from)", "2 slices Provolone", "4 oz Turkey for protein", "2 tbsp butter", "2 tbsp prepared pesto (from above)"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start.", "uses": ["§Soup", "3 lbs Tomatoes", "1 White onion", "1 Bell pepper", "1 head Garlic", "2 tbsp olive oil", "1 tsp oregano", "Salt and pepper to taste", "1/4 cup Parmesan", "1/2 cup cottage cheese (for protein and creaminess)", "1/4 cup fresh basil", "3 cups chicken broth", "§Pesto", "4 cups of basil", "1/2 cup olive oil", "1/3 cup pine nuts", "2 cloves Garlic", "1/2 cup Parmesan", "salt and pepper to taste", "§Grilled cheese", "4 slices bread", "1/2 cup Shredded mozzarella", "1/2 cup Shredded cheddar (I used unexpected cheddar from)", "2 slices Provolone", "4 oz Turkey for protein", "2 tbsp butter"]}, {"title": "Soup: Prep", "text": "Preheat the oven to 400°F. Chop the tomatoes, whole onion, and bell pepper, and cut the top off the head of garlic.", "uses": ["3 lbs Tomatoes", "1 White onion", "1 Bell pepper", "1 head Garlic"]}, {"title": "Soup: Season", "text": "Place them all on a baking sheet drizzled with 2 tbsp olive oil, oregano, salt, and pepper.", "uses": ["2 tbsp olive oil", "1 tsp oregano", "Salt and pepper to taste"]}, {"title": "Soup: Roast", "text": "Bake for 40-50 minutes.", "timer": 2400, "while": "While the vegetables roast, make the pesto and assemble the sandwiches (next two steps)."}, {"title": "Pesto: Blend", "text": "To make the pesto, blend 4 cups basil, 1/2 cup olive oil, 1/3 cup pine nuts, and 2 cloves garlic in a blender, then add 1/2 cup Parmesan, salt, and pepper to taste, and blend again until smooth.", "uses": ["4 cups of basil", "1/2 cup olive oil", "1/3 cup pine nuts", "2 cloves Garlic", "1/2 cup Parmesan", "Salt and pepper to taste"]}, {"title": "Grilled Cheese: Assemble", "text": "Assemble the sandwiches by spreading butter on one side of each bread slice, spreading a layer of prepared pesto on the unbuttered side of two slices, and layering with shredded mozzarella, shredded cheddar, provolone, and turkey before topping with the remaining bread slices buttered-side out.", "uses": ["4 slices bread", "2 tbsp butter", "2 tbsp pesto (from step 4)", "1/2 cup Shredded mozzarella", "1/2 cup Shredded cheddar", "2 slices Provolone", "4 oz Turkey"]}, {"title": "Soup: Blend", "text": "Transfer the roasted vegetables to a blender along with 1/4 cup Parmesan, 1/2 cup cottage cheese, 1/4 cup fresh basil, and a splash of chicken broth, then blend until smooth.", "uses": ["1/4 cup Parmesan", "1/2 cup cottage cheese", "1/4 cup fresh basil", "Splash of chicken broth"]}, {"title": "Soup: Heat", "text": "Transfer to a pot, stir in additional chicken broth to reach your desired consistency, and bring to a boil.", "uses": ["Up to 3 cups chicken broth"], "while": "While the soup heats, start the grilled cheese (next step)."}, {"title": "Grilled Cheese: Cook", "text": "Cook the assembled grilled cheese sandwiches in a skillet over medium heat for 3-4 minutes per side until the bread is golden brown and the cheese is fully melted.", "timer": 180}]};
 const $ = id => document.getElementById(id);
 // card text: no Celsius conversions, no period at the very end
 const tidy = t => (t||"").replace(/\s*\(\s*-?\d+\s*°?\s*C\s*\)/g,"").replace(/\s*\/\s*-?\d+\s*°\s*C\b/g,"").replace(/\.\s*$/,"");
@@ -143,7 +150,8 @@ function show(i){
     let h=`<div class="step"><h2>${esc(s.title)}</h2><p>${scale(tidy(s.text))}</p>`;
     if(s.timer) h+=`<div class="tbox" id="tbox"></div>`;
     if(s.while) h+=`<p class="while">${scale(tidy(s.while))}</p>`;
-    if(s.uses&&s.uses.length) h+=`<p class="uses">${s.uses.map(scale).join("<br>")}</p>`;
+    if(s.gather) h+=`<ul class="glist">${s.uses.map(u=>u.startsWith("§")?`<li class="gsec">${esc(u.slice(1))}</li>`:`<li>${scale(u)}</li>`).join("")}</ul>`;
+    else if(s.uses&&s.uses.length) h+=`<p class="uses">${s.uses.map(scale).join("<br>")}</p>`;
     st.innerHTML=h+`</div>`;
     picking=false;
   }

@@ -5,11 +5,15 @@
 <title>Chipotle Chicken Thighs with Rice and Cilantro Lime Sauce</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <meta name="robots" content="noindex, nofollow">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=DM+Serif+Display&display=swap">
 <style>
 /* Layout: plain white page. Each step is a centered title + text and nothing else; tap the right side to go forward, the left side to go back. */
 :root{
-  --bg:#f6f0e4; --fg:#524c40; --muted:#8c8475; --line:#e2dbcd; --done:#3d6b4f;
-  --font:-apple-system,BlinkMacSystemFont,"SF Pro Text","Helvetica Neue",Helvetica,Arial,sans-serif;
+  --bg:#f6f0e4; --fg:#534c3e; --muted:#8c8475; --line:#e2dbcd; --done:#3d6b4f;
+  --font:"SF Pro Display",-apple-system,BlinkMacSystemFont,system-ui,Inter,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  --display:"DM Serif Display",Georgia,"Times New Roman",serif;
   color-scheme:light;
 }
 [hidden]{display:none!important}
@@ -22,7 +26,7 @@ button:focus-visible{outline:2px solid var(--fg);outline-offset:3px}
 
 /* title screen: same plain look, centered */
 #intro{min-height:100%;max-width:640px;margin:0 auto;padding-block:40px;text-align:center;display:flex;flex-direction:column;justify-content:center;align-items:center;box-sizing:border-box}
-h1{font:600 clamp(30px,7vw,44px)/1.15 var(--font);margin:0 0 14px;text-wrap:balance;letter-spacing:-.01em}
+h1{font:400 clamp(32px,8vw,46px)/1.15 var(--display);margin:0 0 14px;text-wrap:balance}
 .desc{margin:0 auto 10px;max-width:34em}
 .meta{color:var(--muted);font-size:16px;margin:0 0 28px}
 .serves{display:inline-flex;align-items:center;gap:14px;font-size:17px;margin-bottom:34px}
@@ -44,7 +48,10 @@ ul.ing li{padding:5px 0}
 .tray button.done{color:var(--done)}
 .stage{flex:1;overflow-y:auto;display:flex;touch-action:pan-y}
 .step{margin:auto;max-width:640px;text-align:center;padding-block:24px}
-.step h2{font:600 clamp(32px,8vw,46px)/1.15 var(--font);margin:0 0 22px;letter-spacing:-.01em;text-wrap:balance}
+.step h2{font:400 clamp(34px,8.5vw,48px)/1.15 var(--display);margin:0 0 22px;text-wrap:balance}
+.step .glist{list-style:none;margin:20px 0 0;padding:0;font-size:clamp(17px,4.2vw,19px);line-height:1.35}
+.step .glist li{padding:4px 0}
+.step .glist .gsec{color:var(--muted);font-size:15px;padding-top:14px}
 .step p{font-size:clamp(20px,4.6vw,22px);line-height:1.7;margin:0}
 .step .while{color:var(--muted);font-size:17px;margin-top:20px}
 .step .uses{color:var(--muted);font-size:16px;line-height:1.6;margin-top:22px}
@@ -85,7 +92,7 @@ ul.ing li{padding:5px 0}
 <div class="alarm" id="alarm" role="alert" hidden><span id="alarmTxt"></span><button id="alarmOk">OK</button></div>
 
 <script>
-const R = {"title": "Chipotle Chicken Thighs with Rice and Cilantro Lime Sauce", "category": "Dinner", "description": "Smoky chipotle-marinated chicken thighs over rice and lettuce with a cilantro lime yogurt sauce.", "serves": 4, "prep": 15, "cook": 20, "ingredients": ["2 lbs chicken thighs", "1 can chipotle peppers in adobo", "1 head lettuce", "1 cup rice", "2 cups water (for the rice)", "1/2 cup cilantro", "1 lime", "1 cup Greek yogurt", "1/2 tsp garlic salt", "Salt, to taste", "Pepper, to taste", "1 tbsp olive oil", "2-4 tbsp water"], "slides": [{"title": "Marinate", "text": "Blend the can of chipotle peppers, pour over your chicken thighs in a bag, and let marinate for at least 30 minutes.", "timer": 1800, "uses": ["1 can chipotle peppers in adobo", "2 lbs chicken thighs"], "while": "While the chicken marinates, cook the rice (next step)."}, {"title": "Cook the Rice", "text": "Cook 1 cup of rice with 2 cups of water according to package instructions.", "uses": ["1 cup rice", "2 cups water (for the rice)"]}, {"title": "Heat the Pan", "text": "Heat up your cast iron over medium-high heat and add 1 tbsp olive oil once heated.", "uses": ["1 tbsp olive oil"]}, {"title": "Cook the Chicken", "text": "Place chicken on the cast iron and cook each side for 6-8 minutes or until cooked through to an internal temperature of 165°F, adding 2-4 tbsp of water to the pan to deglaze when you flip.", "timer": 360, "uses": ["2-4 tbsp water"]}, {"title": "Rest", "text": "Remove chicken from heat and let rest for 5 minutes before slicing.", "timer": 300, "while": "While the chicken rests, make the sauce (next step)."}, {"title": "Cilantro Lime Sauce", "text": "Blend Greek yogurt, a handful of cilantro, and juice from 1 lime together, then season with garlic salt, salt, and pepper to taste.", "uses": ["1 cup Greek yogurt", "1/2 cup cilantro", "1 lime", "1/2 tsp garlic salt", "Salt, to taste", "Pepper, to taste"]}, {"title": "Serve", "text": "Shred 1 head of lettuce and serve the sliced chicken over rice and lettuce, drizzled with the yogurt sauce.", "uses": ["1 head lettuce"]}]};
+const R = {"title": "Chipotle Chicken Thighs with Rice and Cilantro Lime Sauce", "category": "Dinner", "description": "Smoky chipotle-marinated chicken thighs over rice and lettuce with a cilantro lime yogurt sauce.", "serves": 4, "prep": 15, "cook": 20, "ingredients": ["2 lbs chicken thighs", "1 can chipotle peppers in adobo", "1 head lettuce", "1 cup rice", "2 cups water (for the rice)", "1/2 cup cilantro", "1 lime", "1 cup Greek yogurt", "1/2 tsp garlic salt", "Salt, to taste", "Pepper, to taste", "1 tbsp olive oil", "2-4 tbsp water"], "slides": [{"title": "Gather Ingredients", "gather": true, "text": "Get everything out before you start.", "uses": ["2 lbs chicken thighs", "1 can chipotle peppers in adobo", "1 head lettuce", "1 cup rice", "2 cups water (for the rice)", "1/2 cup cilantro", "1 lime", "1 cup Greek yogurt", "1/2 tsp garlic salt", "Salt, to taste", "Pepper, to taste", "1 tbsp olive oil", "2-4 tbsp water"]}, {"title": "Marinate", "text": "Blend the can of chipotle peppers, pour over your chicken thighs in a bag, and let marinate for at least 30 minutes.", "timer": 1800, "uses": ["1 can chipotle peppers in adobo", "2 lbs chicken thighs"], "while": "While the chicken marinates, cook the rice (next step)."}, {"title": "Cook the Rice", "text": "Cook 1 cup of rice with 2 cups of water according to package instructions.", "uses": ["1 cup rice", "2 cups water (for the rice)"]}, {"title": "Heat the Pan", "text": "Heat up your cast iron over medium-high heat and add 1 tbsp olive oil once heated.", "uses": ["1 tbsp olive oil"]}, {"title": "Cook the Chicken", "text": "Place chicken on the cast iron and cook each side for 6-8 minutes or until cooked through to an internal temperature of 165°F, adding 2-4 tbsp of water to the pan to deglaze when you flip.", "timer": 360, "uses": ["2-4 tbsp water"]}, {"title": "Rest", "text": "Remove chicken from heat and let rest for 5 minutes before slicing.", "timer": 300, "while": "While the chicken rests, make the sauce (next step)."}, {"title": "Cilantro Lime Sauce", "text": "Blend Greek yogurt, a handful of cilantro, and juice from 1 lime together, then season with garlic salt, salt, and pepper to taste.", "uses": ["1 cup Greek yogurt", "1/2 cup cilantro", "1 lime", "1/2 tsp garlic salt", "Salt, to taste", "Pepper, to taste"]}, {"title": "Serve", "text": "Shred 1 head of lettuce and serve the sliced chicken over rice and lettuce, drizzled with the yogurt sauce.", "uses": ["1 head lettuce"]}]};
 const $ = id => document.getElementById(id);
 // card text: no Celsius conversions, no period at the very end
 const tidy = t => (t||"").replace(/\s*\(\s*-?\d+\s*°?\s*C\s*\)/g,"").replace(/\s*\/\s*-?\d+\s*°\s*C\b/g,"").replace(/\.\s*$/,"");
@@ -143,7 +150,8 @@ function show(i){
     let h=`<div class="step"><h2>${esc(s.title)}</h2><p>${scale(tidy(s.text))}</p>`;
     if(s.timer) h+=`<div class="tbox" id="tbox"></div>`;
     if(s.while) h+=`<p class="while">${scale(tidy(s.while))}</p>`;
-    if(s.uses&&s.uses.length) h+=`<p class="uses">${s.uses.map(scale).join("<br>")}</p>`;
+    if(s.gather) h+=`<ul class="glist">${s.uses.map(u=>u.startsWith("§")?`<li class="gsec">${esc(u.slice(1))}</li>`:`<li>${scale(u)}</li>`).join("")}</ul>`;
+    else if(s.uses&&s.uses.length) h+=`<p class="uses">${s.uses.map(scale).join("<br>")}</p>`;
     st.innerHTML=h+`</div>`;
     picking=false;
   }
