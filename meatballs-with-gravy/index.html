@@ -36,6 +36,8 @@ h1{font:400 clamp(32px,8vw,46px)/1.15 var(--display);margin:0 0 14px;text-wrap:b
 .sec{color:var(--muted);font-size:15px;margin:22px 0 4px}
 ul.ing{list-style:none;margin:0;padding:0}
 ul.ing li{padding:5px 0}
+.watchp{margin:18px 0 0}
+#intro .watch{display:inline-block;font-size:17px;color:var(--fg);text-decoration:underline;text-underline-offset:4px;padding:10px 8px}
 .go{margin-top:40px;font-size:19px;font-weight:600;border:1px solid var(--fg);border-radius:999px;padding:16px 44px}
 
 /* step screens */
@@ -80,6 +82,7 @@ ul.ing li{padding:5px 0}
   <h1 id="ttl"></h1>
   <p class="desc" id="desc"></p>
   <button class="go" id="start">Start Cooking</button>
+  <p class="watchp"><a class="watch" id="watch" target="_blank" rel="noopener" hidden>&#9654;&#xFE0E; Watch me make it</a></p>
 </section>
 <section id="cook" hidden>
   <div class="count" id="count"></div>
@@ -133,6 +136,7 @@ function esc(s){return s.replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;
 /* ---- title screen ---- */
 function renderIntro(){}
 $("ttl").textContent=R.title;
+if(R.video){$("watch").href=R.video;$("watch").hidden=false}
 $("desc").textContent=tidy(R.description); $("desc").hidden=!R.description;
 
 /* ---- steps ---- */
