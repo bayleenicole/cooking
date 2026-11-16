@@ -85,7 +85,7 @@ ul.ing li{padding:5px 0}
 <div class="alarm" id="alarm" role="alert" hidden><span id="alarmTxt"></span><button id="alarmOk">OK</button></div>
 
 <script>
-const R = {"title": "Tuna Salad with Cornichons", "category": "Lunch", "description": "", "serves": 1, "prep": 5, "cook": 0, "ingredients": ["1 can tuna in water, drained", "1 tbsp Greek yogurt", "1 tbsp mayo", "1 tsp Dijon mustard", "Pepper, to taste", "Flaky salt, to taste", "5 cornichons, for serving"], "slides": [{"title": "Step 1", "text": "Combine the tuna, Greek yogurt, mayo, and Dijon mustard in a bowl, season with pepper and flaky salt to taste, and mix well."}, {"title": "Step 2", "text": "Serve with cornichons on the side or for dipping."}]};
+const R = {"title": "Tuna Salad with Cornichons", "category": "Lunch", "description": "A quick creamy Dijon tuna salad with flaky salt and cornichons on the side.", "serves": 1, "prep": 5, "cook": 0, "ingredients": ["1 can tuna in water, drained", "1 tbsp Greek yogurt", "1 tbsp mayo", "1 tsp Dijon mustard", "Pepper, to taste", "Flaky salt, to taste", "5 cornichons, for serving"], "slides": [{"title": "Mix", "text": "Combine the tuna, Greek yogurt, mayo, and Dijon mustard in a bowl, season with pepper and flaky salt to taste, and mix well.", "uses": ["1 can tuna in water, drained", "1 tbsp Greek yogurt", "1 tbsp mayo", "1 tsp Dijon mustard", "Pepper, to taste", "Flaky salt, to taste"]}, {"title": "Serve", "text": "Serve with cornichons on the side or for dipping.", "uses": ["5 cornichons, for serving"]}]};
 const $ = id => document.getElementById(id);
 // card text: no Celsius conversions, no period at the very end
 const tidy = t => (t||"").replace(/\s*\(\s*-?\d+\s*°?\s*C\s*\)/g,"").replace(/\s*\/\s*-?\d+\s*°\s*C\b/g,"").replace(/\.\s*$/,"");

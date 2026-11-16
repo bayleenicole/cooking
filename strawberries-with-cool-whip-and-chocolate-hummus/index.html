@@ -85,7 +85,7 @@ ul.ing li{padding:5px 0}
 <div class="alarm" id="alarm" role="alert" hidden><span id="alarmTxt"></span><button id="alarmOk">OK</button></div>
 
 <script>
-const R = {"title": "Strawberries with Cool Whip & Chocolate Hummus", "category": "Dessert", "description": "", "serves": 2, "prep": 5, "cook": 0, "ingredients": ["2 cups strawberries, sliced", "1/2 cup Cool Whip", "1/2 cup chocolate hummus"], "slides": [{"title": "Step 1", "text": "Arrange half of the sliced strawberries on a plate with a dollop of Cool Whip, then serve the remaining strawberries alongside the chocolate hummus for dipping."}, {"title": "Step 2", "text": "Enjoy immediately."}]};
+const R = {"title": "Strawberries with Cool Whip & Chocolate Hummus", "category": "Dessert", "description": "Fresh strawberries with Cool Whip and chocolate hummus for dipping.", "serves": 2, "prep": 5, "cook": 0, "ingredients": ["2 cups strawberries, sliced", "1/2 cup Cool Whip", "1/2 cup chocolate hummus"], "slides": [{"title": "Plate & Serve", "text": "Arrange half of the sliced strawberries on a plate with a dollop of Cool Whip, then serve the remaining strawberries alongside the chocolate hummus for dipping. Enjoy immediately.", "uses": ["2 cups strawberries, sliced", "1/2 cup Cool Whip", "1/2 cup chocolate hummus"]}]};
 const $ = id => document.getElementById(id);
 // card text: no Celsius conversions, no period at the very end
 const tidy = t => (t||"").replace(/\s*\(\s*-?\d+\s*°?\s*C\s*\)/g,"").replace(/\s*\/\s*-?\d+\s*°\s*C\b/g,"").replace(/\.\s*$/,"");

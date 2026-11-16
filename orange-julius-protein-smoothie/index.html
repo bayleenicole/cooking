@@ -85,7 +85,7 @@ ul.ing li{padding:5px 0}
 <div class="alarm" id="alarm" role="alert" hidden><span id="alarmTxt"></span><button id="alarmOk">OK</button></div>
 
 <script>
-const R = {"title": "Orange Julius Protein Smoothie", "category": "Drinks & Coffee", "description": "", "serves": 1, "prep": 5, "cook": 0, "ingredients": ["1 cup orange juice", "1 scoop vanilla protein powder", "1 cup ice"], "slides": [{"title": "Step 1", "text": "Add the orange juice, protein powder, and ice to a blender and blend until smooth."}, {"title": "Step 2", "text": "Pour into a glass and serve."}]};
+const R = {"title": "Orange Julius Protein Smoothie", "category": "Drinks & Coffee", "description": "A three-ingredient Orange Julius protein smoothie.", "serves": 1, "prep": 5, "cook": 0, "ingredients": ["1 cup orange juice", "1 scoop vanilla protein powder", "1 cup ice"], "slides": [{"title": "Blend", "text": "Add the orange juice, protein powder, and ice to a blender and blend until smooth.", "uses": ["1 cup orange juice", "1 scoop vanilla protein powder", "1 cup ice"]}, {"title": "Serve", "text": "Pour into a glass and serve."}]};
 const $ = id => document.getElementById(id);
 // card text: no Celsius conversions, no period at the very end
 const tidy = t => (t||"").replace(/\s*\(\s*-?\d+\s*°?\s*C\s*\)/g,"").replace(/\s*\/\s*-?\d+\s*°\s*C\b/g,"").replace(/\.\s*$/,"");

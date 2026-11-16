@@ -85,7 +85,7 @@ ul.ing li{padding:5px 0}
 <div class="alarm" id="alarm" role="alert" hidden><span id="alarmTxt"></span><button id="alarmOk">OK</button></div>
 
 <script>
-const R = {"title": "Ground Beef & Sweet Potato Skillet", "category": "Dinner", "description": "", "serves": 4, "prep": 5, "cook": 18, "ingredients": ["1 lb ground beef", "2 sweet potatoes, diced", "1 tbsp olive oil"], "slides": [{"title": "Step 1", "text": "Heat 1 tbsp olive oil in a skillet over medium heat, add the diced sweet potatoes, and cook for 10 minutes until tender.", "timer": 600}, {"title": "Step 2", "text": "Add the ground beef and cook for 8 minutes until browned and cooked through.", "timer": 480}]};
+const R = {"title": "Ground Beef & Sweet Potato Skillet", "category": "Dinner", "description": "A simple one-skillet meal of crispy diced sweet potatoes and browned ground beef.", "serves": 4, "prep": 5, "cook": 18, "ingredients": ["1 lb ground beef", "2 sweet potatoes, diced", "1 tbsp olive oil"], "slides": [{"title": "Sweet Potatoes", "text": "Heat 1 tbsp olive oil in a skillet over medium heat, add the diced sweet potatoes, and cook for 10 minutes until tender.", "timer": 600, "uses": ["1 tbsp olive oil", "2 sweet potatoes, diced"]}, {"title": "Ground Beef", "text": "Add the ground beef and cook for 8 minutes until browned and cooked through.", "timer": 480, "uses": ["1 lb ground beef"]}]};
 const $ = id => document.getElementById(id);
 // card text: no Celsius conversions, no period at the very end
 const tidy = t => (t||"").replace(/\s*\(\s*-?\d+\s*°?\s*C\s*\)/g,"").replace(/\s*\/\s*-?\d+\s*°\s*C\b/g,"").replace(/\.\s*$/,"");

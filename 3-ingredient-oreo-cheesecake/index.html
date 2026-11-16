@@ -85,7 +85,7 @@ ul.ing li{padding:5px 0}
 <div class="alarm" id="alarm" role="alert" hidden><span id="alarmTxt"></span><button id="alarmOk">OK</button></div>
 
 <script>
-const R = {"title": "3-Ingredient Oreo Cheesecake", "category": "Dessert", "description": "", "serves": 4, "prep": 10, "cook": 0, "ingredients": ["1 (16 oz) container Greek yogurt", "1 tbsp sugar-free vanilla instant pudding mix", "5-6 Oreo cookies, chopped"], "slides": [{"title": "Step 1", "text": "Mix the Greek yogurt with the instant pudding mix until smooth and evenly combined."}, {"title": "Step 2", "text": "Pour into a serving dish and top with the chopped Oreos."}, {"title": "Step 3", "text": "Refrigerate until chilled and set, then serve cold."}]};
+const R = {"title": "3-Ingredient Oreo Cheesecake", "category": "Dessert", "description": "A no-bake Greek yogurt cheesecake with vanilla pudding and chopped Oreos.", "serves": 4, "prep": 10, "cook": 0, "ingredients": ["1 (16 oz) container Greek yogurt", "1 tbsp sugar-free vanilla instant pudding mix", "5-6 Oreo cookies, chopped"], "slides": [{"title": "Mix", "text": "Mix the Greek yogurt with the instant pudding mix until smooth and evenly combined.", "uses": ["1 (16 oz) container Greek yogurt", "1 tbsp sugar-free vanilla instant pudding mix"]}, {"title": "Top", "text": "Pour into a serving dish and top with the chopped Oreos.", "uses": ["5-6 Oreo cookies, chopped"]}, {"title": "Chill & Serve", "text": "Refrigerate until chilled and set, then serve cold."}]};
 const $ = id => document.getElementById(id);
 // card text: no Celsius conversions, no period at the very end
 const tidy = t => (t||"").replace(/\s*\(\s*-?\d+\s*°?\s*C\s*\)/g,"").replace(/\s*\/\s*-?\d+\s*°\s*C\b/g,"").replace(/\.\s*$/,"");

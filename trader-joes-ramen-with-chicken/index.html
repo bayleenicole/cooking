@@ -85,7 +85,7 @@ ul.ing li{padding:5px 0}
 <div class="alarm" id="alarm" role="alert" hidden><span id="alarmTxt"></span><button id="alarmOk">OK</button></div>
 
 <script>
-const R = {"title": "Trader Joe’s Ramen with Chicken", "category": "Lunch", "description": "", "serves": 1, "prep": 5, "cook": 5, "ingredients": ["1 package Trader Joe’s ramen", "1 cup cooked chicken, sliced", "1 cheese stick", "5 cornichons, for serving"], "slides": [{"title": "Step 1", "text": "Boil the ramen noodles according to package directions, then mix in the included seasoning packet."}, {"title": "Step 2", "text": "Add the sliced cooked chicken."}, {"title": "Step 3", "text": "Serve with a cheese stick and cornichons on the side."}]};
+const R = {"title": "Trader Joe’s Ramen with Chicken", "category": "Lunch", "description": "A quick ramen bowl with sliced chicken, plus a cheese stick and cornichons on the side.", "serves": 1, "prep": 5, "cook": 5, "ingredients": ["1 package ramen", "1 cup cooked chicken, sliced", "1 cheese stick", "5 cornichons, for serving"], "slides": [{"title": "Cook the Ramen", "text": "Boil the ramen noodles according to package directions, then mix in the included seasoning packet.", "uses": ["1 package ramen"]}, {"title": "Add the Chicken", "text": "Add the sliced cooked chicken.", "uses": ["1 cup cooked chicken, sliced"]}, {"title": "Serve", "text": "Serve with a cheese stick and cornichons on the side.", "uses": ["1 cheese stick", "5 cornichons, for serving"]}]};
 const $ = id => document.getElementById(id);
 // card text: no Celsius conversions, no period at the very end
 const tidy = t => (t||"").replace(/\s*\(\s*-?\d+\s*°?\s*C\s*\)/g,"").replace(/\s*\/\s*-?\d+\s*°\s*C\b/g,"").replace(/\.\s*$/,"");

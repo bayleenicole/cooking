@@ -85,7 +85,7 @@ ul.ing li{padding:5px 0}
 <div class="alarm" id="alarm" role="alert" hidden><span id="alarmTxt"></span><button id="alarmOk">OK</button></div>
 
 <script>
-const R = {"title": "Chicken Sheet Pan", "category": "Dinner", "description": "", "serves": 4, "prep": 5, "cook": 20, "ingredients": ["1 lb chicken, chopped", "2 cups mixed vegetables", "2 tbsp olive oil"], "slides": [{"title": "Step 1", "text": "Preheat oven to 400°F."}, {"title": "Step 2", "text": "Arrange the chopped chicken and mixed vegetables on a baking sheet, toss with the olive oil, and bake at 400°F for 20 minutes.", "timer": 1200}]};
+const R = {"title": "Chicken Sheet Pan", "category": "Dinner", "description": "An easy sheet pan of chicken and mixed vegetables roasted in olive oil.", "serves": 4, "prep": 5, "cook": 20, "ingredients": ["1 lb chicken, chopped", "2 cups mixed vegetables", "2 tbsp olive oil"], "slides": [{"title": "Sheet Pan", "text": "Preheat oven to 400°F. Arrange the chopped chicken and mixed vegetables on a baking sheet and toss with the olive oil.", "uses": ["1 lb chicken, chopped", "2 cups mixed vegetables", "2 tbsp olive oil"]}, {"title": "Bake", "text": "Bake at 400°F for 20 minutes.", "timer": 1200}]};
 const $ = id => document.getElementById(id);
 // card text: no Celsius conversions, no period at the very end
 const tidy = t => (t||"").replace(/\s*\(\s*-?\d+\s*°?\s*C\s*\)/g,"").replace(/\s*\/\s*-?\d+\s*°\s*C\b/g,"").replace(/\.\s*$/,"");

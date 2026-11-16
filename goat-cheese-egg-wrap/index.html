@@ -85,7 +85,7 @@ ul.ing li{padding:5px 0}
 <div class="alarm" id="alarm" role="alert" hidden><span id="alarmTxt"></span><button id="alarmOk">OK</button></div>
 
 <script>
-const R = {"title": "Goat Cheese Egg Wrap", "category": "Breakfast", "description": "", "serves": 1, "prep": 5, "cook": 5, "ingredients": ["1 egg", "2 tbsp crumbled goat cheese", "1 Siete almond flour tortilla", "1 tsp honey, for drizzling"], "slides": [{"title": "Step 1", "text": "Heat a nonstick skillet over medium heat, fry the egg for 2 to 3 minutes, and top with the crumbled goat cheese.", "timer": 120}, {"title": "Step 2", "text": "Warm the Siete almond flour tortilla in a dry skillet for 10 seconds per side, wrap the egg in the tortilla, and drizzle with honey."}]};
+const R = {"title": "Goat Cheese Egg Wrap", "category": "Breakfast", "description": "A fried egg with goat cheese wrapped in a warm almond flour tortilla with a drizzle of honey.", "serves": 1, "prep": 5, "cook": 5, "ingredients": ["1 egg", "2 tbsp crumbled goat cheese", "1 almond flour tortilla", "1 tsp honey, for drizzling"], "slides": [{"title": "Fry the Egg", "text": "Heat a nonstick skillet over medium heat, fry the egg for 2 to 3 minutes, and top with the crumbled goat cheese.", "timer": 120, "uses": ["1 egg", "2 tbsp crumbled goat cheese"]}, {"title": "Wrap & Serve", "text": "Warm the almond flour tortilla in a dry skillet for 10 seconds per side, wrap the egg in the tortilla, and drizzle with honey.", "uses": ["1 almond flour tortilla", "1 tsp honey, for drizzling"]}]};
 const $ = id => document.getElementById(id);
 // card text: no Celsius conversions, no period at the very end
 const tidy = t => (t||"").replace(/\s*\(\s*-?\d+\s*°?\s*C\s*\)/g,"").replace(/\s*\/\s*-?\d+\s*°\s*C\b/g,"").replace(/\.\s*$/,"");

@@ -85,7 +85,7 @@ ul.ing li{padding:5px 0}
 <div class="alarm" id="alarm" role="alert" hidden><span id="alarmTxt"></span><button id="alarmOk">OK</button></div>
 
 <script>
-const R = {"title": "Coconut Orange Mocktail", "category": "Drinks & Coffee", "description": "", "serves": 2, "prep": 5, "cook": 0, "ingredients": ["1 cup coconut cream", "1/4 cup orange juice", "2 oz non-alcoholic aperitif", "1 cup ice"], "slides": [{"title": "Step 1", "text": "Blend the coconut cream, orange juice, and non-alcoholic aperitif with ice."}, {"title": "Step 2", "text": "Pour into a glass and serve immediately."}]};
+const R = {"title": "Coconut Orange Mocktail", "category": "Drinks & Coffee", "description": "A creamy blended coconut and orange mocktail with a non-alcoholic aperitif.", "serves": 2, "prep": 5, "cook": 0, "ingredients": ["1 cup coconut cream", "1/4 cup orange juice", "2 oz non-alcoholic aperitif", "1 cup ice"], "slides": [{"title": "Blend", "text": "Blend the coconut cream, orange juice, and non-alcoholic aperitif with ice.", "uses": ["1 cup coconut cream", "1/4 cup orange juice", "2 oz non-alcoholic aperitif", "1 cup ice"]}, {"title": "Serve", "text": "Pour into a glass and serve immediately."}]};
 const $ = id => document.getElementById(id);
 // card text: no Celsius conversions, no period at the very end
 const tidy = t => (t||"").replace(/\s*\(\s*-?\d+\s*°?\s*C\s*\)/g,"").replace(/\s*\/\s*-?\d+\s*°\s*C\b/g,"").replace(/\.\s*$/,"");
