@@ -85,7 +85,7 @@ ul.ing li{padding:5px 0}
 <div class="alarm" id="alarm" role="alert" hidden><span id="alarmTxt"></span><button id="alarmOk">OK</button></div>
 
 <script>
-const R = {"title": "Sumo Orange Coconut Drink", "category": "Drinks & Coffee", "description": "", "serves": 2, "prep": 5, "cook": 0, "ingredients": ["12oz water", "1 sumo orange", "3 tbsp coconut cream", "1 tbsp coconut sugar or sweetener of choice", "Pinch of high mineral salt", "1 cup ice cubes"], "slides": [{"title": "Step 1", "text": "Peel the sumo orange, then combine it in a blender with 12oz water, 3 tbsp coconut cream, 1 tbsp coconut sugar or sweetener of choice, and a pinch of high mineral salt."}, {"title": "Step 2", "text": "Blend together on high speed for 45 seconds until completely smooth, then strain the mixture through a fine-mesh strainer into a glass filled with ice cubes.", "timer": 45}]};
+const R = {"title": "Sumo Orange Coconut Drink", "category": "Drinks & Coffee", "description": "", "serves": 2, "prep": 5, "cook": 0, "ingredients": ["12oz water", "1 sumo orange", "3 tbsp coconut cream", "1 tbsp coconut sugar or sweetener of choice", "Pinch of high mineral salt", "1 cup ice cubes"], "slides": [{"title": "Step 1", "text": "Peel the sumo orange, then combine it in a blender with 12oz water, 3 tbsp coconut cream, 1 tbsp coconut sugar or sweetener of choice, and a pinch of high mineral salt."}, {"title": "Step 2", "text": "Blend together on high speed for 45 seconds until completely smooth, then strain the mixture through a fine-mesh strainer into a glass filled with ice cubes."}]};
 const $ = id => document.getElementById(id);
 // card text: no Celsius conversions, no period at the very end
 const tidy = t => (t||"").replace(/\s*\(\s*-?\d+\s*°?\s*C\s*\)/g,"").replace(/\s*\/\s*-?\d+\s*°\s*C\b/g,"").replace(/\.\s*$/,"");
@@ -125,7 +125,7 @@ function esc(s){return s.replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;
 /* ---- title screen ---- */
 function renderIntro(){}
 $("ttl").textContent=R.title;
-$("desc").textContent=R.description;
+$("desc").textContent=R.description; $("desc").hidden=!R.description;
 
 /* ---- steps ---- */
 const N=R.slides.length;
@@ -149,6 +149,7 @@ function show(i){
   }
   st.scrollTop=0;
   paintTimers();
+  keepAwake();                 // re-ask on every step: some phones refuse the first request
 }
 function toIntro(){lastStep=cur<N?cur:0;cur=-1;$("cook").hidden=true;$("intro").hidden=false;renderIntro();scrollTo(0,0)}
 $("back").onclick=()=>cur===0?toIntro():show(cur-1);
@@ -211,7 +212,8 @@ $("alarmOk").onclick=stopRing;
 
 /* ---- keep the screen awake while cooking ---- */
 let lock=null;
-async function keepAwake(){try{if("wakeLock" in navigator&&!lock){lock=await navigator.wakeLock.request("screen");lock.addEventListener("release",()=>lock=null)}}catch(e){}}
+let asking=false;
+async function keepAwake(){if(!("wakeLock" in navigator)||lock||asking||document.visibilityState!=="visible")return;asking=true;try{lock=await navigator.wakeLock.request("screen");lock.addEventListener("release",()=>lock=null)}catch(e){}asking=false}
 document.addEventListener("visibilitychange",()=>{if(document.visibilityState==="visible"){if(cur>=0)keepAwake();paintTimers()}});
 
 renderIntro();
