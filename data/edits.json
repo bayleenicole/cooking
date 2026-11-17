@@ -124,7 +124,7 @@
     "1 lb chicken cutlets"
    ],
    "st": [
-    "Add 3/4 - 1 cup Greek yogurt, 1-2 tbsp mayo, 1-2 tsp Dijon, 4-5 anchovies, 1 tbsp red wine vinegar, juice from 1/2 - 1 lemon, 1/2 tsp garlic salt, 1/4 tsp salt, and 1/4 tsp pepper into a blender, then blend for 45 seconds until smooth and creamy and set aside.",
+    "Add 3/4 - 1 cup Greek yogurt, 1-2 tbsp mayo, 1-2 tsp Dijon, 4-5 anchovies, 1 tbsp red wine vinegar, juice from 1/2 - 1 lemon, 1/2 tsp garlic salt, 1/4 tsp salt, and 1/4 tsp pepper into a blender, then blend for 1 minute until smooth and creamy and set aside.",
     "Line up 3 bowls: in bowl 1, combine 1/2 cup flour, 1/2 tsp salt, and 1/4 tsp pepper; in bowl 2, place 1-2 beaten eggs; in bowl 3, combine about 1 cup panko crumbs and 1/4 cup Parmesan cheese.",
     "Heat 2 tbsp olive oil in a pan over medium-high heat, and coat each piece of chicken in the flour, then egg wash, then breadcrumbs to coat completely.",
     "Place chicken on the hot pan for 3-4 minutes each side, using a meat thermometer to check when it is done (reaching 165°F), then serve with the blended dressing and enjoy!"
@@ -133,7 +133,7 @@
     {
      "l": "Dressing:",
      "s": [
-      "Add 3/4 - 1 cup Greek yogurt, 1-2 tbsp mayo, 1-2 tsp Dijon, 4-5 anchovies, 1 tbsp red wine vinegar, juice from 1/2 - 1 lemon, 1/2 tsp garlic salt, 1/4 tsp salt, and 1/4 tsp pepper into a blender, then blend for 45 seconds until smooth and creamy and set aside."
+      "Add 3/4 - 1 cup Greek yogurt, 1-2 tbsp mayo, 1-2 tsp Dijon, 4-5 anchovies, 1 tbsp red wine vinegar, juice from 1/2 - 1 lemon, 1/2 tsp garlic salt, 1/4 tsp salt, and 1/4 tsp pepper into a blender, then blend for 1 minute until smooth and creamy and set aside."
      ]
     },
     {
@@ -201,7 +201,8 @@
      },
      {
       "title": "Dressing: Add Greek",
-      "text": "Add 3/4 - 1 cup Greek yogurt, 1-2 tbsp mayo, 1-2 tsp Dijon, 4-5 anchovies, 1 tbsp red wine vinegar, juice from 1/2 - 1 lemon, 1/2 tsp garlic salt, 1/4 tsp salt, and 1/4 tsp pepper into a blender, then blend for 45 seconds until smooth and creamy and set aside.",
+      "text": "Add 3/4 - 1 cup Greek yogurt, 1-2 tbsp mayo, 1-2 tsp Dijon, 4-5 anchovies, 1 tbsp red wine vinegar, juice from 1/2 - 1 lemon, 1/2 tsp garlic salt, 1/4 tsp salt, and 1/4 tsp pepper into a blender, then blend for 1 minute until smooth and creamy and set aside.",
+      "timer": 60,
       "uses": [
        "3/4 - 1 cup Greek yogurt",
        "1-2 tbsp mayo",
@@ -241,12 +242,12 @@
      }
     ],
     "by": "rules",
-    "src": "otdl6i",
+    "src": "1hi8osg",
     "steps": [
      {
       "part": "Dressing:",
       "steps": [
-       "Add 3/4 - 1 cup Greek yogurt, 1-2 tbsp mayo, 1-2 tsp Dijon, 4-5 anchovies, 1 tbsp red wine vinegar, juice from 1/2 - 1 lemon, 1/2 tsp garlic salt, 1/4 tsp salt, and 1/4 tsp pepper into a blender, then blend for 45 seconds until smooth and creamy and set aside."
+       "Add 3/4 - 1 cup Greek yogurt, 1-2 tbsp mayo, 1-2 tsp Dijon, 4-5 anchovies, 1 tbsp red wine vinegar, juice from 1/2 - 1 lemon, 1/2 tsp garlic salt, 1/4 tsp salt, and 1/4 tsp pepper into a blender, then blend for 1 minute until smooth and creamy and set aside."
       ]
      },
      {
@@ -464,5 +465,5 @@
    }
   }
  },
- "updated": "2026-11-17T02:21:23.309Z"
+ "updated": "2026-11-17T02:21:27.451Z"
 }
