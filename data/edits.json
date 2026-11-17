@@ -200,7 +200,7 @@
       ]
      },
      {
-      "title": "Dressing: Add Greek",
+      "title": "Dressing: Blend",
       "text": "Add 3/4 - 1 cup Greek yogurt, 1-2 tbsp mayo, 1-2 tsp Dijon, 4-5 anchovies, 1 tbsp red wine vinegar, juice from 1/2 - 1 lemon, 1/2 tsp garlic salt, 1/4 tsp salt, and 1/4 tsp pepper into a blender, then blend for 1 minute until smooth and creamy and set aside.",
       "timer": 60,
       "uses": [
@@ -212,23 +212,23 @@
        "Juice from 1/2 - 1 lemon",
        "1/2 tsp garlic salt",
        "1/4 tsp salt",
-       "1/4 tsp pepper",
-       "1/2 tsp salt",
        "1/4 tsp pepper"
       ]
      },
      {
-      "title": "Chicken: Line Up",
+      "title": "Chicken: Breading Station",
       "text": "Line up 3 bowls: in bowl 1, combine 1/2 cup flour, 1/2 tsp salt, and 1/4 tsp pepper; in bowl 2, place 1-2 beaten eggs; in bowl 3, combine about 1 cup panko crumbs and 1/4 cup Parmesan cheese.",
       "uses": [
        "1/2 cup flour",
+       "1/2 tsp salt",
+       "1/4 tsp pepper",
        "1-2 beaten eggs",
        "About 1 cup panko crumbs",
        "1/4 cup Parmesan cheese"
       ]
      },
      {
-      "title": "Chicken: Heat Olive",
+      "title": "Chicken: Coat",
       "text": "Heat 2 tbsp olive oil in a pan over medium-high heat, and coat each piece of chicken in the flour, then egg wash, then breadcrumbs to coat completely.",
       "uses": [
        "2 tbsp olive oil",
@@ -236,12 +236,12 @@
       ]
      },
      {
-      "title": "Chicken: Place Chicken",
+      "title": "Chicken: Cook",
       "text": "Place chicken on the hot pan for 3-4 minutes each side, using a meat thermometer to check when it is done (reaching 165°F), then serve with the blended dressing and enjoy!",
       "timer": 180
      }
     ],
-    "by": "rules",
+    "by": "claude",
     "src": "1hi8osg",
     "steps": [
      {
