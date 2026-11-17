@@ -98,7 +98,7 @@ def old_cards(slug):
 
 def ask_claude(prompt):
     body = json.dumps({"model": MODEL, "max_tokens": 4000, "system": RULES,
-                       "tools": [TOOL], "tool_choice": {"type": "tool", "name": "save_cards"},
+                       "tools": [TOOL], "tool_choice": {"type": "auto"},
                        "messages": [{"role": "user", "content": prompt}]}).encode()
     req = urllib.request.Request("https://api.anthropic.com/v1/messages", data=body, method="POST",
                                  headers={"x-api-key": KEY, "anthropic-version": "2023-06-01",
@@ -110,6 +110,11 @@ def ask_claude(prompt):
             for block in res.get("content", []):
                 if block.get("type") == "tool_use":
                     return block["input"]["cards"]
+            text = "".join(b.get("text", "") for b in res.get("content", []))
+            m = re.search(r"\{[\s\S]*\}|\[[\s\S]*\]", text)      # answered in plain JSON instead
+            if m:
+                got = json.loads(m.group(0))
+                return got["cards"] if isinstance(got, dict) else got
             raise RuntimeError("no cards in reply")
         except urllib.error.HTTPError as e:
             msg = e.read().decode()[:300]
