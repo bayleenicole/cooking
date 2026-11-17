@@ -62,7 +62,7 @@
       ]
      },
      {
-      "title": "Marinade: Add Lemon",
+      "title": "Marinade",
       "text": "Preheat oven to 425°F. Add the lemon olive oil, Dijon mustard, honey apple vinegar, oregano, garlic powder, salt, and black pepper to a jar and shake well until combined.",
       "uses": [
        "1/2 cup lemon olive oil from O Olive Oil",
@@ -75,7 +75,7 @@
       ]
      },
      {
-      "title": "Chicken and potatoes: Halve",
+      "title": "Into the Dish",
       "text": "Halve then quarter the yellow potatoes, place them in the bottom of a baking dish, and place the chicken thighs on top.",
       "uses": [
        "5 yellow potatoes",
@@ -83,25 +83,29 @@
       ]
      },
      {
-      "title": "Chicken and potatoes: Pour Prepared",
+      "title": "Pour Over",
       "text": "Pour the prepared marinade evenly over the chicken and potatoes."
      },
      {
-      "title": "Chicken and potatoes: Cover Baking",
+      "title": "Bake",
       "text": "Cover the baking dish with tin foil or a lid and bake in the oven at 425°F for 45 minutes.",
-      "timer": 2700
+      "timer": 2700,
+      "while": "While this bakes, chop the fresh parsley."
      },
      {
-      "title": "Chicken and potatoes: Remove Cover",
+      "title": "Broil",
       "text": "Remove the cover and broil for an additional 5 minutes so the chicken can get nice and crispy.",
       "timer": 300
      },
      {
-      "title": "Chicken and potatoes: Serve Warm",
-      "text": "Serve warm."
+      "title": "Serve",
+      "text": "Serve warm, topped with 1 tbsp chopped fresh parsley.",
+      "uses": [
+       "1 tbsp fresh parsley, chopped"
+      ]
      }
     ],
-    "by": "rules",
+    "by": "claude",
     "src": "4bsib8",
     "steps": [
      {
