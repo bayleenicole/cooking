@@ -26,6 +26,7 @@ Write them exactly in the style of the examples. Rules:
 - Text is 1-2 sentences and keeps the recipe's own wording and amounts; don't add facts, don't drop amounts.
 - uses lists what that card needs: ingredient numbers from the numbered list, or a short custom line for a split amount (e.g. "1 tbsp olive oil" when only part of a divided ingredient is used). Every numbered ingredient must appear on at least one card, except lines marked (from above).
 - Do not list section headings in uses. Do not write a "Gather Ingredients" card; it is added automatically.
+- Never refer to step or card numbers ("step 7"); the cook can't see them. Name the thing instead ("make the frosting").
 - Brand names are already removed from the text you are given; don't add any back."""
 
 TOOL = {
