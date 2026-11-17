@@ -1,5 +1,471 @@
 {
  "v": 1,
- "recipes": {},
- "updated": "2026-11-17T02:18:32.025Z"
+ "recipes": {
+  "honey-chicken-thighs-with-broccoli": {
+   "i": [
+    "4 chicken thighs",
+    "Salt and pepper, to taste",
+    "1/2 cup chicken broth",
+    "1/3 cup honey",
+    "1 head broccoli, cut into florets",
+    "1 tbsp olive oil, for the broccoli",
+    "1 tbsp sesame seeds"
+   ],
+   "st": [
+    "If roasting the broccoli, preheat oven to 425°F. Season the chicken thighs with salt and pepper and cook in a cast iron pan.",
+    "Add the chicken broth and honey to the pan and let the chicken cook in the glaze until done.",
+    "Toss the broccoli florets with olive oil, salt, and pepper, and roast or pan-cook for about 8 minutes.",
+    "Serve the glazed chicken and broccoli together.",
+    "Sprinkle with sesame seeds and let rest for 5 minutes before serving."
+   ],
+   "cook": {
+    "title": "Honey Chicken Thighs with Broccoli",
+    "ingredients": [
+     "4 chicken thighs",
+     "Salt and pepper, to taste",
+     "1/2 cup chicken broth",
+     "1/3 cup honey",
+     "1 head broccoli, cut into florets",
+     "1 tbsp olive oil, for the broccoli",
+     "1 tbsp sesame seeds"
+    ],
+    "slides": [
+     {
+      "title": "Gather Ingredients",
+      "gather": true,
+      "text": "Get everything out before you start",
+      "uses": [
+       "4 chicken thighs",
+       "Salt and pepper, to taste",
+       "1/2 cup chicken broth",
+       "1/3 cup honey",
+       "1 head broccoli, cut into florets",
+       "1 tbsp olive oil, for the broccoli",
+       "1 tbsp sesame seeds"
+      ]
+     },
+     {
+      "title": "If Roasting Broccoli",
+      "text": "If roasting the broccoli, preheat oven to 425°F. Season the chicken thighs with salt and pepper and cook in a cast iron pan.",
+      "uses": [
+       "4 chicken thighs",
+       "Salt and pepper, to taste",
+       "1 head broccoli, cut into florets"
+      ]
+     },
+     {
+      "title": "Add Chicken Broth",
+      "text": "Add the chicken broth and honey to the pan and let the chicken cook in the glaze until done.",
+      "uses": [
+       "1/2 cup chicken broth",
+       "1/3 cup honey"
+      ]
+     },
+     {
+      "title": "Toss Broccoli Florets",
+      "text": "Toss the broccoli florets with olive oil, salt, and pepper, and roast or pan-cook for about 8 minutes.",
+      "timer": 480,
+      "uses": [
+       "1 tbsp olive oil, for the broccoli"
+      ]
+     },
+     {
+      "title": "Serve Glazed Chicken",
+      "text": "Serve the glazed chicken and broccoli together."
+     },
+     {
+      "title": "Sprinkle",
+      "text": "Sprinkle with sesame seeds and let rest for 5 minutes before serving.",
+      "timer": 300,
+      "uses": [
+       "1 tbsp sesame seeds"
+      ]
+     }
+    ],
+    "by": "rules",
+    "src": "bvq0um",
+    "steps": [
+     {
+      "part": null,
+      "steps": [
+       "If roasting the broccoli, preheat oven to 425°F. Season the chicken thighs with salt and pepper and cook in a cast iron pan.",
+       "Add the chicken broth and honey to the pan and let the chicken cook in the glaze until done.",
+       "Toss the broccoli florets with olive oil, salt, and pepper, and roast or pan-cook for about 8 minutes.",
+       "Serve the glazed chicken and broccoli together.",
+       "Sprinkle with sesame seeds and let rest for 5 minutes before serving."
+      ]
+     }
+    ]
+   }
+  },
+  "crispy-parmesan-chicken-with-greek-yogurt-dressing": {
+   "i": [
+    "Dressing:",
+    "3/4 - 1 cup Greek yogurt",
+    "1-2 tbsp mayo",
+    "1-2 tsp Dijon",
+    "4-5 anchovies",
+    "1 tbsp red wine vinegar",
+    "Juice from 1/2 - 1 lemon",
+    "1/2 tsp garlic salt",
+    "1/4 tsp salt",
+    "1/4 tsp pepper",
+    "Chicken:",
+    "1/2 cup flour",
+    "1/2 tsp salt",
+    "1/4 tsp pepper",
+    "1-2 beaten eggs",
+    "About 1 cup panko crumbs",
+    "1/4 cup Parmesan cheese",
+    "2 tbsp olive oil",
+    "1 lb chicken cutlets"
+   ],
+   "st": [
+    "Add 3/4 - 1 cup Greek yogurt, 1-2 tbsp mayo, 1-2 tsp Dijon, 4-5 anchovies, 1 tbsp red wine vinegar, juice from 1/2 - 1 lemon, 1/2 tsp garlic salt, 1/4 tsp salt, and 1/4 tsp pepper into a blender, then blend for 30 seconds until smooth and creamy and set aside.",
+    "Line up 3 bowls: in bowl 1, combine 1/2 cup flour, 1/2 tsp salt, and 1/4 tsp pepper; in bowl 2, place 1-2 beaten eggs; in bowl 3, combine about 1 cup panko crumbs and 1/4 cup Parmesan cheese.",
+    "Heat 2 tbsp olive oil in a pan over medium-high heat, and coat each piece of chicken in the flour, then egg wash, then breadcrumbs to coat completely.",
+    "Place chicken on the hot pan for 3-4 minutes each side, using a meat thermometer to check when it is done (reaching 165°F), then serve with the blended dressing and enjoy!"
+   ],
+   "sg": [
+    {
+     "l": "Dressing:",
+     "s": [
+      "Add 3/4 - 1 cup Greek yogurt, 1-2 tbsp mayo, 1-2 tsp Dijon, 4-5 anchovies, 1 tbsp red wine vinegar, juice from 1/2 - 1 lemon, 1/2 tsp garlic salt, 1/4 tsp salt, and 1/4 tsp pepper into a blender, then blend for 30 seconds until smooth and creamy and set aside."
+     ]
+    },
+    {
+     "l": "Chicken:",
+     "s": [
+      "Line up 3 bowls: in bowl 1, combine 1/2 cup flour, 1/2 tsp salt, and 1/4 tsp pepper; in bowl 2, place 1-2 beaten eggs; in bowl 3, combine about 1 cup panko crumbs and 1/4 cup Parmesan cheese.",
+      "Heat 2 tbsp olive oil in a pan over medium-high heat, and coat each piece of chicken in the flour, then egg wash, then breadcrumbs to coat completely.",
+      "Place chicken on the hot pan for 3-4 minutes each side, using a meat thermometer to check when it is done (reaching 165°F), then serve with the blended dressing and enjoy!"
+     ]
+    }
+   ],
+   "tip": {
+    "Dressing:": "Tip for part 1",
+    "Chicken:": "Tip for part 2"
+   },
+   "cook": {
+    "title": "Crispy Parmesan Chicken with Greek Yogurt Dressing",
+    "ingredients": [
+     "Dressing:",
+     "3/4 - 1 cup Greek yogurt",
+     "1-2 tbsp mayo",
+     "1-2 tsp Dijon",
+     "4-5 anchovies",
+     "1 tbsp red wine vinegar",
+     "Juice from 1/2 - 1 lemon",
+     "1/2 tsp garlic salt",
+     "1/4 tsp salt",
+     "1/4 tsp pepper",
+     "Chicken:",
+     "1/2 cup flour",
+     "1/2 tsp salt",
+     "1/4 tsp pepper",
+     "1-2 beaten eggs",
+     "About 1 cup panko crumbs",
+     "1/4 cup Parmesan cheese",
+     "2 tbsp olive oil",
+     "1 lb chicken cutlets"
+    ],
+    "slides": [
+     {
+      "title": "Gather Ingredients",
+      "gather": true,
+      "text": "Get everything out before you start",
+      "uses": [
+       "§Dressing",
+       "3/4 - 1 cup Greek yogurt",
+       "1-2 tbsp mayo",
+       "1-2 tsp Dijon",
+       "4-5 anchovies",
+       "1 tbsp red wine vinegar",
+       "Juice from 1/2 - 1 lemon",
+       "1/2 tsp garlic salt",
+       "1/4 tsp salt",
+       "1/4 tsp pepper",
+       "§Chicken",
+       "1/2 cup flour",
+       "1/2 tsp salt",
+       "1/4 tsp pepper",
+       "1-2 beaten eggs",
+       "About 1 cup panko crumbs",
+       "1/4 cup Parmesan cheese",
+       "2 tbsp olive oil",
+       "1 lb chicken cutlets"
+      ]
+     },
+     {
+      "title": "Dressing: Add Greek",
+      "text": "Add 3/4 - 1 cup Greek yogurt, 1-2 tbsp mayo, 1-2 tsp Dijon, 4-5 anchovies, 1 tbsp red wine vinegar, juice from 1/2 - 1 lemon, 1/2 tsp garlic salt, 1/4 tsp salt, and 1/4 tsp pepper into a blender, then blend for 30 seconds until smooth and creamy and set aside.",
+      "uses": [
+       "3/4 - 1 cup Greek yogurt",
+       "1-2 tbsp mayo",
+       "1-2 tsp Dijon",
+       "4-5 anchovies",
+       "1 tbsp red wine vinegar",
+       "Juice from 1/2 - 1 lemon",
+       "1/2 tsp garlic salt",
+       "1/4 tsp salt",
+       "1/4 tsp pepper",
+       "1/2 tsp salt",
+       "1/4 tsp pepper"
+      ]
+     },
+     {
+      "title": "Chicken: Line Up",
+      "text": "Line up 3 bowls: in bowl 1, combine 1/2 cup flour, 1/2 tsp salt, and 1/4 tsp pepper; in bowl 2, place 1-2 beaten eggs; in bowl 3, combine about 1 cup panko crumbs and 1/4 cup Parmesan cheese.",
+      "uses": [
+       "1/2 cup flour",
+       "1-2 beaten eggs",
+       "About 1 cup panko crumbs",
+       "1/4 cup Parmesan cheese"
+      ]
+     },
+     {
+      "title": "Chicken: Heat Olive",
+      "text": "Heat 2 tbsp olive oil in a pan over medium-high heat, and coat each piece of chicken in the flour, then egg wash, then breadcrumbs to coat completely.",
+      "uses": [
+       "2 tbsp olive oil",
+       "1 lb chicken cutlets"
+      ]
+     },
+     {
+      "title": "Chicken: Place Chicken",
+      "text": "Place chicken on the hot pan for 3-4 minutes each side, using a meat thermometer to check when it is done (reaching 165°F), then serve with the blended dressing and enjoy!",
+      "timer": 180
+     }
+    ],
+    "by": "rules",
+    "src": "1vgjlte",
+    "steps": [
+     {
+      "part": "Dressing:",
+      "steps": [
+       "Add 3/4 - 1 cup Greek yogurt, 1-2 tbsp mayo, 1-2 tsp Dijon, 4-5 anchovies, 1 tbsp red wine vinegar, juice from 1/2 - 1 lemon, 1/2 tsp garlic salt, 1/4 tsp salt, and 1/4 tsp pepper into a blender, then blend for 30 seconds until smooth and creamy and set aside."
+      ]
+     },
+     {
+      "part": "Chicken:",
+      "steps": [
+       "Line up 3 bowls: in bowl 1, combine 1/2 cup flour, 1/2 tsp salt, and 1/4 tsp pepper; in bowl 2, place 1-2 beaten eggs; in bowl 3, combine about 1 cup panko crumbs and 1/4 cup Parmesan cheese.",
+       "Heat 2 tbsp olive oil in a pan over medium-high heat, and coat each piece of chicken in the flour, then egg wash, then breadcrumbs to coat completely.",
+       "Place chicken on the hot pan for 3-4 minutes each side, using a meat thermometer to check when it is done (reaching 165°F), then serve with the blended dressing and enjoy!"
+      ]
+     }
+    ]
+   }
+  },
+  "cinnamon-rolls": {
+   "i": [
+    "For the dough:",
+    "1 cup warm milk (microwave for 90 seconds and then test)",
+    "1 1/4 tablespoons yeast",
+    "1/2 cup sugar (divided)",
+    "2 large eggs",
+    "6 tablespoons butter (melted)",
+    "1 teaspoon salt",
+    "4 1/4 - 4 1/2 cups flour",
+    "Brown sugar filling:",
+    "1/4 cup butter (softened)",
+    "1 1/3 cups brown sugar",
+    "2-3 tablespoons cinnamon",
+    "Cream cheese frosting:",
+    "1/2 cup butter (softened)",
+    "4 ounce cream cheese (softened)",
+    "2 3/4 cups powdered sugar",
+    "1/2 teaspoon vanilla"
+   ],
+   "st": [
+    "Preheat oven to 200 degrees. Place milk in a microwave-safe bowl and microwave for about 90 seconds until warmed, then stir in yeast and 2 tablespoons of sugar (scooped from the 1/2 cup) and let proof for 5-10 minutes.",
+    "In a large mixing bowl, combine the remaining sugar, eggs, 6 tablespoons of melted butter, and salt. Add the activated yeast mixture, then stir in flour, 3 cups at a time, watching for the dough to start coming off the sides of the bowl.",
+    "Turn off the preheated 200-degree oven. Place dough in an oven-safe bowl, cover with a moist towel, and place in the oven to rise for 90 minutes to double in size.",
+    "Roll the doubled dough out on a floured surface into a large rectangle. Spread 1/4 cup softened butter over dough, mix brown sugar and cinnamon in a bowl, sprinkle over the dough, then tightly roll up dough and slice into rolls.",
+    "Place rolls on greased baking sheets, cover loosely with a towel or Saran Wrap, and let rise for at least 1 hour, preheating the oven to 400 degrees toward the end of the rise, then bake at 400 degrees for 9-12 minutes.",
+    "To make frosting, cream together 1/2 cup softened butter and cream cheese for 2 minutes, then stir in powdered sugar and vanilla. Spread over slightly cooled cinnamon rolls and serve warm."
+   ],
+   "sg": [
+    {
+     "l": "For the dough:",
+     "s": [
+      "Preheat oven to 200 degrees. Place milk in a microwave-safe bowl and microwave for about 90 seconds until warmed, then stir in yeast and 2 tablespoons of sugar (scooped from the 1/2 cup) and let proof for 5-10 minutes.",
+      "In a large mixing bowl, combine the remaining sugar, eggs, 6 tablespoons of melted butter, and salt. Add the activated yeast mixture, then stir in flour, 3 cups at a time, watching for the dough to start coming off the sides of the bowl.",
+      "Turn off the preheated 200-degree oven. Place dough in an oven-safe bowl, cover with a moist towel, and place in the oven to rise for 90 minutes to double in size."
+     ]
+    },
+    {
+     "l": "Brown sugar filling:",
+     "s": [
+      "Roll the doubled dough out on a floured surface into a large rectangle. Spread 1/4 cup softened butter over dough, mix brown sugar and cinnamon in a bowl, sprinkle over the dough, then tightly roll up dough and slice into rolls.",
+      "Place rolls on greased baking sheets, cover loosely with a towel or Saran Wrap, and let rise for at least 1 hour, preheating the oven to 400 degrees toward the end of the rise, then bake at 400 degrees for 9-12 minutes."
+     ]
+    },
+    {
+     "l": "Cream cheese frosting:",
+     "s": [
+      "To make frosting, cream together 1/2 cup softened butter and cream cheese for 2 minutes, then stir in powdered sugar and vanilla. Spread over slightly cooled cinnamon rolls and serve warm."
+     ]
+    }
+   ],
+   "cook": {
+    "title": "Cinnamon Rolls",
+    "ingredients": [
+     "For the dough:",
+     "1 cup warm milk (microwave for 90 seconds and then test)",
+     "1 1/4 tablespoons yeast",
+     "1/2 cup sugar (divided)",
+     "2 large eggs",
+     "6 tablespoons butter (melted)",
+     "1 teaspoon salt",
+     "4 1/4 - 4 1/2 cups flour",
+     "Brown sugar filling:",
+     "1/4 cup butter (softened)",
+     "1 1/3 cups brown sugar",
+     "2-3 tablespoons cinnamon",
+     "Cream cheese frosting:",
+     "1/2 cup butter (softened)",
+     "4 ounce cream cheese (softened)",
+     "2 3/4 cups powdered sugar",
+     "1/2 teaspoon vanilla"
+    ],
+    "slides": [
+     {
+      "title": "Gather Ingredients",
+      "gather": true,
+      "text": "Get everything out before you start",
+      "uses": [
+       "§Dough",
+       "1 cup warm milk (microwave for 90 seconds and then test)",
+       "1 1/4 tablespoons yeast",
+       "1/2 cup sugar (divided)",
+       "2 large eggs",
+       "6 tablespoons butter (melted)",
+       "1 teaspoon salt",
+       "4 1/4 - 4 1/2 cups flour",
+       "§Brown sugar filling",
+       "1/4 cup butter (softened)",
+       "1 1/3 cups brown sugar",
+       "§Cream cheese frosting",
+       "1/2 cup butter (softened)",
+       "2 3/4 cups powdered sugar"
+      ]
+     },
+     {
+      "title": "Dough: Place Milk",
+      "text": "Preheat oven to 200 degrees. Place milk in a microwave-safe bowl and microwave for about 90 seconds until warmed.",
+      "timer": 90,
+      "uses": [
+       "1 cup warm milk (microwave for 90 seconds and then test)"
+      ]
+     },
+     {
+      "title": "Dough: Stir",
+      "text": "Stir in yeast and 2 tablespoons of sugar (scooped from the 1/2 cup) and let proof for 5-10 minutes.",
+      "timer": 300,
+      "uses": [
+       "1 1/4 tablespoons yeast",
+       "1/2 cup sugar",
+       "1 1/3 cups brown sugar",
+       "2 3/4 cups powdered sugar"
+      ]
+     },
+     {
+      "title": "Dough: Combine Remaining",
+      "text": "In a large mixing bowl, combine the remaining sugar, eggs, 6 tablespoons of melted butter, and salt. Add the activated yeast mixture, then stir in flour, 3 cups at a time, watching for the dough to start coming off the sides of the bowl.",
+      "uses": [
+       "2 large eggs",
+       "6 tablespoons butter (melted)",
+       "1 teaspoon salt",
+       "4 1/4 - 4 1/2 cups flour",
+       "1/4 cup butter (softened)",
+       "1/2 cup butter (softened)"
+      ]
+     },
+     {
+      "title": "Dough: Turn Off",
+      "text": "Turn off the preheated 200-degree oven. Place dough in an oven-safe bowl, cover with a moist towel, and place in the oven to rise for 90 minutes to double in size.",
+      "timer": 5400
+     },
+     {
+      "title": "Gather Ingredients",
+      "gather": true,
+      "text": "While you wait, get these out for the next part",
+      "uses": [
+       "§Brown sugar filling",
+       "2-3 tablespoons cinnamon"
+      ]
+     },
+     {
+      "title": "Brown sugar filling: Roll Doubled",
+      "text": "Roll the doubled dough out on a floured surface into a large rectangle. Spread 1/4 cup softened butter over dough, mix brown sugar and cinnamon in a bowl, sprinkle over the dough, then tightly roll up dough and slice into rolls.",
+      "uses": [
+       "2-3 tablespoons cinnamon"
+      ]
+     },
+     {
+      "title": "Brown sugar filling: Place Rolls",
+      "text": "Place rolls on greased baking sheets, cover loosely with a towel or Saran Wrap, and let rise for at least 1 hour, preheating the oven to 400 degrees toward the end of the rise.",
+      "timer": 3600
+     },
+     {
+      "title": "Gather Ingredients",
+      "gather": true,
+      "text": "While you wait, get these out for the next part",
+      "uses": [
+       "§Cream cheese frosting",
+       "4 ounce cream cheese (softened)",
+       "1/2 teaspoon vanilla"
+      ]
+     },
+     {
+      "title": "Brown sugar filling: Bake",
+      "text": "Bake at 400 degrees for 9-12 minutes.",
+      "timer": 540
+     },
+     {
+      "title": "Cream cheese frosting: Cream Together",
+      "text": "To make frosting, cream together 1/2 cup softened butter and cream cheese for 2 minutes, then stir in powdered sugar and vanilla. Spread over slightly cooled cinnamon rolls and serve warm.",
+      "timer": 120,
+      "uses": [
+       "4 ounce cream cheese (softened)",
+       "1/2 teaspoon vanilla"
+      ]
+     }
+    ],
+    "by": "rules",
+    "src": "1631mj4",
+    "steps": [
+     {
+      "part": "For the dough:",
+      "steps": [
+       "Preheat oven to 200 degrees. Place milk in a microwave-safe bowl and microwave for about 90 seconds until warmed, then stir in yeast and 2 tablespoons of sugar (scooped from the 1/2 cup) and let proof for 5-10 minutes.",
+       "In a large mixing bowl, combine the remaining sugar, eggs, 6 tablespoons of melted butter, and salt. Add the activated yeast mixture, then stir in flour, 3 cups at a time, watching for the dough to start coming off the sides of the bowl.",
+       "Turn off the preheated 200-degree oven. Place dough in an oven-safe bowl, cover with a moist towel, and place in the oven to rise for 90 minutes to double in size."
+      ]
+     },
+     {
+      "part": "Brown sugar filling:",
+      "steps": [
+       "Roll the doubled dough out on a floured surface into a large rectangle. Spread 1/4 cup softened butter over dough, mix brown sugar and cinnamon in a bowl, sprinkle over the dough, then tightly roll up dough and slice into rolls.",
+       "Place rolls on greased baking sheets, cover loosely with a towel or Saran Wrap, and let rise for at least 1 hour, preheating the oven to 400 degrees toward the end of the rise, then bake at 400 degrees for 9-12 minutes."
+      ]
+     },
+     {
+      "part": "Cream cheese frosting:",
+      "steps": [
+       "To make frosting, cream together 1/2 cup softened butter and cream cheese for 2 minutes, then stir in powdered sugar and vanilla. Spread over slightly cooled cinnamon rolls and serve warm."
+      ]
+     }
+    ]
+   }
+  },
+  "banana-baked-oats": {
+   "t": "Banana Baked Oats (Test)",
+   "cook": {
+    "title": "Banana Baked Oats (Test)"
+   }
+  }
+ },
+ "updated": "2026-11-17T02:18:46.880Z"
 }
