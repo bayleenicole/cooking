@@ -1,0 +1,39 @@
+name: Rewrite Start Cooking cards
+
+# When the recipe planner publishes edits (data/edits.json), Claude rewrites
+# the Start Cooking cards for the edited recipes. Needs the repository secret
+# ANTHROPIC_API_KEY (Settings -> Secrets and variables -> Actions).
+on:
+  push:
+    branches: [main]
+    paths: ["data/edits.json"]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+
+concurrency:
+  group: rebuild-cards
+  cancel-in-progress: false
+
+jobs:
+  cards:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - name: Write the cards
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          CARD_MODEL: ${{ vars.CARD_MODEL }}
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          python3 tools/rebuild_cards.py
+      - name: Refresh the website
+        if: always()
+        run: |
+          curl -s -o /dev/null -w "pages build request: %{http_code}\n" -X POST \
+            -H "Authorization: Bearer ${{ github.token }}" -H "Accept: application/vnd.github+json" \
+            https://api.github.com/repos/${{ github.repository }}/pages/builds || true
