@@ -3,7 +3,7 @@
  "recipes": {
   "test-maple-dijon-salmon": {
    "cook": {
-    "title": "TEST Maple Dijon Salmon",
+    "title": "TEST Maple Dijon Salmon Sheet Pan",
     "ingredients": [
      "2 tbsp maple syrup",
      "1 tbsp Dijon mustard",
@@ -72,5 +72,5 @@
    }
   }
  },
- "updated": "2026-11-23T22:13:02.189Z"
+ "updated": "2026-11-23T22:13:15.879Z"
 }
