@@ -27,8 +27,8 @@
       ]
      },
      {
-      "title": "Mix Maple Syrup",
-      "text": "Mix the maple syrup, Dijon, and garlic in a bowl.",
+      "title": "Make the Sauce",
+      "text": "Preheat oven to 400°F. Mix the maple syrup, Dijon, and garlic in a bowl.",
       "uses": [
        "2 tbsp maple syrup",
        "1 tbsp Dijon mustard",
@@ -36,7 +36,7 @@
       ]
      },
      {
-      "title": "Put Salmon",
+      "title": "Prep the Pan",
       "text": "Put the salmon and asparagus on a sheet pan and brush with the sauce, then season with salt and pepper.",
       "uses": [
        "4 salmon fillets",
@@ -46,11 +46,11 @@
      },
      {
       "title": "Bake",
-      "text": "Preheat oven to 400°F. Bake for 12-15 minutes, until the salmon flakes.",
+      "text": "Bake for 12-15 minutes, until the salmon flakes.",
       "timer": 720
      }
     ],
-    "by": "rules",
+    "by": "claude",
     "src": "1fltil8",
     "steps": [
      {
