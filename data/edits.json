@@ -1,5 +1,75 @@
 {
  "v": 1,
- "recipes": {},
- "updated": "2026-11-23T22:13:15.879Z"
+ "recipes": {
+  "spaghetti-and-meatballs": {
+   "cook": {
+    "title": "Spaghetti and Meatballs",
+    "ingredients": [
+     "Water, for boiling",
+     "Noodles",
+     "Onion",
+     "Beef"
+    ],
+    "slides": [
+     {
+      "title": "Gather Ingredients",
+      "gather": true,
+      "text": "Get everything out before you start",
+      "uses": [
+       "Water, for boiling",
+       "Noodles",
+       "Onion",
+       "Beef"
+      ]
+     },
+     {
+      "title": "Boil Water",
+      "text": "Boil water.",
+      "uses": [
+       "Water, for boiling"
+      ]
+     },
+     {
+      "title": "Put Noodles",
+      "text": "Put noodles in water.",
+      "uses": [
+       "Noodles"
+      ]
+     },
+     {
+      "title": "Cook Onion",
+      "text": "Cook onion. Once cooked, add meat.",
+      "uses": [
+       "Onion"
+      ]
+     },
+     {
+      "title": "Combine",
+      "text": "Combine and serve."
+     }
+    ],
+    "by": "rules",
+    "src": "k8bnxm",
+    "steps": [
+     {
+      "part": null,
+      "steps": [
+       "Boil water.",
+       "Put noodles in water.",
+       "Cook onion. Once cooked, add meat.",
+       "Combine and serve."
+      ]
+     }
+    ],
+    "category": "Dinner",
+    "description": "A simple stovetop spaghetti and meatballs with beef and onion",
+    "serves": 1,
+    "prep": null,
+    "cook": null,
+    "video": "",
+    "slug": "spaghetti-and-meatballs"
+   }
+  }
+ },
+ "updated": "2026-11-23T22:49:28.755Z"
 }
