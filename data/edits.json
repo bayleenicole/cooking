@@ -23,32 +23,33 @@
       ]
      },
      {
-      "title": "Boil Water",
+      "title": "Boil the Water",
       "text": "Boil water.",
       "uses": [
        "Water, for boiling"
       ]
      },
      {
-      "title": "Put Noodles",
+      "title": "Cook the Noodles",
       "text": "Put noodles in water.",
       "uses": [
        "Noodles"
       ]
      },
      {
-      "title": "Cook Onion",
+      "title": "Cook Onion and Beef",
       "text": "Cook onion. Once cooked, add meat.",
       "uses": [
-       "Onion"
+       "Onion",
+       "Beef"
       ]
      },
      {
-      "title": "Combine",
+      "title": "Combine and Serve",
       "text": "Combine and serve."
      }
     ],
-    "by": "rules",
+    "by": "claude",
     "src": "k8bnxm",
     "steps": [
      {
