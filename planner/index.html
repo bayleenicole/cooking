@@ -1,0 +1,2283 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Recipe planner</title>
+<style>
+  :root{
+    --linen:#EEF1EA;
+    --paper:#FBFBF8;
+    --ink:#1C2522;
+    --ink-soft:#5B6762;
+    --rule:#D6DBD2;
+    --berry:#9E2A4A;
+    --berry-soft:#F3E3E8;
+    --herb:#3D6B4A;
+    --herb-soft:#E4EDE4;
+    --amber:#8A6A1F;
+    --sans:"Avenir Next","Segoe UI",system-ui,sans-serif;
+    --serif:Charter,"Iowan Old Style",Georgia,serif;
+  }
+  *{box-sizing:border-box}
+  [hidden]{display:none!important}
+  html,body{height:100%}
+  body{
+    margin:0;background:var(--linen);color:var(--ink);
+    font-family:var(--sans);font-size:15px;line-height:1.45;
+    -webkit-font-smoothing:antialiased;
+  }
+  button{font:inherit;color:inherit;cursor:pointer}
+  a{color:var(--berry)}
+
+  /* ---------- top bar ---------- */
+  header{
+    display:flex;align-items:baseline;gap:18px;
+    padding:14px 22px;background:var(--paper);
+    border-bottom:1px solid var(--rule);
+    position:sticky;top:0;z-index:20;
+  }
+  header h1{
+    font-family:var(--serif);font-size:21px;font-weight:600;
+    margin:0;letter-spacing:-0.01em;
+  }
+  header .count{color:var(--ink-soft);font-size:13px}
+  header .spacer{flex:1}
+  .ghost{
+    background:none;border:1px solid var(--rule);border-radius:7px;
+    padding:6px 12px;font-size:13px;
+  }
+  .ghost:hover{border-color:var(--ink-soft)}
+
+  /* ---------- three columns ---------- */
+  .wrap{display:grid;grid-template-columns:218px minmax(0,1fr) 338px;
+        gap:0;height:calc(100vh - 57px)}
+  .rail,.tray{overflow-y:auto;background:var(--paper)}
+  .rail{border-right:1px solid var(--rule);padding:18px 16px}
+  .list{overflow-y:auto;padding:14px 18px 60px}
+  .tray{border-left:1px solid var(--rule);padding:18px 18px 60px}
+
+  /* ---------- filters ---------- */
+  .rail h2{
+    font-size:12px;font-weight:600;color:var(--ink-soft);
+    margin:20px 0 7px;letter-spacing:0.02em;
+  }
+  .rail h2:first-child{margin-top:0}
+  .search{
+    width:100%;padding:8px 10px;border:1px solid var(--rule);
+    border-radius:7px;background:#fff;font:inherit;
+  }
+  .search:focus{outline:2px solid var(--berry);outline-offset:-1px}
+  .chips{display:flex;flex-wrap:wrap;gap:5px}
+  .chip{
+    border:1px solid var(--rule);background:#fff;border-radius:999px;
+    padding:4px 10px;font-size:13px;
+  }
+  .chip[aria-pressed="true"]{
+    background:var(--ink);color:var(--paper);border-color:var(--ink);
+  }
+  .toggle{display:flex;align-items:center;gap:8px;font-size:13px;margin-top:8px}
+
+  /* ---------- recipe rows ---------- */
+  .row{
+    background:var(--paper);border:1px solid var(--rule);
+    border-radius:9px;margin-bottom:7px;
+  }
+  .row.sel{border-color:var(--berry);box-shadow:inset 3px 0 0 var(--berry)}
+  .row.used{opacity:.55}
+  .row-head{display:flex;align-items:flex-start;gap:12px;padding:11px 13px}
+  .add{
+    flex:none;width:26px;height:26px;border-radius:7px;
+    border:1px solid var(--rule);background:#fff;
+    font-size:15px;line-height:1;display:grid;place-items:center;
+  }
+  .add:hover{border-color:var(--ink)}
+  .row.sel .add{background:var(--berry);border-color:var(--berry);color:#fff}
+  .row-main{flex:1;min-width:0}
+  .row-title{
+    font-family:var(--serif);font-size:17px;font-weight:600;
+    letter-spacing:-0.01em;cursor:pointer;
+  }
+  .row-title:hover{text-decoration:underline;text-underline-offset:3px}
+  .meta{font-size:12.5px;color:var(--ink-soft);margin-top:2px}
+  .tags{display:flex;gap:5px;flex-wrap:wrap;margin-top:5px}
+  .tag{
+    font-size:11.5px;padding:2px 7px;border-radius:5px;
+    background:var(--linen);color:var(--ink-soft);
+  }
+  .tag.cat{background:var(--herb-soft);color:var(--herb)}
+  .tag.season{background:#F6EEDC;color:var(--amber)}
+  .tag.sent{background:var(--berry-soft);color:var(--berry)}
+  .tag.plan{background:#E6E9F2;color:#3C4A72}
+  .tag.views{background:var(--berry-soft);color:var(--berry)}
+  .detail{
+    display:none;padding:2px 13px 14px 51px;
+    border-top:1px solid var(--rule);margin-top:4px;
+  }
+  .row.open .detail{display:block}
+  .detail h4{font-size:12.5px;color:var(--ink-soft);margin:12px 0 4px;font-weight:600}
+  .detail ul,.detail ol{margin:0;padding-left:18px}
+  .detail li{margin:2px 0;font-size:14px}
+  .watch{display:inline-block;margin-top:12px;font-size:13.5px}
+
+  /* ---------- week tray ---------- */
+  .tray h2{font-family:var(--serif);font-size:18px;margin:0 0 3px}
+  .tray .sub{font-size:13px;color:var(--ink-soft);margin-bottom:14px}
+  .slot{
+    border:1px dashed var(--rule);border-radius:8px;
+    padding:9px 11px;margin-bottom:6px;min-height:46px;
+  }
+  .slot.full{border-style:solid;background:#fff}
+  .slot-label{font-size:11.5px;color:var(--ink-soft)}
+  .slot-title{font-family:var(--serif);font-size:15px;margin-top:1px}
+  .slot-row{display:flex;align-items:flex-start;gap:8px}
+  .slot-row .x{
+    margin-left:auto;border:none;background:none;color:var(--ink-soft);
+    font-size:16px;line-height:1;padding:0 2px;
+  }
+  .slot-row .x:hover{color:var(--berry)}
+  .actions{display:flex;flex-direction:column;gap:7px;margin:16px 0}
+  .primary{
+    background:var(--berry);color:#fff;border:none;border-radius:8px;
+    padding:11px 14px;font-size:14.5px;font-weight:600;
+  }
+  .primary:disabled{background:var(--rule);color:var(--ink-soft);cursor:not-allowed}
+  .secondary{
+    background:#fff;border:1px solid var(--rule);border-radius:8px;
+    padding:9px 14px;font-size:14px;
+  }
+  .secondary:hover{border-color:var(--ink-soft)}
+  .warn{
+    background:var(--berry-soft);color:var(--berry);border-radius:7px;
+    padding:8px 10px;font-size:13px;margin-bottom:10px;
+  }
+  .hist{font-size:13px;color:var(--ink-soft);border-top:1px solid var(--rule);
+        padding-top:14px;margin-top:18px}
+  .hist button{margin:6px 6px 0 0}
+  .weeks{margin-top:16px}
+  .weeks h3{font-size:13px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-soft);margin:0 0 6px}
+  .wk{border:1px solid var(--rule);border-radius:8px;margin-bottom:6px;background:var(--paper)}
+  .wk summary{cursor:pointer;padding:8px 10px;color:var(--ink);font-size:13px;display:flex;gap:8px;align-items:baseline}
+  .wk summary b{font-weight:600}
+  .wk summary span{color:var(--ink-soft)}
+  .wk-body{padding:0 10px 10px}
+  .wk-body .cat{font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-soft);margin-top:8px}
+  .wk-body ul{margin:2px 0 0;padding-left:16px;color:var(--ink)}
+  .wk-body li{padding:1px 0}
+  .wk-body input[type=date]{font:inherit;font-size:12px;border:1px solid var(--rule);border-radius:5px;padding:2px 4px;background:transparent;color:var(--ink)}
+  .wk-body .row{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin-top:10px}
+  .wk-body .row button{margin:0}
+  .empty{color:var(--ink-soft);font-size:14px;padding:30px 4px}
+
+  .toast{
+    position:fixed;bottom:22px;left:50%;transform:translateX(-50%);
+    background:var(--ink);color:var(--paper);padding:11px 18px;
+    border-radius:8px;font-size:14px;opacity:0;pointer-events:none;
+    transition:opacity .18s ease;z-index:50;
+  }
+  .toast.on{opacity:1}
+
+  /* ---------- tabs ---------- */
+  .tabs{display:flex;gap:4px;align-self:center}
+  .tab{border:1px solid var(--rule);background:#fff;border-radius:999px;padding:5px 14px;font-size:13.5px}
+  .tab[aria-selected="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+
+  /* ---------- archive ---------- */
+  .arch{flex:none;border:none;background:none;color:var(--ink-soft);padding:3px;border-radius:6px;opacity:.55;line-height:0}
+  .arch:hover{opacity:1;color:var(--berry);background:var(--berry-soft)}
+  .restore{flex:none;font-size:12.5px;padding:4px 10px}
+  .toast button{margin-left:12px;background:none;border:none;color:var(--paper);text-decoration:underline;font-weight:600;padding:0}
+
+  /* ---------- edit & export ---------- */
+  .editwrap{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);height:calc(100vh - 57px)}
+  .edcol{overflow-y:auto;padding:0 20px 80px;border-right:1px solid var(--rule)}
+  .prevcol{overflow-y:auto;background:var(--paper);padding:0 0 80px}
+  .syncbar{display:flex;flex-wrap:wrap;align-items:center;gap:8px;background:var(--paper);border:1px solid var(--rule);
+           border-radius:0 0 9px 9px;border-top:none;padding:12px 12px 10px;margin-bottom:14px;font-size:13.5px;position:sticky;top:0;z-index:5}
+  .syncbar #syncMsg{flex:1 1 220px;color:var(--ink-soft)}
+  .syncbar #syncMsg.dirty{color:var(--amber);font-weight:600}
+  .syncbar button{font-size:13px;padding:7px 12px}
+  .syncbar .secondary:disabled,.prevbar .secondary:disabled{opacity:.5;cursor:default}
+  #connectBtn.connected{color:var(--herb);border-color:var(--herb);font-size:16px;font-weight:700;padding:4px 12px;line-height:1.2}
+  .edweek,.ed{background:var(--paper);border:1px solid var(--rule);border-radius:10px;padding:14px 16px;margin-bottom:14px}
+  .edweek h2{font-family:var(--serif);font-size:18px;margin:0 0 8px}
+  .ed-head{display:flex;align-items:center;gap:8px;margin-bottom:8px}
+  .ed-head .spacer{flex:1}
+  .ed-state{font-size:12.5px;color:var(--herb)}
+  .ed-state.dirty{color:var(--amber);font-weight:600}
+  .fld{display:block;font-size:12.5px;color:var(--ink-soft);font-weight:600;margin:10px 0 0}
+  .fld small{font-weight:400}
+  .fld input,.fld textarea{display:block;width:100%;margin-top:4px;font:inherit;font-size:14.5px;font-weight:400;color:var(--ink);
+     border:1px solid var(--rule);border-radius:7px;padding:8px 10px;background:#fff;line-height:1.5}
+  .fld input[data-f="t"]{font-family:var(--serif);font-size:18px;font-weight:600}
+  .fld textarea{resize:vertical;min-height:60px}
+  .fld input:focus,.fld textarea:focus{outline:2px solid var(--berry);outline-offset:-1px}
+  .ed-meta{display:flex;gap:10px}
+  .ed-meta .fld{flex:1}
+  .ed-note{font-size:12.5px;color:var(--amber);margin:8px 0 0}
+  .ed-note:empty{display:none}
+  .ed-note.warn{color:var(--berry);font-weight:600}
+  details.cards{margin-top:12px;font-size:13.5px}
+  details.cards summary{cursor:pointer;color:var(--ink-soft);font-weight:600}
+  details.cards .ed-note{color:var(--ink-soft)}
+  .cardlist{margin:8px 0 0;padding-left:20px}
+  .cardlist li{margin:0 0 8px}
+  .cardlist .tmr{color:var(--herb);font-size:12.5px;white-space:nowrap}
+  .cardlist .cuse{color:var(--ink-soft);font-size:12.5px}
+  .prevbar{position:sticky;top:0;z-index:5;display:flex;align-items:center;gap:10px;flex-wrap:wrap;
+           background:var(--paper);border-bottom:1px solid var(--rule);padding:12px 20px}
+  .prevbar b{font-size:13px;color:var(--ink-soft);font-weight:600;flex:1}
+  .post{max-width:680px;margin:0 auto;padding:18px 24px;font-family:Georgia,"Times New Roman",serif;font-size:17px;line-height:1.6;color:#363737}
+  .post h3{font-size:24px;line-height:1.25;margin:22px 0 8px}
+  .post h4{font-size:20px;margin:22px 0 8px}
+  .post p{margin:0 0 12px}
+  .post ul,.post ol{margin:0 0 14px;padding-left:24px}
+  .post li{margin:2px 0}
+  .post blockquote{border-left:4px solid var(--berry);margin:0 0 14px;padding:2px 0 2px 16px}
+  .post hr{border:none;border-top:1px solid #ddd;margin:22px 0}
+  .post a{color:var(--berry)}
+  .storewarn{background:var(--berry-soft);color:var(--berry);border-radius:7px;padding:8px 10px;font-size:13px;margin-bottom:12px}
+  .dlg{position:fixed;inset:0;background:rgba(28,37,34,.45);display:grid;place-items:center;z-index:60;padding:16px}
+  .dlg>div{background:var(--paper);border-radius:12px;max-width:520px;width:100%;padding:20px 22px;max-height:90vh;overflow-y:auto}
+  .dlg h2{font-family:var(--serif);font-size:20px;margin:0 0 8px}
+  .dlg ol{padding-left:20px;font-size:14px}
+  .dlg li{margin:5px 0}
+  .dlg input{width:100%;font:inherit;padding:9px 10px;border:1px solid var(--rule);border-radius:7px;margin:6px 0}
+  .dlg .btns{display:flex;gap:8px;justify-content:flex-end;margin-top:10px}
+  .dlg .err{color:var(--berry);font-size:13px;min-height:18px}
+
+  .newwrap{display:grid;grid-template-columns:280px minmax(0,1fr);min-height:calc(100vh - 57px)}
+  .drcol{border-right:1px solid var(--rule);padding:16px;display:flex;flex-direction:column;gap:8px}
+  .drcol>.primary{width:100%}
+  .dr{display:block;width:100%;text-align:left;background:var(--paper);border:1px solid var(--rule);border-radius:9px;padding:9px 11px;margin-top:6px}
+  .dr.on{border-color:var(--berry);box-shadow:0 0 0 1px var(--berry)}
+  .dr b{display:block;font-family:var(--serif);font-size:15px;font-weight:600}
+  .dr .st{font-size:12px;color:var(--ink-soft)}
+  .dr .st-review{color:var(--berry);font-weight:600}
+  .dr .st-tidying{color:var(--amber)}
+  .dr .st-approved{color:var(--herb)}
+  .drmain{padding:16px 20px 80px;max-width:820px;width:100%}
+  .drmain .empty{line-height:1.6}
+  .nr select{display:block;width:100%;margin-top:4px;font:inherit;font-size:14.5px;border:1px solid var(--rule);border-radius:7px;padding:8px 10px;background:#fff;color:var(--ink)}
+  .nr-h{font-family:var(--serif);font-size:20px;margin:0 0 8px}
+  .nr-btns{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:14px}
+  .nr-btns .spacer{flex:1}
+  .nr-btns button:disabled{opacity:.5;cursor:default}
+  .nr-saved{font-size:12.5px;color:var(--ink-soft)}
+  .nr-box{background:var(--linen);border-radius:8px;padding:10px 12px;margin:4px 0 10px;font-size:14px}
+  .nr-box ul{margin:6px 0 0;padding-left:20px}
+  .nr-box.q{background:var(--berry-soft)}
+  .nr-box small{color:var(--ink-soft)}
+  .nr-q{margin-top:10px}
+  .nr-qrow{display:flex;gap:10px;align-items:center;margin-top:4px}
+  .nr-qrow input[data-qa]{flex:1;font:inherit;font-size:14px;border:1px solid var(--rule);border-radius:7px;padding:7px 9px;background:#fff}
+  .nr-orig{font-size:13.5px;color:var(--ink-soft)}
+  .tag.new{background:var(--berry-soft);color:var(--berry)}
+  .loading{position:fixed;inset:0;display:grid;place-items:center;background:var(--linen);z-index:55;font-family:var(--serif);font-size:18px;color:var(--ink-soft)}
+  @media (max-width:1100px){
+    .newwrap{grid-template-columns:1fr}
+    .drcol{border-right:none;border-bottom:1px solid var(--rule)}
+    .editwrap{grid-template-columns:1fr;height:auto}
+    .edcol,.prevcol{overflow:visible}
+    .wrap{grid-template-columns:1fr;height:auto}
+    .rail,.tray{border:none;border-bottom:1px solid var(--rule)}
+  }
+  @media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>Recipe planner</h1>
+  <nav class="tabs" role="tablist">
+    <button class="tab" data-tab="pick" role="tab" aria-selected="true">Pick recipes</button>
+    <button class="tab" data-tab="edit" role="tab" aria-selected="false">Edit &amp; export <span id="edCount"></span></button>
+    <button class="tab" data-tab="new" role="tab" aria-selected="false">New recipe <span id="nrCount"></span></button>
+  </nav>
+  <span class="count" id="showing"></span>
+  <span class="spacer"></span>
+  <button class="ghost" id="clearFilters">Clear filters</button>
+</header>
+
+<div class="wrap" id="pickView">
+
+  <!-- ---------------- filters ---------------- -->
+  <aside class="rail">
+    <h2>Search</h2>
+    <input class="search" id="q" placeholder="Title or ingredient" autocomplete="off">
+
+    <h2>Meal</h2>
+    <div class="chips" id="catChips"></div>
+
+    <h2>Season</h2>
+    <div class="chips" id="seasonChips"></div>
+
+    <h2>Cook time</h2>
+    <div class="chips" id="timeChips"></div>
+
+    <h2>Serves</h2>
+    <div class="chips" id="servesChips"></div>
+
+    <h2>Popularity</h2>
+    <div class="chips" id="viewChips"></div>
+
+    <h2>Sort</h2>
+    <div class="chips" id="sortChips"></div>
+
+    <h2>Newsletter plan</h2>
+    <div class="chips" id="planChips"></div>
+
+    <div id="weekBlock" hidden>
+      <h2>Week</h2>
+      <div class="chips" id="weekChips"></div>
+    </div>
+
+    <h2>Already sent</h2>
+    <label class="toggle"><input type="checkbox" id="hideUsed" checked> Hide sent recipes</label>
+    <label class="toggle"><input type="checkbox" id="hideNespresso" checked> Hide Nespresso drinks</label>
+
+    <h2>Archived</h2>
+    <label class="toggle"><input type="checkbox" id="showArch"> Show archived (<span id="archCount">0</span>)</label>
+  </aside>
+
+  <!-- ---------------- recipe list ---------------- -->
+  <main class="list" id="list"></main>
+
+  <!-- ---------------- this week ---------------- -->
+  <aside class="tray">
+    <h2>This week</h2>
+    <div class="sub" id="traySub">Pick your recipes</div>
+    <div id="warn"></div>
+    <div id="slots"></div>
+
+    <div class="actions">
+      <button class="secondary" id="build">Build a week for me</button>
+      <label class="toggle"><input type="checkbox" id="cookLinks" checked> Include "▶ Start Cooking" links</label>
+      <button class="primary" id="copy" disabled>Copy for Substack</button>
+      <button class="secondary" id="sent" disabled>Mark this week as sent</button>
+      <button class="secondary" id="clearWeek">Start over</button>
+    </div>
+
+    <div class="hist">
+      <div id="histCount"></div>
+      <button class="ghost" id="exportHist">Save history file</button>
+      <button class="ghost" id="importHist">Load history file</button>
+      <button class="ghost" id="resetHist">Clear history</button>
+      <input type="file" id="histFile" accept=".json" hidden>
+      <div class="weeks" id="weeks"></div>
+    </div>
+  </aside>
+</div>
+
+<div class="editwrap" id="editView" hidden>
+  <div class="edcol">
+    <div class="syncbar">
+      <span id="syncMsg"></span>
+      <button class="secondary" id="connectBtn">Connect GitHub</button>
+    </div>
+    <div class="storewarn" id="storeWarn" hidden>This browser isn’t keeping your work between visits (private browsing does this). Use a normal window so your unsaved edits and GitHub key are remembered.</div>
+    <section class="edweek">
+      <h2>This week’s post</h2>
+      <label class="fld">Intro paragraph <small>the theme of the week · leave empty to keep the placeholder</small><textarea id="intro1" rows="3"></textarea></label>
+      <label class="fld">Second intro paragraph<textarea id="intro2" rows="3"></textarea></label>
+    </section>
+    <div id="edList"></div>
+  </div>
+  <div class="prevcol">
+    <div class="prevbar">
+      <b>Substack preview</b>
+      <button class="secondary" id="publishBtn" disabled>Update Cooking cards</button>
+      <button class="primary" id="exportBtn">Copy for Substack</button>
+    </div>
+    <div class="post" id="preview"></div>
+  </div>
+</div>
+
+<div class="newwrap" id="newView" hidden>
+  <aside class="drcol">
+    <button class="primary" data-act="new">+ Write a new recipe</button>
+    <div class="ed-note warn" id="drMsg"></div>
+    <div id="drList"></div>
+  </aside>
+  <div class="drmain" id="drEdit"></div>
+</div>
+
+<div class="loading" id="loading" hidden>Loading your recipes…</div>
+
+<div class="dlg" id="ghDlg" hidden><div role="dialog" aria-labelledby="ghTitle">
+  <h2 id="ghTitle">Connect GitHub</h2>
+  <p style="font-size:14px;margin:0 0 6px">Your recipes, edits and history are kept privately on GitHub. Paste your GitHub key once on each computer or phone you use the planner on.</p>
+  <details style="font-size:14px"><summary style="cursor:pointer">How to make a key</summary>
+  <ol>
+    <li>Signed in to GitHub as <b>bayleenicole</b>, open <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">github.com/settings/personal-access-tokens/new</a></li>
+    <li>Token name: <b>Recipe planner</b>. Expiration: <b>1 year</b> (or longer).</li>
+    <li>Repository access: <b>Only select repositories</b> → pick <b>recipes</b> and <b>cooking</b>.</li>
+    <li>Permissions → Repository permissions → <b>Contents</b>: <b>Read and write</b>.</li>
+    <li>Click <b>Generate token</b>, copy it, and paste it below.</li>
+  </ol></details>
+  <input id="ghTok" type="password" placeholder="github_pat_…" autocomplete="off">
+  <div class="err" id="ghErr"></div>
+  <div class="btns">
+    <button class="ghost" id="ghOff" hidden>Disconnect</button>
+    <button class="secondary" id="ghCancel">Cancel</button>
+    <button class="primary" id="ghSave">Connect</button>
+  </div>
+</div></div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// Cook-mode website: each recipe's page is COOK_BASE + its address + "/".
+// Change this one line if the site moves (for example to a custom domain).
+// Set it to "" to leave the Start Cooking links out of the post.
+const COOK_BASE = "https://bayleenicole.github.io/cooking/";
+const RECIPES = [];
+
+/* ------------------------------------------------------------------ *
+ *  Grocery list — ported from the Python the weekly files already use *
+ * ------------------------------------------------------------------ */
+const AISLE_ORDER = ["Produce","Protein","Dairy","Baking & Spices",
+                     "Condiments & Sauces","Other","Frozen"];
+
+const AISLES = {
+ "Produce":["onion","red onion","white onion","yellow onion","green onion","scallion","garlic","shallot","tomato","cherry tomato","roma tomato","potato","sweet potato","russet potato","carrot","celery","cucumber","zucchini","squash","butternut squash","spaghetti squash","bell pepper","mini pepper","jalapeno","jalapeño","broccoli","broccolini","cauliflower","spinach","kale","arugula","romaine","lettuce","cabbage","slaw","spring mix","salad mix","herb salad","basil","cilantro","parsley","dill","mint","rosemary","thyme","leek","mushroom","avocado","lemon","lime","orange","banana","apple","berry","strawberry","blueberry","raspberry","blackberry","mango","kiwi","peach","pear","grape","melon","watermelon","pineapple","ginger","asparagus","green bean","brussels sprout","corn","radish","beet","artichoke","cranberry","fig","pomegranate","heart of palm","hearts of palm","sprout","chive","fresh herb","lemon juice","lime juice","eggplant","tomatillo","poblano","nectarine","pea","peas","snap pea","mixed green","coleslaw mix","green chili","chipotle pepper","pepperoncini","fennel","parsnip"],
+ "Protein":["chicken","chicken breast","chicken thigh","chicken sausage","beef","ground beef","steak","pork","turkey","ground turkey","bacon","turkey bacon","sausage","salmon","shrimp","fish","tuna","cod","lamb","chuck roast","meatball","tofu","rotisserie chicken","prosciutto","salami","pepperoni","lox","short rib","tenderloin","egg","chickpea","black bean","white bean","cannellini bean","lentil","bison","ham","anchovy","anchovies","deli meat","charcuterie","chorizo","carnitas","brisket","scallop","crab","halibut","tilapia"],
+ "Dairy":["milk","almond milk","oat milk","heavy cream","cream","half and half","butter","cheese","cream cheese","goat cheese","cottage cheese","yogurt","greek yogurt","feta","parmesan","mozzarella","cheddar","ricotta","burrata","mascarpone","sour cream","buttermilk","queso"],
+ "Baking & Spices":["flour","almond flour","oat flour","bread flour","sugar","brown sugar","powdered sugar","coconut sugar","baking powder","baking soda","yeast","cornstarch","cocoa powder","cacao","chocolate chip","white chocolate chip","vanilla","vanilla extract","almond extract","sprinkle","cake mix","paprika","oregano","cumin","cinnamon","chili powder","chili flake","red pepper flake","cayenne","turmeric","tumeric","nutmeg","allspice","bay leaf","italian seasoning","garlic powder","onion powder","garlic salt","sumac","za'atar","everything bagel seasoning","seasoning","taco seasoning","honey","maple syrup","agave","stevia","monk fruit","sweetener","protein powder","pancake mix","panko","breadcrumb","nutritional yeast","tapioca","arrowroot","pudding mix","food coloring","pumpkin pie spice","pie spice","pumpkin spice","pumpkin puree","pumpkin","chia seed","hemp seed","cardamom","curry powder","poppy seed"],
+ "Condiments & Sauces":["mayo","mayonnaise","mustard","dijon","ketchup","sriracha","hot sauce","soy sauce","coconut amino","fish sauce","worcestershire","vinegar","rice vinegar","red wine vinegar","balsamic vinegar","apple cider vinegar","balsamic glaze","olive oil","sesame oil","avocado oil","coconut oil","dressing","pesto","marinara","tomato sauce","tomato paste","salsa","enchilada sauce","curry paste","hummus","tzatziki","tahini","peanut butter","almond butter","jam","jelly","olive","kalamata olive","pickle","caper","chili crisp","chili oil","bbq sauce","buffalo sauce","broth","chicken broth","beef broth","bone broth","stock","cooking spray","vegetable oil","canola oil","miso","balsamic","ranch","guacamole","pico","bouillon","coconut milk","marinade","glaze","vinaigrette","gochujang","kimchi","sauce","harissa","aioli","relish","chutney","syrup"],
+ "Other":["tortilla","bread","sourdough","bun","roll","pita","naan","lavash","bagel","english muffin","cracker","chip","granola","cereal","oat","rolled oat","pasta","noodle","rice noodle","orzo","couscous","rice","quinoa","gnocchi","wonton wrapper","ladyfinger","juice","orange juice","coffee","tea","wine","soda","nut","pistachio","almond","walnut","pecan","cashew","pine nut","seed","raisin","date","popcorn","marshmallow","protein bar","antipasto","cheese stick"],
+ "Frozen":["frozen","ice cream","cool whip","edamame","puff pastry","hash brown"]
+};
+AISLES["Condiments & Sauces"].push("chicken stock","beef stock","vegetable stock","veggie stock");
+AISLES["Baking & Spices"].push("coriander","cardamom","sprinkles","hundreds and thousands");
+AISLES["Produce"].push("red pepper","red bell pepper","sun-dried tomato","sun dried tomato","asparagus");
+AISLES["Dairy"].push("labneh","skyr");
+AISLES["Frozen"].push("pie crust","frozen waffle");
+AISLES["Other"].push("orzo","penne","pine nut");
+const KEYWORDS = [];
+for(const a in AISLES) for(const w of AISLES[a]) KEYWORDS.push([w,a]);
+KEYWORDS.sort((x,y)=>y[0].length-x[0].length);
+
+const WHOLE = {
+ "onion":[48,"onion","onions"],"red onion":[48,"red onion","red onions"],
+ "white onion":[48,"white onion","white onions"],"yellow onion":[48,"yellow onion","yellow onions"],
+ "shallot":[12,"shallot","shallots"],"garlic":[1,"clove garlic","cloves garlic"],
+ "cucumber":[48,"cucumber","cucumbers"],"zucchini":[60,"zucchini","zucchini"],
+ "bell pepper":[48,"bell pepper","bell peppers"],"carrot":[24,"carrot","carrots"],
+ "celery":[24,"stalk celery","stalks celery"],"avocado":[48,"avocado","avocados"],
+ "jalapeno":[6,"jalapeño","jalapeños"],"jalapeño":[6,"jalapeño","jalapeños"],
+ "green onion":[12,"green onion","green onions"],"scallion":[12,"green onion","green onions"],
+ "parsley":[48,"bunch parsley","bunches parsley"],"cilantro":[48,"bunch cilantro","bunches cilantro"],
+ "basil":[48,"bunch basil","bunches basil"],"dill":[48,"bunch dill","bunches dill"],
+ "mint":[48,"bunch mint","bunches mint"],"lemon":[12,"lemon","lemons"],"lime":[8,"lime","limes"]
+};
+const WEIGHT={oz:1,ounce:1,lb:16,pound:16,g:0.03527,gram:0.03527,kg:35.274};
+const VOLUME={tsp:1,teaspoon:1,tbsp:3,tbs:3,tablespoon:3,cup:48,ml:0.2029,l:202.9,quart:192,pint:96};
+const LOOSE=new Set(["can","jar","bag","box","package","pack","bunch","head","clove","scoop","sprig","stalk","slice","container","packet","bottle","ear","handful"]);
+const DROP=new Set(["water","ice","pasta water","noodle water","salt","pepper","salt and pepper","s&p","oil","cooking spray","to taste","hot water","cold water","warm water","boiling water"]);
+
+const SYNONYMS={
+ "lasagna sheet":"lasagna noodles","lasagna noodle":"lasagna noodles",
+ "lemon juice":"lemon","lime juice":"lime","lemon zest":"lemon",
+ "lime zest":"lime","orange zest":"orange","pie crust":"pie crusts","salted butter":"butter","unsalted butter":"butter",
+ "graham cracker":"graham crackers","pitted date":"dates","date":"dates",
+ "garlic clove":"garlic","clove garlic":"garlic","fresh garlic":"garlic",
+ "large flour tortilla":"flour tortillas","large tortilla":"flour tortillas",
+ "small flour tortilla":"flour tortillas","small tortilla":"flour tortillas",
+ "tortilla":"flour tortillas","flour tortilla":"flour tortillas","corn tortilla":"corn tortillas",
+ "lavash flatbread":"lavash wraps","lavash wrap":"lavash wraps",
+ "chicken breast cutlet":"chicken breasts","chicken cutlet":"chicken breasts",
+ "chicken breast filet":"chicken breasts","chicken breast":"chicken breasts",
+ "chicken thigh":"chicken thighs","boneless skinless chicken thigh":"chicken thighs",
+ "salmon fillet":"salmon","boneless skinless salmon":"salmon","fresh salmon":"salmon","salmon":"salmon",
+ "egg":"eggs","egg scrambled":"eggs","rolled oat":"oats","whole oat":"oats","oat":"oats",
+ "greek yogurt":"Greek yogurt","heavy whipping cream":"heavy cream",
+ "roasted red pepper":"roasted red peppers","italian sausage casings removed":"Italian sausage",
+ "hundreds and thousands sprinkle":"sprinkles","hundreds and thousand":"sprinkles",
+ "hundreds and thousands":"sprinkles","sprinkle":"sprinkles",
+ "broccoli floret":"broccoli","just bare chicken breast":"chicken breasts","parmesan cheese":"parmesan","shaved parmesan":"parmesan",
+ "grated parmesan":"parmesan","shredded parmesan":"parmesan","panko crumb":"panko",
+ "breadcrumb":"breadcrumbs","romaine":"romaine lettuce","heart of palm":"hearts of palm"
+};
+/* Grocery list is lower case except real products / place names. */
+const PROPER_PHRASES=[
+ ["trader joe's","Trader Joe's"],["cool whip","Cool Whip"],["old bay","Old Bay"],
+ ["san marzano","San Marzano"],["monterey jack","Monterey Jack"],["chosen foods","Chosen Foods"],
+ ["ninja creami","Ninja Creami"],["everything but the bagel","Everything But The Bagel"],
+ ["topo chico","Topo Chico"],["aussie bites","Aussie Bites"],["aussie bite","Aussie Bites"],["just bare","Just BARE"],
+ ["greek","Greek"],["italian","Italian"],["french","French"],["japanese","Japanese"],
+ ["thai","Thai"],["mexican","Mexican"],["korean","Korean"],["chinese","Chinese"],
+ ["calabrian","Calabrian"],["kalamata","Kalamata"],["roma","Roma"],["dijon","Dijon"],
+ ["parmesan","Parmesan"],["pecorino","Pecorino"],["romano","Romano"],["asiago","Asiago"],
+ ["gruyere","Gruyère"],["gruyère","Gruyère"],["manchego","Manchego"],
+ ["worcestershire","Worcestershire"],["caesar","Caesar"],["brussels","Brussels"],
+ ["chobani","Chobani"],["banza","Banza"],["bonza","Bonza"],["siete","Siete"],
+ ["kewpie","Kewpie"],["momofuku","Momofuku"],["leggero","Leggero"],["rustico","Rustico"],
+ ["soleada","Soleada"],["pbfit","PBfit"],["oreo","Oreo"],["nutella","Nutella"],
+ ["biscoff","Biscoff"],["fairlife","Fairlife"],["tajin","Tajín"],["tajín","Tajín"],
+ ["za'atar","Za'atar"],["nespresso","Nespresso"],["amylu","Amylu"],["cappello","Cappello"],
+ ["sauz","Sauz"],["bachan","Bachan"],["primo","Primo"],["poppi","Poppi"],
+ ["cholula","Cholula"],["boursin","Boursin"],["bisquick","Bisquick"],["maldon","Maldon"],
+ ["kodiak","Kodiak"],["ezekiel","Ezekiel"],["quest","Quest"]
+].sort((a,b)=>b[0].length-a[0].length);
+const PROPER_RX=PROPER_PHRASES.map(([a,b])=>
+  [new RegExp("\\b"+a.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")+"\\b","g"),b]);
+
+/* Store brands come off generic items: "Trader Joe's slaw pack" -> "slaw".
+   Brands kept only where the brand IS the product (Cool Whip, Oreo...). */
+const BRANDS=["trader joe's","trader joes","just bare","chosen foods",
+ "siete foods","siete family foods","soleada","vital farms","good culture",
+ "whole foods","365 by whole foods","365 everyday value","kirkland",
+ "bob's red mill","king arthur","dave's killer bread",
+ "chobani","fairlife","amylu","siete","banza","bonza","kodiak","ezekiel",
+ "quest","primo","sauz","bachan's","bachan","momofuku","leggero","rustico",
+ "soleada","pbfit","cappello's","cappello","lily's","lilys","grillo's",
+ "tessemae's","maldon","dave's killer","sara lee","thomas'","bob's red mill",
+ "rao's","raos","two good","oikos","fage","barilla","jovial","cento"];
+const BRAND_RX=BRANDS.sort((a,b)=>b.length-a.length).map(b=>
+  new RegExp("\\b"+b.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")+"\\b","gi"));
+/* words that are only ever part of a brand name, left behind when it goes */
+const BRAND_ORPHAN=/\b(foods?|farms?|brand|organics?|creamery|mills?|kitchens?|company|co\.?)\b/gi;
+const FILLER=new Set(["pod","pods","pack","packs","packet","packets","bag",
+ "bags","box","boxes","mix","blend","style","brand","tub","tubs","of"]);
+function deBrand(name){
+  let s=String(name).replace(/[\u2019\u02bc]/g,"'");
+  let hit=false;
+  for(const rx of BRAND_RX){const n=s.replace(rx," "); if(n!==s){hit=true;s=n;}}
+  if(!hit) return name;                       // no brand -> leave it alone
+  s=s.replace(BRAND_ORPHAN," ");
+  s=s.replace(/\s{2,}/g," ").trim().replace(/^[-,\s]+|[-,\s]+$/g,"");
+  if(!s) return name;                         // brand was the whole item
+  const words=s.split(/\s+/);
+  if(!words.some(w=>!FILLER.has(w.toLowerCase()))) return name;   // "Nespresso pods"
+  while(words.length>1&&FILLER.has(words[words.length-1].toLowerCase())) words.pop();
+  return words.join(" ");
+}
+
+const PREP=/\b(as needed|fresh|raw|packed|warmed|toasted(?! sesame)|soft-boiled|hard-boiled|soft boiled|hard boiled|heaping|scant|separating yolks? from whites?|separated yolks? and whites?|cut into [\w/\- ]+|broken( in(to)? pieces)?|thin pats?|pats?|pitted|squeezed|crushed|room temp|depending how [\w ]+|chopped|diced|sliced|minced|shredded|crumbled|grated|peeled|halved|quartered|cubed|julienned|torn|trimmed|rinsed|drained|softened|melted|beaten|whisked|cooked|uncooked|thinly|finely|roughly|freshly|divided|room temperature|for serving|for garnish|for topping|to taste|optional|of choice|plus more[a-z ]*)\b/gi;
+const PURPOSE=/\s*\b(cut and crisped\s+)?for (drizzling|serving|garnish|topping|deglazing|dusting|dipping|chips|the|a|an|greasing|brushing|frying|sprinkling|finishing|massaging|searing|roasting|layering)\b.*$|\s*\bto (fill|cover|top|taste|serve|thin)\b.*$|\s*\byou.ll use\b.*$|\s*\bplus\b.*$/i;
+/* '(from above)', '(from the braise)': made earlier in this recipe, nothing to buy */
+const MADE_HERE=/\(\s*from (above|the [a-z ]+)\s*\)/i;
+const INLINE=/(?:^|\s)(?:about|approx\.?|approximately|roughly|~|heaping|scant|generous)?\s*~?\d*[\d¼½¾⅓⅔⅛/.\-]*\s*\b(?:tbsp|tbs|tablespoons?|tsp|teaspoons?|cups?|oz|ounces?|lbs?|pounds?|g|grams?|ml)\b\s*(?:of\s+)?/gi;
+const WORDQTY=/^(?!half and half)(?:(?:a|an|one|two|three|four|five|six|seven|eight|nine|ten|half|quarter|couple|few|several)\s+)*(?:(?:half|quarter)\s+(?:of\s+)?)?(?:a|an)?\s*(?:bottle|can|jar|bag|box|package|pack|container|handful|bunch|head|packet)?\s*(?:of\s+)+/i;
+const LEADIN=/^(a|an|one|tiny|small|big|large|good|generous|light|heavy|quick)?\s*(splash|pinch|dash|drizzle|handful|squeeze|juice|zest|sprinkle)\s+(of|from)\s+/i;
+const JUICEOF=/^(?:\w+\s+)?(?:juice|zest)\s+(?:of|from)\s+.*?\b(lemon|lime|orange)\b.*$/i;
+const EGGRE=/\b(egg (whites?|yolks?)|eggs?,? separated|separated eggs?|large eggs?|whole eggs?)\b/gi;
+const SALTONLY=/^(kosher |sea |flaky |cracked |table |coarse |fine |black |white )*(salt|pepper|s&p|salt and pepper)$/i;
+/* Only truly contentless lines are dropped.  A named spice -- cumin, oregano,
+   garlic powder -- is something you can run out of, so it stays on the list
+   (without an amount, like every other spice). */
+const SEASONONLY=/^(salt|pepper|black pepper|white pepper|seasonings?|spices|s&p|and|&|,|\s|to taste|freshly ground|of choice|plus more)+$/i;
+const FRAGMENT=/^(blended|crisped|cut|flaked|each salt|icing|subs?|pb|eggwhite|toasted|cooled|seasoned|sifted|drained|of|with|plus)$/i;
+const UNICODE={"½":"1/2","⅓":"1/3","⅔":"2/3","¼":"1/4","¾":"3/4","⅛":"1/8","⅜":"3/8","⅝":"5/8","⅞":"7/8"};
+
+function frac(txt){
+  let t=txt.trim();
+  for(const k in UNICODE) t=t.split(k).join(" "+UNICODE[k]);
+  t=t.replace(/\s*(?:-|–|to)\s*/g," | ");
+  let best=null;
+  for(const part of t.split("|")){
+    let total=0,ok=false;
+    for(const tok of part.trim().split(/\s+/)){
+      if(!tok) continue;
+      if(/^\d+\/\d+$/.test(tok)){const[a,b]=tok.split("/");total+=(+a)/(+b);ok=true;}
+      else if(/^\d+(\.\d+)?$/.test(tok)){total+=+tok;ok=true;}
+      else {ok=false;break;}
+    }
+    if(ok&&(best===null||total>best)) best=total;
+  }
+  return best;
+}
+function singular(w){
+  if(w.length>3&&w.endsWith("ies")) return w.slice(0,-3)+"y";
+  if(w.length>3&&w.endsWith("es")&&"shxz".includes(w[w.length-3])) return w.slice(0,-2);
+  if(w.length>3&&w.endsWith("s")&&!w.endsWith("ss")) return w.slice(0,-1);
+  return w;
+}
+function keyOf(name){
+  let n=name.toLowerCase().replace(PREP," ").replace(/é/g,"e").replace(/’/g,"'");
+  n=n.replace(/[^a-z0-9 &']/g," ").replace(/\s+/g," ").trim();
+  return n.split(" ").map(singular).join(" ");
+}
+const SYN_N={}; for(const k in SYNONYMS) SYN_N[keyOf(k)]=SYNONYMS[k];
+function synonym(n){return SYN_N[keyOf(n)]||n;}
+function tidyCase(n){
+  if(!n) return n;
+  const ow=n.split(/\s+/);
+  let s=n.toLowerCase();
+  for(const [rx,rep] of PROPER_RX) s=s.replace(rx,rep);
+  const sw=s.split(/\s+/);
+  // an unknown brand written O'Brien's / Lily's keeps its capital
+  if(ow.length===sw.length) for(let i=0;i<ow.length;i++)
+    if(/^[A-Z]/.test(ow[i])&&/['\u2019]s$/.test(ow[i])) sw[i]=ow[i];
+  return sw.join(" ");
+}
+function matches(w,text){return new RegExp("\\b"+w.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")+"e?s?\\b").test(text);}
+function aisleOf(name){
+  if(/^\s*dried\b/i.test(name)) return "Baking & Spices";
+  if(new RegExp("^\\s*(?:ground|smoked|powdered)\\s+(?:"+GROUND_SPICE+")\\b","i").test(name))
+    return "Baking & Spices";
+  const raw=name.toLowerCase();
+  if(/\bfrozen\b|\bice cream\b|\bcool whip\b/.test(raw)) return "Frozen";
+  const sing=keyOf(name).replace(/\bleave\b/,"leaf");
+  for(const [w,a] of KEYWORDS) if(matches(w,raw)||matches(w,sing)) return a;
+  return "Other";
+}
+function parseIng(line){
+  let s=line.trim().replace(/^[-•*–\s]+/,"");
+  if(!s) return null;
+  s=s.replace(/\([^)]*\)?/g," ");
+  const segs=s.split(",");
+  const kept=segs.filter((seg,i)=>i===0||!PREP.test(seg));
+  let head=kept.join(", ").replace(/,\s*$/,"");
+  head=head.replace(LEADIN,"").replace(/(\d(?:\s+\d+\/\d+)?)\s+to\s+(\d)/,"$1-$2");
+  const m=head.match(/^\s*([\d¼½¾⅓⅔⅛/.\s-]*\d[\d¼½¾⅓⅔⅛/.\s-]*)\s*([a-zA-Z.]+\b)?\s*(.*)$/);
+  let qty=null,unit=null,rest=head;
+  if(m&&m[1]){
+    qty=frac(m[1]);
+    let u=(m[2]||"").toLowerCase().replace(/\.$/,"");
+    if(u.endsWith("s")&&(LOOSE.has(u.slice(0,-1))||WEIGHT[u.slice(0,-1)]||VOLUME[u.slice(0,-1)])) u=u.slice(0,-1);
+    rest=m[3];
+    if(WEIGHT[u]||VOLUME[u]||LOOSE.has(u)) unit=u; else if(u) rest=u+" "+rest;
+  }
+  let name=rest.replace(PREP," ");
+  name=name.replace(INLINE," ").replace(WORDQTY,"");
+  if(!/^half and half/i.test(name))
+    name=name.replace(/^(?:one|two|three|four|five|six|seven|eight|nine|ten|half|a|an)\s+/i,"");
+  name=name.replace(/\s*\b(zest|juice)\s*(?:\+|and|&|,)\s*(?:zest|juice)\b/gi," ")
+           .replace(/\s{2,}/g," ").trim();
+  name=name.replace(JUICEOF,(mm,p1)=>p1).replace(/\s+or\s+.*$/i,"");
+  name=name.replace(EGGRE,"eggs").replace(/\b(eggs)\s+(separated|beaten|divided|whisked)\b/gi,"$1");
+  name=name.replace(PURPOSE,"").replace(/^(of|the|a|an)\s+/i,"");
+  name=name.replace(/\s+-\s*/g,"-");
+  name=name.replace(/^(?:small|large|medium|big|mini|jumbo|extra[- ]large)\s+(?=\w)/i,"");
+  // you can't buy "homemade" anything; "store-bought" is a useful instruction
+  name=name.replace(/\bhomemade\b/gi," ").replace(/\s+(?:optional)\s*$/i,"")
+           .replace(/\s{2,}/g," ").trim();
+  name=name.replace(/^(?:blocks?|wedges?|bricks?|logs?|bars?|sticks?|cans?|jars?)\s+(?:of\s+)?(?=\w)/i,"");
+  name=name.replace(/\s+,/g,",").replace(/,\s*/g," ").replace(/\s{2,}/g," ").trim().replace(/^[.,\- ]+|[.,\- ]+$/g,"");
+  return {qty,unit,name};
+}
+const FRACS=[[0.125,"1/8"],[0.25,"1/4"],[1/3,"1/3"],[0.375,"3/8"],[0.5,"1/2"],
+             [0.625,"5/8"],[2/3,"2/3"],[0.75,"3/4"],[0.875,"7/8"]];
+function fmtNum(x){
+  if(x<=0) return "0";
+  let w=Math.floor(x+1e-9), f=x-w;
+  if(f<0.06) return String(w);
+  if(f>0.94) return String(w+1);
+  let best="1/2",bd=9;
+  for(const [v,s] of FRACS){const d=Math.abs(f-v); if(d<bd){bd=d;best=s;}}
+  return w? w+" "+best : best;
+}
+const LOOSE_PL={can:"cans",jar:"jars",bag:"bags",box:"boxes",package:"packages",
+  pack:"packs",bunch:"bunches",head:"heads",clove:"cloves",scoop:"scoops",
+  sprig:"sprigs",stalk:"stalks",slice:"slices",container:"containers",
+  packet:"packets",bottle:"bottles",ear:"ears",handful:"handfuls"};
+const CLEAN_CUP=[0.25,1/3,0.5,2/3,0.75];
+function volStr(tsp){
+  const c=tsp/48;
+  if(tsp>=24){const cc=Math.ceil(c*4)/4; return fmtNum(cc)+" "+(cc>1.04?"cups":"cup");}
+  if(tsp>=12) for(const v of CLEAN_CUP)
+    if(Math.abs(c-v)<0.02) return fmtNum(v)+" cup";
+  if(tsp>=3) return fmtNum(Math.ceil((tsp/3)*2)/2)+" tbsp";
+  return fmtNum(Math.ceil(tsp*4)/4)+" tsp";
+}
+function wtStr(oz,metric){
+  if(metric){const g=oz/0.03527;
+    if(g>=1000) return fmtNum(g/1000)+" kg";
+    return (g<50? String(Math.round(g)) : String(Math.round(g/5)*5))+" g";}
+  if(oz>=16) return fmtNum(Math.ceil((oz/16)*4)/4)+" lb";
+  return fmtNum(Math.ceil(oz*4)/4)+" oz";
+}
+function plural(name,c){
+  if(c<=1.04){                               // "1 egg", never "1 eggs"
+    const w=name.split(" "); w[w.length-1]=singular(w[w.length-1]); return w.join(" ");
+  }
+  if(/\s/.test(name)||/s$/i.test(name)) return name;
+  if(/(ch|sh|s|x|z)$/i.test(name)) return name+"es";
+  if(/[^aeiou]y$/i.test(name)) return name.slice(0,-1)+"ies";
+  return name+"s";
+}
+/* Ounces per cup, and which unit to show when a week uses both. */
+const DENSITY={
+ "flour":[4.25,"v"],"all purpose flour":[4.25,"v"],"bread flour":[4.25,"v"],
+ "almond flour":[3.4,"v"],"oat":[3.2,"v"],"sugar":[7,"v"],
+ "brown sugar":[7.5,"v"],"powdered sugar":[4,"v"],"protein powder":[3.5,"v"],
+ "sweetener":[7,"v"],"honey":[12,"v"],"chocolate chip":[6,"v"],
+ "rice":[6.5,"v"],"salsa":[9,"v"],"almond milk":[8,"v"],
+ "coconut milk":[8,"v"],"butter":[8,"v"],"panko":[1.8,"v"],
+ "breadcrumb":[4,"v"],"milk":[8,"v"],"broth":[8,"v"],"heavy cream":[8,"v"],
+ "feta":[5.3,"w"],"feta cheese":[5.3,"w"],"mozzarella":[4,"w"],
+ "cheddar":[4,"w"],"cheese":[4,"w"],"parmesan":[3,"w"],
+ "cream cheese":[8,"w"],"cottage cheese":[8,"w"],"goat cheese":[4.5,"w"],
+ "greek yogurt":[8.5,"w"],"yogurt":[8.5,"w"],"chicken":[5,"w"],
+ "pasta":[4,"w"],"noodle":[4,"w"],"broccoli":[3,"w"],"broccolini":[3,"w"],
+ "cauliflower floret":[3.5,"w"],"green bean":[4,"w"],
+ "roasted red pepper":[6,"w"],"tomatoe":[6,"w"],"shredded chicken":[5,"w"]};
+function density(name){
+  const k=keyOf(name);
+  if(DENSITY[k]) return DENSITY[k];
+  let best=null,bl=0;
+  for(const d in DENSITY)
+    if((k===d||k.endsWith(" "+d))&&d.length>bl){best=DENSITY[d];bl=d.length;}
+  return best;
+}
+function fuseUnits(t,name){
+  if(!(t.v&&t.w)) return t;
+  const d=density(name); if(!d) return t;
+  const [ozPerCup,prefer]=d;
+  const o=Object.assign({},t);
+  if(prefer==="w"){ o.w=t.w+(t.v/48)*ozPerCup; delete o.v; }
+  else { o.v=t.v+(t.w/ozPerCup)*48; delete o.w; delete o.wimp; }
+  return o;
+}
+/* Spices are a pantry item -- the list just needs the name. */
+const GROUND_SPICE="ginger|cinnamon|cumin|coriander|cloves?|nutmeg|mustard|pepper|turmeric|tumeric|cardamom|allspice|fennel|caraway|anise|paprika|chili|chile|cayenne|sage|thyme|oregano|basil|parsley|dill|rosemary|mint|sumac";
+const SPICE_WORDS=["paprika","smoked paprika","oregano","cumin","cinnamon","chili powder","chile powder","chili flake","chile flake","red pepper flake","crushed red pepper","cayenne","turmeric","tumeric","nutmeg","allspice","bay leaf","italian seasoning","garlic powder","onion powder","garlic salt","celery salt","sumac","za'atar","everything bagel seasoning","everything seasoning","everything but the bagel","taco seasoning","ranch seasoning","cajun seasoning","creole seasoning","old bay","lemon pepper","adobo seasoning","chipotle powder","five spice","pumpkin pie spice","pie spice","pumpkin spice","apple pie spice","curry powder","coriander","cardamom","ground clove","mustard powder","dry mustard","ground ginger","white pepper","herbs de provence","dill weed","furikake","seasoning","vanilla","vanilla extract","almond extract","peppermint extract","maple extract","sage","tarragon","marjoram","chili seasoning","italian herb"];
+const SPICE_RX=SPICE_WORDS.sort((a,b)=>b.length-a.length).map(w=>
+  new RegExp("\\b"+w.replace(/[.*+?^${}()|[\]\\]/g,"\\$&")+"s?$","i"));
+function isSpice(name){
+  const n=String(name).toLowerCase();
+  if(/^dried\s/.test(n)) return true;
+  if(new RegExp("^(?:ground|whole)\\s+(?:"+GROUND_SPICE+")\\b").test(n)) return true;
+  if(/\bseasoning\b/.test(n)) return true;
+  if(/\b(baking|protein|cocoa|cacao|powdered)\b/.test(n)) return false;
+  return SPICE_RX.some(rx=>rx.test(n));
+}
+/* "1/4 tsp each salt and pepper, garlic powder, cumin" is four items sharing
+   one amount, and "1 tsp total seasonings (oregano, paprika)" hides its real
+   items in the brackets.  Split both into separate, amount-less items. */
+const TOTAL_SEAS=/\btotals?\s+seasonings?\s*\(([^)]*)\)/i;
+const SHARED_EACH=/(?:^|\s)each\s+(.+)$/i;
+function splitShared(str){
+  return String(str).split(/,|\band\b|&|\//gi)
+    .map(x=>x.replace(/\s+/g," ").trim().replace(/^[-+.,\s]+|[-+.,\s]+$/g,""))
+    .filter(x=>x.length>1);
+}
+function expandShared(line){
+  const s=String(line==null?"":line);
+  let m=s.match(TOTAL_SEAS);
+  if(m) return splitShared(m[1]);
+  m=s.replace(/\([^)]*\)/g," ").match(SHARED_EACH);   // "(6 oz each)" is not this
+  if(m){const parts=splitShared(m[1]); if(parts.length) return parts;}
+  return [s];
+}
+const PACKAGE=new Set(["head","can","bag","box","package","pack","bottle","jar","container","packet"]);
+/* Sort each aisle A-Z on the item itself: drop the amount, the unit, and
+   adjectives nobody looks a product up under ("warm milk" files under M). */
+const SORT_QTY=/^[\d\/\s]*(?:(?:cups?|tbsp|tsp|oz|lbs?|kgs?|g|ml|l|cans?|jars?|bags?|boxes|packages?|packs?|bunch(?:es)?|heads?|cloves?|scoops?|sprigs?|stalks?|slices?|containers?|packets?|bottles?|ears?|handfuls?)\s+)?/i;
+const SORT_ADJ=/^(?:fresh|large|small|medium|warm|cold|hot|whole|raw|cooked|plain|lite|light|nonfat|low-fat|unsalted|salted|extra|ripe|chopped|shredded|diced|sliced|minced|grated|crumbled|of)\s+/i;
+function sortKey(line){
+  let s=String(line).replace(SORT_QTY,"");
+  for(let i=0;i<3;i++) s=s.replace(SORT_ADJ,"");
+  return (s||String(line)).toLowerCase();
+}
+function qtyLine(t0,name){
+  const t=fuseUnits(t0,name);
+  const bits=[];
+  const packaged=Object.keys(t).some(u=>PACKAGE.has(u));
+  if(t.v&&!packaged) bits.push(volStr(t.v));
+  const SUB=new Set(["slice","scoop","handful","sprig","piece"]);
+  if(t.w) bits.push(wtStr(t.w,!t.wimp));
+  for(const u in t){
+    if(u==="v"||u==="w"||u==="n"||u==="wimp") continue;
+    if((t.w||t.v)&&SUB.has(u)) continue;       // "6 oz prosciutto", not "+ 4 slices"
+    const c=t[u]; bits.push(fmtNum(c)+" "+(c>1.04?(LOOSE_PL[u]||u+"s"):u));
+  }
+  if(bits.length) return bits.join(" + ")+" "+name;
+  if(t.n) return fmtNum(t.n)+" "+plural(name,t.n);
+  return name;
+}
+function buildGrocery(recipes){
+  const items={};
+  for(const r of recipes){
+    for(const raw of [].concat(...r.i.filter(x=>!MADE_HERE.test(x||"")).map(sp).map(expandShared))){
+      if(!raw||raw.trim().endsWith(":")) continue;
+      const p=parseIng(raw);
+      if(!p||!p.name) continue;
+      let name=tidyCase(synonym(deBrand(p.name)));
+      const k=keyOf(name);
+      if(!k||DROP.has(k)||SALTONLY.test(name.trim())||SEASONONLY.test(name.trim())
+         ||FRAGMENT.test(name.trim())||(/\bwater\b/.test(k)&&!k.includes("coconut"))) continue;
+      if(!items[k]) items[k]={name,t:{}};
+      if(name.length<items[k].name.length) items[k].name=name;
+      if(p.qty===null) continue;
+      const T=items[k].t;
+      if(WEIGHT[p.unit]){ T.w=(T.w||0)+p.qty*WEIGHT[p.unit];
+        if(p.unit==="oz"||p.unit==="ounce"||p.unit==="lb"||p.unit==="pound") T.wimp=1; }
+      else if(VOLUME[p.unit]) T.v=(T.v||0)+p.qty*VOLUME[p.unit];
+      else if(p.unit) T[p.unit]=(T[p.unit]||0)+p.qty;
+      else T.n=(T.n||0)+p.qty;
+    }
+  }
+  const out={}; AISLE_ORDER.forEach(a=>out[a]=[]);
+  for(const k in items){
+    const e=items[k], name=e.name;
+    let whole=null;
+    const kk=keyOf(name);
+    for(const w in WHOLE) if((kk===w||kk.endsWith(" "+w))&&(!whole||w.length>whole.length)) whole=w;
+    if(whole&&!/\b(powder|salt|flake|paste|sauce|oil|extract|seasoning|dried|zest)\b/i.test(name)
+       &&(e.t.v||e.t.n||e.t.clove||e.t.bunch)){
+      const [per,sing,plur]=WHOLE[whole];
+      let total=0;
+      if(e.t.v) total+=e.t.v/per;
+      if(e.t.n) total+=e.t.n;
+      if(e.t.clove) total+=e.t.clove;
+      if(e.t.bunch) total+=e.t.bunch*(whole.includes("onion")?6:1);
+      const c=Math.max(1,Math.ceil(total-0.001));
+      let line=c+" "+(c===1?sing:plur);
+      if(e.t.w) line+=" + "+wtStr(e.t.w,!e.t.wimp);
+      out[aisleOf(name)].push(line);
+    } else {
+      if(isSpice(name)){ out[aisleOf(name)].push(name); }
+      else {
+        const pkg=Object.keys(e.t).filter(u=>PACKAGE.has(u));
+        if(pkg.length&&(e.t.w||e.t.v)){     // 2 lb fresh AND a can: buy both
+          const meas={},tin={};
+          for(const u in e.t) (PACKAGE.has(u)?tin:meas)[u]=e.t[u];
+          out[aisleOf(name)].push(qtyLine(meas,name),qtyLine(tin,name));
+        } else out[aisleOf(name)].push(qtyLine(e.t,name));
+      }
+    }
+  }
+  for(const a in out)
+    out[a]=[...new Set(out[a])].sort((x,y)=>
+      sortKey(x).localeCompare(sortKey(y),"en",{sensitivity:"base"}));
+  const final={}; AISLE_ORDER.forEach(a=>{if(out[a].length) final[a]=out[a];});
+  return final;
+}
+
+/* ------------------------------------------------------------------ *
+ *  State                                                              *
+ * ------------------------------------------------------------------ */
+const PLAN=[["Breakfast",1],["Lunch",2],["Dinner",2],["Dessert",1]];
+const HKEY="baylee-sent-recipes";
+/* Safari blocks localStorage on double-clicked (file://) pages, and an
+   unguarded read there would throw and leave the whole page dead.  The
+   Save/Load history buttons are the backup when storage is unavailable. */
+let STORAGE_OK=true;
+// Start Cooking links on/off; remembered in this browser when it can be
+let cookLinks=true;
+try{ cookLinks=localStorage.getItem("cookLinks")!=="off"; }catch(e){}
+function histRead(){
+  try{ return new Set(JSON.parse(localStorage.getItem(HKEY)||"[]")); }
+  catch(e){ STORAGE_OK=false; return new Set(); }
+}
+let sent=histRead();
+/* Past weeks: [{d:"2026-11-16", ids:[...]}], newest last. Saved when a week is
+   marked as sent; recipes marked before dates were kept show as "Earlier". */
+const WKEY="baylee-sent-weeks";
+function weeksRead(){
+  try{ return JSON.parse(localStorage.getItem(WKEY)||"[]"); }
+  catch(e){ STORAGE_OK=false; return []; }
+}
+let weeks=weeksRead();
+const saveWeeks=()=>{ try{ localStorage.setItem(WKEY,JSON.stringify(weeks)); }catch(e){ STORAGE_OK=false; } historyChanged(); };
+const todayISO=()=>{const d=new Date();return new Date(d-d.getTimezoneOffset()*6e4).toISOString().slice(0,10);};
+const niceDate=s=>new Date(s+"T12:00:00").toLocaleDateString(undefined,{weekday:"short",month:"short",day:"numeric",year:"numeric"});
+let week=[];                       // recipe ids, in plan order
+let filters={q:"",cat:"",season:"",time:"",serves:"",plan:"",week:"",views:"",sort:"",hideUsed:true,hideNz:true};
+let openRows=new Set();
+
+const saveHist=()=>{
+  try{ localStorage.setItem(HKEY,JSON.stringify([...sent])); }
+  catch(e){ STORAGE_OK=false; }
+  historyChanged();
+};
+const byId=id=>RECIPES.find(r=>r.id===id);
+/* "1lb" -> "1 lb": always a space between the amount and the unit */
+const UNIT_SP=/(\d)\s*(oz|ozs|g|kg|mg|lbs?|ml|l|tsps?|tbsps?|tbs|cups?|qts?|pts?|gals?|gallons?|teaspoons?|tablespoons?|ounces?|pounds?|grams?)\b/gi;
+const FUZZ=/(\d)\s*-?\s*ish\b/gi;                 // "4ish tbsp" -> "4 tbsp"
+const sp=s=>stripBrands(String(s==null?"":s)
+                          .replace(FUZZ,"$1").replace(UNIT_SP,"$1 $2"));
+
+/* Brand names come out of the printed ingredient lines as well as the
+   grocery list.  Set BRANDS_IN_RECIPES=false to leave her wording alone. */
+const BRANDS_IN_RECIPES=false;
+function stripBrands(line){
+  if(BRANDS_IN_RECIPES) return line;
+  let s=String(line==null?"":line).replace(/[\u2019\u02bc]/g,"'");
+  let hit=false;
+  for(const rx of BRAND_RX){const n=s.replace(rx," "); if(n!==s){hit=true;s=n;}}
+  if(!hit) return line;
+  s=s.replace(BRAND_ORPHAN," ");
+  // "(Trader Joe's)" leaves "()" behind -- drop parens with nothing left in them
+  s=s.replace(/\(\s*(?:or\s+similar|or|and|similar|,|\/|\s)*\)/gi,"");
+  s=s.replace(/\s{2,}/g," ").replace(/\s+([,.);])/g,"$1")
+     .replace(/\(\s+/g,"(").replace(/\s*,\s*$/,"").trim();
+  return s||line;
+}
+const esc=s=>(s||"").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+
+function metaLine(r){
+  const bits=[];
+  if(r.c!=="Drinks & Coffee"){
+    if(r.p) bits.push("Prep: "+r.p+" min");
+    if(r.k) bits.push("Cook: "+r.k+" min");
+  }
+  if(r.s) bits.push("Serves: "+r.s);
+  return bits.join(" | ");
+}
+/* Paste version: the labels are bold, as in the live post. */
+function metaHTML(r){
+  const bits=[];
+  if(r.c!=="Drinks & Coffee"){
+    if(r.p) bits.push("<strong>Prep:</strong> "+r.p+" min");
+    if(r.k) bits.push("<strong>Cook:</strong> "+r.k+" min");
+  }
+  if(r.s) bits.push("<strong>Serves:</strong> "+esc(String(r.s)));
+  return bits.join(" | ");
+}
+const macroLine=r=>(r.f==null?"":`Fat ${r.f} | Carbs ${r.cb} | Protein ${r.pr}`);
+
+/* ---------------- filtering ---------------- */
+function visible(){
+  const q=filters.q.toLowerCase();
+  return RECIPES.filter(r=>{
+    if(showArchived!==!!r.archived) return false;      // archived recipes only show under "Show archived"
+    if(showArchived) return !q||(r.t+" "+r.i.join(" ")).toLowerCase().includes(q);
+    if(filters.hideNz&&r.nz) return false;
+    if(filters.hideUsed&&sent.has(r.id)&&!week.includes(r.id)) return false;
+    if(filters.cat&&r.c!==filters.cat) return false;
+    if(filters.season&&r.se!==filters.season) return false;
+    if(filters.serves&&r.s!==filters.serves) return false;
+    if(filters.views==="known"&&!r.v) return false;
+    if(filters.views&&filters.views!=="known"&&r.vb!==filters.views) return false;
+    if(filters.plan==="none"&&r.w) return false;
+    if(filters.plan==="any"&&!r.w) return false;
+    if(filters.plan&&filters.plan.startsWith("Month")){
+      if(!(r.w||"").startsWith(filters.plan)) return false;
+      if(filters.week&&!(r.w||"").endsWith(" · "+filters.week)) return false;
+    }
+    if(filters.time){
+      const t=r.k||0;
+      if(filters.time==="0"&&t!==0) return false;
+      if(filters.time==="20"&&!(t>0&&t<=20)) return false;
+      if(filters.time==="40"&&!(t>20&&t<=40)) return false;
+      if(filters.time==="41"&&!(t>40)) return false;
+    }
+    if(q){
+      const hay=(r.t+" "+r.i.join(" ")).toLowerCase();
+      if(!hay.includes(q)) return false;
+    }
+    return true;
+  });
+}
+
+/* ---------------- rendering ---------------- */
+function renderList(){
+  let rows=visible();
+  if(filters.sort==="views") rows=[...rows].sort((a,b)=>b.v-a.v);
+  else if(filters.sort==="quick") rows=[...rows].sort((a,b)=>(a.k||0)-(b.k||0));
+  else if(filters.sort==="az") rows=[...rows].sort((a,b)=>a.t.localeCompare(b.t));
+  const live=RECIPES.filter(r=>!r.archived).length;
+  document.getElementById("archCount").textContent=RECIPES.length-live;
+  document.getElementById("showing").textContent=showArchived
+    ? rows.length+" archived" : rows.length+" of "+live+" recipes";
+  const el=document.getElementById("list");
+  if(!rows.length){
+    el.innerHTML=showArchived?'<div class="empty">No archived recipes.</div>'
+      :'<div class="empty">Nothing matches those filters. Try clearing one.</div>';
+    return;
+  }
+  el.innerHTML=rows.map(r=>{
+    const on=week.includes(r.id), used=sent.has(r.id), open=openRows.has(r.id);
+    return `<article class="row ${on?"sel":""} ${used?"used":""} ${open?"open":""}" data-id="${r.id}">
+      <div class="row-head">
+        ${r.archived?"":`<button class="add" data-act="toggle" title="${on?"Remove from this week":"Add to this week"}">${on?"✓":"+"}</button>`}
+        <div class="row-main">
+          <div class="row-title" data-act="open">${esc(r.t)}</div>
+          <div class="meta">${esc(metaLine(r))}${r.f!=null?" &nbsp;·&nbsp; "+esc(macroLine(r)):""}</div>
+          <div class="tags">
+            <span class="tag cat">${esc(r.c)}</span>
+            ${r.n?`<span class="tag new">New</span>`:""}
+            ${r.se?`<span class="tag season">${r.se}</span>`:""}
+            ${r.w?`<span class="tag plan">${esc(r.w)}</span>`:""}
+            ${r.vs?`<span class="tag views">${esc(r.vs)}</span>`:""}
+            ${used?'<span class="tag sent">already sent</span>':""}
+            ${r.edited?'<span class="tag plan">edited</span>':""}
+          </div>
+        </div>
+        ${r.archived?'<button class="secondary restore" data-act="restore">Restore</button>'
+          :'<button class="arch" data-act="archive" title="Archive this recipe" aria-label="Archive this recipe"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/></svg></button>'}
+      </div>
+      <div class="detail">
+        <h4>Ingredients</h4>
+        <ul>${r.i.map(x=>`<li>${esc(sp(x))}</li>`).join("")}</ul>
+        <h4>Instructions</h4>
+        <ol>${r.st.map(x=>`<li>${esc(sp(x))}</li>`).join("")}</ol>
+        ${r.u?`<a class="watch" href="${esc(r.u)}" target="_blank" rel="noopener">Watch the TikTok</a>`:""}
+      </div>
+    </article>`;
+  }).join("");
+}
+
+function renderWeek(){
+  const slots=[];
+  let idx=0;
+  for(const [cat,n] of PLAN){
+    const chosen=week.filter(i=>byId(i).c===cat);
+    for(let j=0;j<Math.max(n,chosen.length);j++){
+      const id=chosen[j];
+      const r=id!=null?byId(id):null;
+      slots.push(r
+        ? `<div class="slot full"><div class="slot-row"><div>
+             <div class="slot-label">${cat}</div>
+             <div class="slot-title">${esc(r.t)}</div>
+             ${r.w?`<div class="slot-label">in ${esc(r.w)}</div>`:""}
+             ${r.u?`<a href="${esc(r.u)}" target="_blank" rel="noopener" style="font-size:12.5px">TikTok</a>`:""}
+           </div><button class="x" data-remove="${r.id}" title="Remove">×</button></div></div>`
+        : `<div class="slot"><div class="slot-label">${cat}</div>
+             <div style="font-size:13px;color:var(--ink-soft)">empty</div></div>`);
+      idx++;
+    }
+  }
+  document.getElementById("slots").innerHTML=slots.join("");
+  const full=planCovered();
+  const n=week.length, word=n===1?"recipe":"recipes";
+  document.getElementById("traySub").textContent=
+    !n?"Pick your recipes" : full?`Ready to copy · ${n} ${word}`:`${n} ${word} chosen`;
+  document.getElementById("copy").disabled=!week.length;
+  document.getElementById("sent").disabled=!week.length;
+
+  const repeats=week.filter(i=>sent.has(i)).map(i=>byId(i).t);
+  document.getElementById("warn").innerHTML=repeats.length
+    ? `<div class="warn">Already sent: ${repeats.map(esc).join(", ")}</div>` : "";
+  document.getElementById("histCount").textContent=
+    sent.size?`${sent.size} recipes sent so far`:"No recipes sent yet";
+  renderWeeks();
+}
+const CAT_ORDER=["Breakfast","Lunch","Dinner","Dessert","Drinks & Coffee"];
+function weekList(ids){
+  const rs=ids.map(byId).filter(Boolean);
+  return CAT_ORDER.filter(c=>rs.some(r=>r.c===c)).map(c=>
+    `<div class="cat">${esc(c)}</div><ul>${rs.filter(r=>r.c===c).map(r=>`<li>${esc(r.t)}</li>`).join("")}</ul>`).join("");
+}
+const openWeeks=new Set();          // keep expanded weeks open across redraws
+function renderWeeks(){
+  const host=document.getElementById("weeks");
+  const dated=weeks.map((w,k)=>({...w,k})).sort((a,b)=>b.d.localeCompare(a.d)||b.k-a.k);
+  const inWeeks=new Set(weeks.flatMap(w=>w.ids));
+  const loose=[...sent].filter(i=>!inWeeks.has(i)&&byId(i));
+  if(!dated.length&&!loose.length){host.innerHTML="";return;}
+  host.innerHTML=`<h3>Past weeks</h3>`+dated.map(w=>`
+    <details class="wk" data-k="${w.k}"${openWeeks.has(w.k)?" open":""}>
+      <summary><b>${esc(niceDate(w.d))}</b><span>${w.ids.length} recipes</span></summary>
+      <div class="wk-body">${weekList(w.ids)}
+        <div class="row">
+          <button class="ghost" data-load="${w.k}">Open this week</button>
+          <label>Date <input type="date" value="${w.d}" data-date="${w.k}"></label>
+          <button class="ghost" data-del="${w.k}">Remove</button>
+        </div>
+      </div>
+    </details>`).join("")+(loose.length?`
+    <details class="wk" data-k="early"${openWeeks.has("early")?" open":""}>
+      <summary><b>Earlier</b><span>${loose.length} recipes, no date saved</span></summary>
+      <div class="wk-body">${weekList(loose)}</div>
+    </details>`:"");
+  host.querySelectorAll("details.wk").forEach(d=>d.ontoggle=()=>{
+    const k=d.dataset.k==="early"?"early":+d.dataset.k;
+    d.open?openWeeks.add(k):openWeeks.delete(k);
+  });
+  host.querySelectorAll("[data-load]").forEach(b=>b.onclick=()=>{
+    week=weeks[+b.dataset.load].ids.filter(byId);render();
+    toast("Week loaded. Copy for Substack to get the post again.");
+  });
+  host.querySelectorAll("[data-date]").forEach(inp=>inp.onchange=()=>{
+    if(inp.value){weeks[+inp.dataset.date].d=inp.value;saveWeeks();renderWeeks();}
+  });
+  host.querySelectorAll("[data-del]").forEach(b=>b.onclick=()=>{
+    const w=weeks[+b.dataset.del];
+    if(!confirm(`Remove the week of ${niceDate(w.d)} from history? Its recipes will count as not sent.`)) return;
+    weeks.splice(+b.dataset.del,1);saveWeeks();openWeeks.clear();
+    const still=new Set(weeks.flatMap(x=>x.ids));
+    w.ids.forEach(i=>{if(!still.has(i))sent.delete(i);});saveHist();render();
+  });
+}
+// true once every category has at least its usual count (1/2/2/1)
+const planCovered=()=>PLAN.every(([cat,n])=>week.filter(i=>byId(i).c===cat).length>=n);
+const render=()=>{renderList();renderWeek();LS.set("rb-week",week);if(typeof refreshEdit==="function")refreshEdit();};
+
+/* ---------------- actions ---------------- */
+function toggle(id){
+  const i=week.indexOf(id);
+  if(i>-1){week.splice(i,1);render();return;}
+  const r=byId(id);
+  // Any number per category.  Only categories without a section in the post
+  // (Drinks & Coffee) are kept out, since the copy output has nowhere to put them.
+  if(!PLAN.some(p=>p[0]===r.c)){toast(`${r.c} isn't part of a week.`);return;}
+  week.push(id);render();
+}
+function buildWeek(){
+  const pool=RECIPES.filter(r=>!r.nz&&!r.archived&&!sent.has(r.id)&&!week.includes(r.id));
+  for(const [cat,n] of PLAN){
+    let have=week.filter(x=>byId(x).c===cat).length;
+    const opts=pool.filter(r=>r.c===cat);
+    while(have<n&&opts.length){
+      const pick=opts.splice(Math.floor(Math.random()*opts.length),1)[0];
+      week.push(pick.id);have++;
+    }
+  }
+  render();
+  toast(planCovered()?"Week ready":"Not enough unsent recipes to fill every slot");
+}
+const GROCERY_H="h4";          // heading level for the grocery title
+function weekHTML(){
+  const rs=[];
+  for(const [cat] of PLAN) week.filter(i=>byId(i).c===cat).forEach(i=>rs.push(byId(i)));
+  const parts=[];
+  // everything Baylee fills in once pasted -- bold + brackets survives paste
+  const ph=s=>`<p><strong>[${s}]</strong></p>`;
+
+  parts.push("<h4><strong>On the Menu</strong></h4>");
+  const para=(s,fallback)=>{ s=(s||"").trim();
+    if(!s){parts.push(ph(fallback));return;}
+    s.split(/\n\s*\n/).forEach(p=>parts.push(`<p>${esc(p.trim()).replace(/\n/g,"<br>")}</p>`)); };
+  para(draft.intro1,"intro paragraph &mdash; the theme of the week");
+  para(draft.intro2,"second intro paragraph");
+  parts.push(ph("hero photo"));
+
+  parts.push("<blockquote>"
+    + rs.map((r,n)=>`<p><em>${String(n+1).padStart(2,"0")}</em> ${esc(r.t)}</p>`).join("")
+    + "</blockquote>");
+
+  const LABEL={Breakfast:"BREAKFAST",Lunch:"LUNCH",
+               Dinner:"DINNER",Dessert:"SOMETHING SWEET"};
+  let last=null;
+  rs.forEach(r=>{
+    const label=LABEL[r.c]||r.c.toUpperCase();
+    if(label!==last){
+      parts.push("<hr>");
+      parts.push(`<p><strong>${esc(label)}</strong></p>`);
+      parts.push("<hr>");
+      last=label;
+    } else {
+      parts.push("<hr>");          // divider between recipes in the same section
+    }
+
+    parts.push(`<h3>${esc(r.t)}</h3>`);
+    if(cookLinks&&COOK_BASE&&r.ck) parts.push(`<p><a href="${COOK_BASE}${r.ck}/">▶ Start Cooking</a></p>`);
+    parts.push(ph("photo"));
+
+    const m=metaHTML(r); if(m) parts.push(`<p>${m}</p>`);
+    if(r.f!=null) parts.push(`<p>${esc(macroLine(r))}</p>`);
+
+    parts.push("<p><strong>Ingredients:</strong></p>");
+    let open=false;const buf=[];
+    r.i.forEach(ing=>{
+      ing=sp((ing||"").trim()); if(!ing) return;
+      if(ing.endsWith(":")){ if(open){buf.push("</ul>");open=false;}
+        buf.push(`<p><strong>${esc(ing)}</strong></p>`); }
+      else { if(!open){buf.push("<ul>");open=true;} buf.push(`<li>${esc(ing)}</li>`); }
+    });
+    if(open) buf.push("</ul>");
+    parts.push(buf.join(""));
+
+    parts.push("<p><strong>Instructions:</strong></p>");
+    const ol=list=>'<ol start="1">'
+      +list.map(s=>`<li>${esc(sp(String(s)).replace(/\.\s*$/,""))}</li>`).join("")
+      +"</ol>";
+    const tip=key=>{
+      parts.push("<p><strong>Baylee&rsquo;s Tip</strong></p>");
+      const t=(r.tip||{})[key||""];
+      if(t) t.split(/\n\s*\n/).forEach(p=>parts.push(`<p>${esc(p.trim()).replace(/\n/g,"<br>")}</p>`));
+      else parts.push(ph("tip"));
+    };
+    if(r.sg&&r.sg.length>1){          // multi-part: its own list per component
+      r.sg.forEach(grp=>{
+        parts.push(`<p><strong>${esc(grp.l)}</strong></p>`);
+        parts.push(ol(grp.s));
+        tip(grp.l);
+      });
+    } else {
+      parts.push(ol(r.st));
+      tip();
+    }
+  });
+
+  const g=buildGrocery(rs);
+  parts.push("<hr>",
+             `<${GROCERY_H}>&#128722; Grocery Shopping List</${GROCERY_H}>`,
+             "<p>Here&rsquo;s the full grocery list for every single meal above, "
+             +"sorted by aisle:</p>");
+  for(const a of AISLE_ORDER){
+    if(!g[a]) continue;
+    parts.push(`<p><strong>${esc(a)}</strong></p><ul>`+g[a].map(x=>`<li>${esc(x)}</li>`).join("")+"</ul>");
+  }
+  parts.push("<hr>",
+             "<p>That&rsquo;s all for this week! I hope you found something worth "
+             +"making or saving for later. See you next Sunday &lt;3</p>",
+             "<p><em>Like Sunday Brunch? Forward this to someone you think "
+             +"would too.</em></p>");
+  return parts.join("\n");
+}
+
+async function copyWeek(){
+  const html=weekHTML();
+  const text=html.replace(/<li>/g,"\n").replace(/<[^>]+>/g," ")
+                 .replace(/&nbsp;/g," ").replace(/\n{3,}/g,"\n\n");
+  try{
+    await navigator.clipboard.write([new ClipboardItem({
+      "text/html":new Blob([html],{type:"text/html"}),
+      "text/plain":new Blob([text],{type:"text/plain"})
+    })]);
+    toast("Copied. Paste into a Substack draft.");
+  }catch(e){
+    const d=document.createElement("div");
+    d.contentEditable=true;d.innerHTML=html;
+    d.style.cssText="position:fixed;left:-9999px;top:0";
+    document.body.appendChild(d);
+    const rg=document.createRange();rg.selectNodeContents(d);
+    const sel=getSelection();sel.removeAllRanges();sel.addRange(rg);
+    document.execCommand("copy");sel.removeAllRanges();d.remove();
+    toast("Copied. Paste into a Substack draft.");
+  }
+}
+function markSent(){
+  week.forEach(i=>sent.add(i));saveHist();
+  weeks.push({d:todayISO(),ids:week.slice()});saveWeeks();
+  const n=week.length;week=[];render();
+  toast(n+" recipes marked as sent");
+}
+let toastTimer;
+function toast(msg,action,fn){
+  const t=document.getElementById("toast");
+  t.textContent=msg;
+  if(action){ const b=document.createElement("button"); b.textContent=action;
+    b.onclick=()=>{t.classList.remove("on");t.style.pointerEvents="";fn();}; t.appendChild(b); }
+  t.style.pointerEvents=action?"auto":"";
+  t.classList.add("on");
+  clearTimeout(toastTimer);toastTimer=setTimeout(()=>{t.classList.remove("on");t.style.pointerEvents="";},action?6000:2600);
+}
+
+/* ---------------- filter chrome ---------------- */
+function chips(host,opts,key){
+  document.getElementById(host).innerHTML=opts.map(([v,l])=>
+    `<button class="chip" data-k="${key}" data-v="${v}" aria-pressed="${filters[key]===v}">${l}</button>`
+  ).join("");
+}
+function paintChips(){
+  chips("catChips",[["","All"],["Breakfast","Breakfast"],["Lunch","Lunch"],
+        ["Dinner","Dinner"],["Dessert","Dessert"],["Drinks & Coffee","Drinks"]],"cat");
+  chips("seasonChips",[["","Any"],["Spring","Spring"],["Summer","Summer"],
+        ["Fall","Fall"],["Winter","Winter"]],"season");
+  chips("timeChips",[["","Any"],["0","No cooking"],["20","Under 20 min"],
+        ["40","20–40 min"],["41","Over 40 min"]],"time");
+  chips("servesChips",[["","Any"],["1","1"],["2","2"],["4","4"],["6","6"],["12","12"]],"serves");
+  const months=[...new Set(RECIPES.map(r=>r.w.split(" · ")[0]).filter(Boolean))]
+    .sort((a,b)=>+a.split(" ")[1]-+b.split(" ")[1]);
+  chips("planChips",[["","Any"],["none","Not in a week"],["any","In a week"]]
+    .concat(months.map(m=>[m,m.replace("Month ","M")])),"plan");
+
+  chips("viewChips",[["","Any"],["known","Has a view count"],["Over 1M","Over 1M"],
+        ["250K+","250K+"],["100K+","100K+"],["25K+","25K+"],["Under 25K","Under 25K"]],"views");
+  chips("sortChips",[["","Default"],["views","Most viewed"],
+        ["quick","Quickest"],["az","A–Z"]],"sort");
+
+  const block=document.getElementById("weekBlock");
+  if(filters.plan.startsWith("Month")){
+    const weeks=[...new Set(RECIPES.filter(r=>r.w.startsWith(filters.plan))
+      .map(r=>r.w.split(" · ")[1]))].sort((a,b)=>+a.split(" ")[1]-+b.split(" ")[1]);
+    chips("weekChips",[["","All weeks"]].concat(weeks.map(w=>[w,w.replace("Week ","W")])),"week");
+    block.hidden=false;
+  } else {
+    block.hidden=true;
+  }
+}
+
+/* ---------------- events ---------------- */
+document.addEventListener("click",e=>{
+  const chip=e.target.closest(".chip");
+  if(chip){
+    if(chip.dataset.k==="plan") filters.week="";
+    filters[chip.dataset.k]=chip.dataset.v;
+    paintChips();render();return;
+  }
+  const rm=e.target.closest("[data-remove]");
+  if(rm){toggle(+rm.dataset.remove);return;}
+  const row=e.target.closest(".row");
+  if(!row) return;
+  const id=+row.dataset.id;
+  if(e.target.closest('[data-act="toggle"]')) toggle(id);
+  else if(e.target.closest('[data-act="archive"]')) setArchived(id,true);
+  else if(e.target.closest('[data-act="restore"]')) setArchived(id,false);
+  else if(e.target.closest('[data-act="open"]')){
+    openRows.has(id)?openRows.delete(id):openRows.add(id);
+    row.classList.toggle("open");
+  }
+});
+document.getElementById("q").addEventListener("input",e=>{
+  filters.q=e.target.value;renderList();
+});
+{ const cb=document.getElementById("cookLinks"); cb.checked=cookLinks;
+  cb.addEventListener("change",e=>{ cookLinks=e.target.checked;
+    try{ localStorage.setItem("cookLinks",cookLinks?"on":"off"); }catch(err){} }); }
+document.getElementById("hideUsed").addEventListener("change",e=>{
+  filters.hideUsed=e.target.checked;renderList();
+});
+document.getElementById("hideNespresso").addEventListener("change",e=>{
+  filters.hideNz=e.target.checked;renderList();
+});
+document.getElementById("clearFilters").addEventListener("click",()=>{
+  filters={q:"",cat:"",season:"",time:"",serves:"",plan:"",week:"",views:"",sort:"",hideUsed:true,hideNz:true};
+  document.getElementById("q").value="";
+  document.getElementById("hideUsed").checked=true;
+  document.getElementById("hideNespresso").checked=true;
+  paintChips();render();
+});
+document.getElementById("build").addEventListener("click",buildWeek);
+document.getElementById("copy").addEventListener("click",copyWeek);
+document.getElementById("sent").addEventListener("click",markSent);
+document.getElementById("clearWeek").addEventListener("click",()=>{week=[];render();});
+
+document.getElementById("exportHist").addEventListener("click",()=>{
+  const blob=new Blob([JSON.stringify({sent:[...sent],weeks})],{type:"application/json"});
+  const a=document.createElement("a");
+  a.href=URL.createObjectURL(blob);
+  a.download="recipe-history.json";a.click();
+  toast("History saved to your downloads");
+});
+document.getElementById("importHist").addEventListener("click",()=>
+  document.getElementById("histFile").click());
+document.getElementById("histFile").addEventListener("change",e=>{
+  const f=e.target.files[0]; if(!f) return;
+  const rd=new FileReader();
+  rd.onload=()=>{
+    try{
+      const data=JSON.parse(rd.result);            // old files are a plain list of ids
+      const ids=Array.isArray(data)?data:(data.sent||[]);
+      ids.forEach(i=>sent.add(i));
+      if(!Array.isArray(data)&&Array.isArray(data.weeks)){
+        const have=new Set(weeks.map(w=>w.d+"|"+w.ids.join(",")));
+        data.weeks.forEach(w=>{if(w&&w.d&&Array.isArray(w.ids)&&!have.has(w.d+"|"+w.ids.join(",")))weeks.push(w);});
+        saveWeeks();
+      }
+      saveHist();render();toast("History loaded");
+    }catch(err){toast("That file couldn't be read");}
+  };
+  rd.readAsText(f);
+});
+document.getElementById("resetHist").addEventListener("click",()=>{
+  if(confirm("Clear the record of every recipe sent so far?")){
+    sent=new Set();saveHist();weeks=[];saveWeeks();render();toast("History cleared");
+  }
+});
+
+/* ===================================================================== *
+ *  Where everything lives (online planner, 2026-11-23)                    *
+ *                                                                         *
+ *  Private repo bayleenicole/recipes (needs her GitHub key):              *
+ *    data/recipes.json   the recipe library (base versions)               *
+ *    data/edits.json     her edits, tips and archived flags, per recipe   *
+ *    data/history.json   recipes already sent + past weeks                *
+ *    data/drafts/*.json  new recipes she's writing / Claude has tidied    *
+ *  Public repo bayleenicole/cooking (the Start Cooking website):         *
+ *    data/edits.json     Start Cooking cards for edited and new recipes  *
+ *    <slug>/index.html   one page per recipe (_shell/ for new ones)      *
+ *  Edits are saved in this browser as you type ("pending") and sent to    *
+ *  both repos by "Update Cooking cards" / Copy for Substack.             *
+ * ===================================================================== */
+const PRIV="bayleenicole/recipes", PUB="bayleenicole/cooking", EDITS_PATH="data/edits.json";
+const LS={get(k,d){try{const v=localStorage.getItem(k);return v==null?d:JSON.parse(v)}catch(e){STORAGE_OK=false;return d}},
+          set(k,v){try{localStorage.setItem(k,JSON.stringify(v))}catch(e){STORAGE_OK=false}}};
+const clone=x=>x===undefined?undefined:JSON.parse(JSON.stringify(x));
+const BASE={};
+let remote={};                                   // ck -> override: her edits (private) + live cards (public)
+let pubCook={};                                  // ck -> Start Cooking cards on the public site
+let pending=LS.get("rb-edits-pending",{});      // ck -> override not sent yet (null = back to the original)
+let ghToken=LS.get("rb-gh-token","");
+let draft=LS.get("rb-week-draft",{intro1:"",intro2:""});
+let showArchived=false, tab="pick";
+const savePending=()=>LS.set("rb-edits-pending",pending);
+
+function overrideFor(ck){ return (ck in pending) ? pending[ck] : (remote[ck]||null); }
+const RECIPE_FIELDS=["t","p","k","s","i","st","sg"];
+function applyEdits(){
+  for(const r of RECIPES){
+    const b=BASE[r.ck], o=overrideFor(r.ck)||{};
+    for(const f of RECIPE_FIELDS){
+      if(f in o){ if(o[f]===null) delete r[f]; else r[f]=clone(o[f]); }
+      else if(f in b) r[f]=clone(b[f]); else delete r[f];
+    }
+    r.tip=o.tip||null; r.archived=!!o.archived;
+    r.edited=RECIPE_FIELDS.some(f=>f in o);
+  }
+}
+function setOverride(ck,o){
+  for(const k of Object.keys(o)) if(o[k]===undefined) delete o[k];
+  const val=Object.keys(o).length?o:null;
+  if(JSON.stringify(val)===JSON.stringify(remote[ck]||null)) delete pending[ck];
+  else pending[ck]=val;
+  savePending(); applyEdits();
+}
+const pendingCount=()=>Object.keys(pending).length;
+
+/* ---------------- archive ---------------- */
+function setArchived(id,on){
+  const r=byId(id), o=clone(overrideFor(r.ck)||{});
+  if(on) o.archived=true; else delete o.archived;
+  setOverride(r.ck,o);
+  if(on){ const k=week.indexOf(id); if(k>-1) week.splice(k,1); }
+  render(); paintSync();
+  if(on) toast(`Archived “${r.t}”`,"Undo",()=>setArchived(id,false));
+  else toast(`Restored “${r.t}”`);
+  autoPublish();
+}
+let autoTimer=null;
+function autoPublish(){            // archive / restore save on their own
+  if(!ghToken) return;
+  clearTimeout(autoTimer); autoTimer=setTimeout(()=>publish(true),1500);
+}
+
+/* ---------------- GitHub ---------------- */
+const b64e=s=>btoa(unescape(encodeURIComponent(s)));
+const b64d=s=>decodeURIComponent(escape(atob(String(s).replace(/\s/g,""))));
+function api(path,opt){
+  return fetch("https://api.github.com/repos/"+path,Object.assign({cache:"no-store"},opt||{},{
+    headers:Object.assign({Authorization:"Bearer "+ghToken,Accept:"application/vnd.github+json"},
+                          opt&&opt.body?{"Content-Type":"application/json"}:{})}));
+}
+class GhError extends Error{constructor(status,msg){super(msg||("GitHub "+status));this.status=status;}}
+/* read one JSON (or text) file: {sha, data} -- data null when the file doesn't exist yet */
+async function ghGet(repo,path,raw){
+  const r=await api(`${repo}/contents/${path}?ref=main&t=${Date.now()}`);
+  if(r.status===404) return {sha:null,data:null};
+  if(!r.ok) throw new GhError(r.status);
+  const j=await r.json();
+  let txt;
+  if(j.content) txt=b64d(j.content);
+  else{                                       // files over 1 MB come without content: fetch the raw blob
+    const b=await api(`${repo}/git/blobs/${j.sha}`); if(!b.ok) throw new GhError(b.status);
+    txt=b64d((await b.json()).content);
+  }
+  return {sha:j.sha,data:raw?txt:JSON.parse(txt)};
+}
+async function ghPut(repo,path,content,sha,message){
+  const body={message,branch:"main",content:b64e(typeof content==="string"?content:JSON.stringify(content,null,1))};
+  if(sha) body.sha=sha;
+  const r=await api(`${repo}/contents/${path}`,{method:"PUT",body:JSON.stringify(body)});
+  if(!r.ok) throw new GhError(r.status);
+  return r.json();
+}
+/* read - change - save, retrying when someone else saved the same file meanwhile */
+async function ghUpdate(repo,path,change,message,empty){
+  for(let attempt=0;attempt<4;attempt++){
+    const {sha,data}=await ghGet(repo,path);
+    const next=change(data==null?clone(empty):data);
+    if(next===undefined) return data;               // nothing to change
+    try{ await ghPut(repo,path,next,sha,message); return next; }
+    catch(e){ if(e.status===409||e.status===422) continue; throw e; }
+  }
+  throw new GhError(409,"conflict");
+}
+function ghMessage(e,what){
+  if(e&&(e.status===401)) return "GitHub didn’t accept the saved key. Click the GitHub button to add a new one.";
+  if(e&&(e.status===403||e.status===404)) return `The GitHub key can’t ${what}. It needs Contents: Read and write on both the recipes and cooking repositories.`;
+  return `Couldn’t ${what} right now. Your work is still saved here. Try again in a minute.`;
+}
+let syncMsg="";
+function setSync(m){syncMsg=m;paintSync();}
+
+function mergeRemote(priv,pub){
+  pubCook={}; for(const [ck,o] of Object.entries((pub&&pub.recipes)||{})) if(o&&o.cook) pubCook[ck]=o.cook;
+  remote={};
+  for(const [ck,o] of Object.entries((priv&&priv.recipes)||{})) if(o) remote[ck]=clone(o);
+  for(const [ck,c] of Object.entries(pubCook)){
+    if(BASE[ck]&&BASE[ck].n) continue;               // new recipes: cards belong to the recipe, not to an edit
+    remote[ck]=Object.assign(remote[ck]||{},{cook:c});
+  }
+  for(const ck in pending) if(JSON.stringify(pending[ck])===JSON.stringify(remote[ck]||null)) delete pending[ck];
+  savePending();
+}
+async function fetchRemote(){
+  try{
+    const [pe,pc]=await Promise.all([ghGet(PRIV,EDITS_PATH),ghGet(PUB,EDITS_PATH)]);
+    mergeRemote(pe.data,pc.data);
+    applyEdits(); week=week.filter(i=>byId(i)&&!byId(i).archived); render(); refreshEdit(); setSync("");
+  }catch(e){ setSync(ghMessage(e,"load your latest edits")); }
+}
+
+/* ---- Start Cooking data for a recipe added in the planner (it has no built page) ---- */
+function cookMeta(r){
+  return {title:r.t,category:r.c,description:r.d||"",serves:parseInt(r.s,10)||1,prep:r.p==null?null:r.p,
+          cook:r.k==null?null:r.k,video:r.u||"",slug:r.ck};
+}
+function effective(ck){                     // the recipe as it is with pending/published edits
+  const b=clone(BASE[ck]), o=overrideFor(ck)||{};
+  for(const f of RECIPE_FIELDS) if(f in o){ if(o[f]===null) delete b[f]; else b[f]=clone(o[f]); }
+  return b;
+}
+function pubEntryFor(ck,o,existing){
+  const isNew=BASE[ck]&&BASE[ck].n, have=existing&&existing.cook;
+  if(!isNew) return o&&o.cook?{cook:o.cook}:null;            // original recipes: built page + edit cards
+  const eff=effective(ck), meta=cookMeta(eff);
+  let c;
+  if(o&&o.cook&&o.cook.slides) c=o.cook;
+  else{ const fresh=makeCook(eff); c=(have&&have.src===fresh.src)?have:fresh; }
+  return {cook:Object.assign({},c,meta)};
+}
+
+let publishing=false;
+async function publish(quiet){
+  if(publishing) return false;
+  if(!ghToken){ if(!quiet) openConnect(); return false; }
+  flushEdits();
+  if(!pendingCount()){ if(!quiet) toast("Everything is already up to date"); return true; }
+  publishing=true; setSync("Updating…");
+  const sending=clone(pending), n=Object.keys(sending).length;
+  const msg=`Recipe edits from the planner (${n} recipe${n===1?"":"s"})`;
+  try{
+    const priv=await ghUpdate(PRIV,EDITS_PATH,d=>{
+      d.recipes=d.recipes||{};
+      for(const [ck,o] of Object.entries(sending)){
+        if(!o){ delete d.recipes[ck]; continue; }
+        const keep=clone(o); delete keep.cook;
+        if(Object.keys(keep).length) d.recipes[ck]=keep; else delete d.recipes[ck];
+      }
+      d.v=1; d.updated=new Date().toISOString(); return d;
+    },msg,{v:1,recipes:{}});
+    const pub=await ghUpdate(PUB,EDITS_PATH,d=>{
+      d.recipes=d.recipes||{};
+      for(const [ck,o] of Object.entries(sending)){
+        const e=pubEntryFor(ck,o,d.recipes[ck]);
+        if(e) d.recipes[ck]=e; else delete d.recipes[ck];
+      }
+      d.v=1; d.updated=new Date().toISOString(); return d;
+    },msg,{v:1,recipes:{}});
+    for(const ck in sending) if(JSON.stringify(pending[ck])===JSON.stringify(sending[ck])) delete pending[ck];
+    mergeRemote(priv,pub); applyEdits(); render(); refreshEdit(); setSync("");
+    if(!quiet) toast("Updated. Start Cooking pages refresh in a minute or two.");
+    return true;
+  }catch(e){ setSync(ghMessage(e,"save your edits")); return false; }
+  finally{ publishing=false; paintSync(); }
+}
+
+/* ---------------- history (sent recipes + past weeks), kept in the private repo ---------------- */
+let histTimer=null, histReady=false;
+function historyChanged(){                      // called by saveHist() / saveWeeks()
+  if(!histReady||!ghToken) return;
+  clearTimeout(histTimer);
+  histTimer=setTimeout(async()=>{
+    try{ await ghUpdate(PRIV,"data/history.json",()=>({sent:[...sent].sort((a,b)=>a-b),weeks}),"History from the planner",{}); }
+    catch(e){ setSync(ghMessage(e,"save the history")); }
+  },1500);
+}
+function mergeHistory(h){
+  const before=JSON.stringify([[...sent].sort(),weeks]);
+  const remoteSent=new Set((h&&h.sent)||[]), remoteWeeks=(h&&h.weeks)||[];
+  const localExtra=[...sent].some(i=>!remoteSent.has(i))||weeks.some(w=>!remoteWeeks.some(x=>x.d===w.d&&JSON.stringify(x.ids)===JSON.stringify(w.ids)));
+  sent=new Set([...remoteSent,...sent]);
+  const all=[...remoteWeeks];
+  for(const w of weeks) if(!all.some(x=>x.d===w.d&&JSON.stringify(x.ids)===JSON.stringify(w.ids))) all.push(w);
+  weeks=all.sort((a,b)=>a.d<b.d?-1:a.d>b.d?1:0);
+  try{ localStorage.setItem(HKEY,JSON.stringify([...sent])); localStorage.setItem(WKEY,JSON.stringify(weeks)); }catch(e){}
+  return localExtra;
+}
+
+/* ---------------- start-up ---------------- */
+async function connect(token){
+  const old=ghToken; ghToken=token.trim();
+  try{
+    for(const repo of [PRIV,PUB]){
+      const r=await api(repo); if(!r.ok) throw new Error(r.status);
+      const j=await r.json(); if(!(j.permissions&&j.permissions.push)) throw new Error("read-only");
+    }
+  }catch(e){ ghToken=old; return false; }
+  LS.set("rb-gh-token",ghToken); paintSync(); return true;
+}
+function disconnect(){ ghToken=""; LS.set("rb-gh-token",""); paintSync(); showGate(); }
+function showGate(msg){
+  document.getElementById("loading").hidden=true;
+  openConnect(true);
+  if(msg) document.getElementById("ghErr").textContent=msg;
+}
+let booted=false;
+async function boot(){
+  if(!ghToken){ showGate(); return; }
+  document.getElementById("loading").hidden=false;
+  try{
+    const [lib,pe,pc,hist]=await Promise.all([ghGet(PRIV,"data/recipes.json"),ghGet(PRIV,EDITS_PATH),
+                                              ghGet(PUB,EDITS_PATH),ghGet(PRIV,"data/history.json")]);
+    if(!lib.data) throw new GhError(404);
+    RECIPES.splice(0,RECIPES.length,...lib.data);
+    for(const k in BASE) delete BASE[k];
+    RECIPES.forEach(r=>{BASE[r.ck]=clone(r);});
+    mergeRemote(pe.data,pc.data);
+    const extra=mergeHistory(hist.data);
+    histReady=true; if(extra) historyChanged();
+  }catch(e){
+    showGate(e.status===401||e.status===403||e.status===404
+      ?"That GitHub key can’t open the recipes. It needs Contents: Read and write on both the recipes and cooking repositories."
+      :"Couldn’t reach GitHub. Check the internet connection and reload the page.");
+    return;
+  }
+  document.getElementById("loading").hidden=true;
+  applyEdits();
+  week=LS.get("rb-week",[]).filter(i=>byId(i)&&!byId(i).archived);
+  if(!booted){ paintChips(); booted=true; }
+  render(); renderWeeks(); paintSync(); loadDrafts();
+}
+
+/* ---------------- Start Cooking cards, built from the steps ---------------- *
+ * Same rules as cook/build_cook.py: one card per step, split again wherever *
+ * a step states a second time, so every stated time keeps its timer (low    *
+ * end of a range, a minute or more). Gather Ingredients first, split around *
+ * long waits. Each ingredient is listed on the card that first uses it.    */
+const CK_TIME=/(\d+(?:\.\d+)?)(?:\s*(?:-|–|to)\s*\d+(?:\.\d+)?)?\s*(hours?|hrs?|minutes?|mins?|seconds?|secs?)\b/gi;
+function timerIn(t){
+  for(const m of String(t).matchAll(CK_TIME)){
+    const u=m[2].toLowerCase(), s=Math.round(+m[1]*(u[0]==="h"?3600:u[0]==="m"?60:1));
+    if(s>=60) return s;
+  }
+  return null;
+}
+const sentences=t=>String(t).replace(/([.!?])\s+(?=[A-Z(])/g,"$1\u0001").split("\u0001").map(s=>s.trim()).filter(Boolean);
+function timesIn(t){ return [...String(t).matchAll(CK_TIME)].filter(m=>{const u=m[2].toLowerCase();return +m[1]*(u[0]==="h"?3600:u[0]==="m"?60:1)>=60;}); }
+/* a sentence with two waits ("simmer 10 minutes, then bake 20 minutes") becomes two
+   pieces at the ", then" / ";" before the second wait, so each wait gets its own timer */
+function splitWaits(s){
+  const ts=timesIn(s); if(ts.length<2) return [s];
+  const cut=s.slice(0,ts[1].index).search(/(?:,\s*(?:and\s+)?then\s+|;\s*)(?!.*(?:,\s*(?:and\s+)?then\s+|;\s*))/);
+  if(cut<=0||cut<ts[0].index) return [s];
+  const m=s.slice(cut).match(/^(?:,\s*(?:and\s+)?then\s+|;\s*)/)[0];
+  const a=s.slice(0,cut).trim()+".", b=s.slice(cut+m.length).trim();
+  return [a,...splitWaits(cap1(b))];
+}
+function stepCards(text){
+  const out=[]; let c=null;
+  for(const s of sentences(text).flatMap(splitWaits)){
+    const tm=timerIn(s);
+    if(!c||(tm&&c.timer)){ c={text:"",timer:null}; out.push(c); }
+    c.text=(c.text+" "+s).trim(); if(tm&&!c.timer) c.timer=tm;
+  }
+  return out;
+}
+const cap1=s=>s?s[0].toUpperCase()+s.slice(1):s;
+const SMALLW=new Set(["and","or","of","the","a","an","to","in","on","with","for","at","by"]);
+function cardTitle(text){
+  const ss=sentences(String(text).replace(/^for the [^:]{1,40}:\s*/i,""));
+  let f=ss.find(x=>!/^(preheat|heat the oven)/i.test(x))||ss[0]||"";
+  f=f.replace(/^(in|on|while|once|meanwhile|when|after|using|to make|for)\b[^,]{0,60},\s*/i,"");
+  f=f.split(/[,;:(]|\s(?:and|then|until|for|in|into|on|over|with|to|at|from|by|while|so|if|as|before|after|about|around|under|alongside|onto|inside|through|according)\s/i)[0];
+  const w=(f.match(/[A-Za-z][A-Za-z'’-]*/g)||[])
+    .filter(x=>!/^(the|a|an|your|all|some|each|it|them|cups?|tbsp|tsp|oz|lbs?|minutes?|mins?|hours?|seconds?|degrees|f)$/i.test(x))
+    .slice(0,3);
+  while(w.length>1&&/^(sliced|chopped|diced|minced|cooked|remaining|prepared|fresh|warm|cold|hot|melted|softened|shredded|grated|crumbled|cubed|large|small|medium|whole|together|well|slightly|gently|immediately|evenly)$/i.test(w[w.length-1])&&w.length>2) w.pop();
+  while(w.length>1&&SMALLW.has(w[w.length-1].toLowerCase())) w.pop();
+  return w.map((x,i)=>i&&SMALLW.has(x.toLowerCase())?x.toLowerCase():cap1(x)).join(" ");
+}
+const ING_STOP=new Set(("a an the of and or with to in on at for from into onto plus more some your my optional divided chopped diced sliced minced fresh "
+ +"cup cups tbsp tsp tablespoon tablespoons teaspoon teaspoons oz ounce ounces lb lbs pound pounds g grams ml large small medium about each whole half cut "
+ +"thinly finely roughly packed heaping can cans jar jars bag bags package pkg pinch dash splash handful handfuls drizzle serving servings taste needed "
+ +"desired like favorite brand homemade store bought room temperature temp softened melted cold warm hot cooked uncooked raw shredded grated crumbled "
+ +"cubed peeled seeded halved quartered rinsed drained juiced zested ground dried frozen thawed canned plain unsweetened sweetened boneless skinless per "
+ +"piece pieces slice slices clove cloves stalk stalks sprig sprigs bunch head heads leaves leaf inch inches thick thin approximately use used using kind "
+ +"type choice topping garnish dipping lukewarm extra virgin juice zest you will need container block bottle link links scoop scoops").split(" "));
+const stemW=w=>w.replace(/(ies|es|s)$/,"");
+function ingToks(line){
+  const s=String(line).toLowerCase().replace(/\([^)]*\)/g," ").split(",")[0].replace(/^juice (and zest )?(of|from) [\d\/ -]+/,"");
+  return (s.match(/[a-z]+/g)||[]).filter(w=>w.length>2&&!ING_STOP.has(w)).map(stemW);
+}
+const partName=l=>cap1(String(l||"").replace(/^for the\s+/i,"").replace(/:\s*$/,"").trim());
+const LONG_WAIT=/overnight|several hours|few hours|at least \d+ hours/i;
+const isLong=s=>(s.timer||0)>=3600||LONG_WAIT.test(s.text);
+function makeCook(r){
+  const parts=r.sg&&r.sg.length>1?r.sg.map(g=>({label:g.l,steps:g.s})):[{label:null,steps:r.st||[]}];
+  const slides=[];
+  parts.forEach(p=>p.steps.forEach(st=>stepCards(sp(st)).forEach(c=>{
+    let t=cardTitle(c.text);
+    if(p.label) t=partName(p.label)+(t?": "+t.split(" ").slice(0,2).join(" "):"");
+    const s={title:t||`Step ${slides.length+1}`,text:c.text}; if(c.timer) s.timer=c.timer;
+    slides.push(s);
+  })));
+  const words=slides.map(s=>new Set((s.text.toLowerCase().match(/[a-z]+/g)||[]).map(stemW)));
+  const items=[]; let section=null;
+  for(const raw of r.i||[]){
+    const l=String(raw||"").trim(); if(!l) continue;
+    if(l.endsWith(":")){ section=l; continue; }
+    if(/\(\s*from (above|the [a-z ]+)\s*\)|:\s*all$/i.test(l)) continue;
+    const tk=ingToks(l); let k=-1;
+    if(tk.length){ const last=tk[tk.length-1]; k=words.findIndex(w=>w.has(last)); if(k<0) k=words.findIndex(w=>tk.some(t=>w.has(t))); }
+    const shown=sp(l).replace(/\s*\((?:divided|optional)\)\s*$/i,"");
+    if(k>=0) (slides[k].uses=slides[k].uses||[]).push(shown);
+    items.push({section,line:sp(l),k});
+  }
+  const phaseOf=[]; let ph=0;
+  slides.forEach(s=>{phaseOf.push(ph); if(isLong(s)) ph++;});
+  const nph=ph+(slides.length&&isLong(slides[slides.length-1])?0:1);
+  const groups=Array.from({length:Math.max(1,nph)},()=>[]);
+  for(const x of items){
+    const g=groups[Math.min(x.k>=0?phaseOf[x.k]:0,groups.length-1)];
+    if(x.section&&(!g.length||g[g.length-1][0]!==x.section)) g.push([x.section,null]);
+    g.push([x.section,x.line]);
+  }
+  const gather=(its,later)=>({title:"Gather Ingredients",gather:true,
+    text:later?"While you wait, get these out for the next part":"Get everything out before you start",
+    uses:its.map(([sec,ln])=>ln===null?"§"+partName(sec):ln)});
+  let out;
+  if(groups.length===1||!groups.slice(1).some(g=>g.length)) out=[gather(groups.flat(),false),...slides];
+  else{
+    out=[gather(groups[0],false)]; let g=1;
+    slides.forEach(s=>{ out.push(s); if(isLong(s)&&g<groups.length){ if(groups[g].length) out.push(gather(groups[g],true)); g++; } });
+  }
+  const src=JSON.stringify([r.i,r.st,r.sg||null]);     // title not included: renaming keeps the cards
+  let hsh=0; for(let k=0;k<src.length;k++) hsh=(hsh*31+src.charCodeAt(k))|0;
+  return {title:r.t,ingredients:(r.i||[]).filter(x=>x&&x.trim()).map(sp),slides:out,
+          by:"rules",                                     // GitHub swaps in Claude's cards after publishing
+          src:(hsh>>>0).toString(36),
+          steps:parts.map(p=>({part:p.label||null,steps:p.steps.map(sp)}))};
+}
+
+/* ---------------- the Edit & export tab ---------------- */
+const stepsText=r=>(r.sg&&r.sg.length>1)?r.sg.map(g=>[g.l,...g.s].join("\n\n")).join("\n\n"):(r.st||[]).join("\n\n");
+const ingText=r=>(r.i||[]).filter(x=>x!=null).join("\n");
+const isPartLine=l=>/:\s*$/.test(l)&&l.trim().split(/\s+/).length<=8;
+function parseSteps(text){
+  const lines=String(text).split("\n").map(s=>s.trim()).filter(Boolean);
+  const groups=[]; let g=null; const flat=[];
+  for(const l of lines){
+    if(isPartLine(l)){ g={l:l,s:[]}; groups.push(g); continue; }
+    if(!g){ g={l:null,s:[]}; groups.push(g); }
+    g.s.push(l); flat.push(l);
+  }
+  const named=groups.filter(x=>x.l&&x.s.length);
+  return {st:flat,sg:named.length>1&&named.length===groups.filter(x=>x.s.length).length?named.map(x=>({l:x.l,s:x.s})):null};
+}
+const tipKeys=r=>(r.sg&&r.sg.length>1)?r.sg.map(g=>g.l):[""];
+function weekRecipes(){ const rs=[]; for(const [cat] of PLAN) week.filter(i=>byId(i).c===cat).forEach(i=>rs.push(byId(i))); return rs; }
+
+function renderEdit(){
+  const rs=weekRecipes();
+  document.getElementById("intro1").value=draft.intro1||"";
+  document.getElementById("intro2").value=draft.intro2||"";
+  const host=document.getElementById("edList");
+  if(!rs.length){ host.innerHTML=`<div class="empty">Pick this week’s recipes first, then come back here to edit them.</div>`; refreshEdit(); return; }
+  host.innerHTML=rs.map(r=>{
+    const b=BASE[r.ck];
+    return `<section class="ed" data-ck="${esc(r.ck)}">
+      <div class="ed-head">
+        <span class="tag cat">${esc(r.c)}</span>
+        <span class="ed-state"></span>
+        <span class="spacer"></span>
+        <button class="ghost" data-revert>Undo all edits</button>
+      </div>
+      <label class="fld">Title<input data-f="t" value="${esc(r.t).replace(/"/g,"&quot;")}"></label>
+      <div class="ed-meta">
+        ${r.c==="Drinks & Coffee"?"":`<label class="fld">Prep (min)<input data-f="p" inputmode="numeric" value="${r.p==null?"":r.p}"></label>
+        <label class="fld">Cook (min)<input data-f="k" inputmode="numeric" value="${r.k==null?"":r.k}"></label>`}
+        <label class="fld">Serves<input data-f="s" value="${esc(String(r.s==null?"":r.s))}"></label>
+      </div>
+      <label class="fld">Ingredients <small>one per line · a line ending in “:” starts a section, e.g. <i>For the dressing:</i></small>
+        <textarea data-f="i" rows="${Math.min(18,(r.i||[]).length+1)}">${esc(ingText(r))}</textarea></label>
+      <label class="fld">Instructions <small>a blank line between steps · for a recipe in parts, put <i>For the dressing:</i> on its own line before that part’s steps</small>
+        <textarea data-f="st" rows="${Math.min(24,Math.ceil(stepsText(r).length/68)+stepsText(r).split("\n").length)}">${esc(stepsText(r))}</textarea></label>
+      <div class="tips">${tipKeys(r).map(k=>`<label class="fld">Baylee’s Tip${k?` <small>${esc(k.replace(/:\s*$/,""))}</small>`:""}
+        <textarea data-tip="${esc(k)}" rows="2" placeholder="Leave empty to keep the [tip] placeholder">${esc((r.tip||{})[k]||"")}</textarea></label>`).join("")}</div>
+      <p class="ed-note warn" data-warn></p>
+      <p class="ed-note" data-macros></p>
+      <details class="cards"><summary>Start Cooking cards</summary><div data-cards></div></details>
+    </section>`;
+  }).join("");
+  host.querySelectorAll(".ed").forEach(paintEd);
+  refreshEdit();
+}
+function paintEd(sec){
+  const r=RECIPES.find(x=>x.ck===sec.dataset.ck), o=overrideFor(r.ck), live=remote[r.ck]||null;
+  const st=sec.querySelector(".ed-state");
+  const dirty=r.ck in pending;
+  st.textContent=dirty?"Not published yet":(o&&Object.keys(o).some(k=>k!=="archived")?"Edited · published":"");
+  st.className="ed-state"+(dirty?" dirty":"");
+  sec.querySelector("[data-revert]").hidden=!(o&&Object.keys(o).some(k=>k!=="archived"));
+  const changedIng=o&&"i" in o;
+  sec.querySelector("[data-macros]").textContent=changedIng&&r.f!=null
+    ?`Fat ${r.f} | Carbs ${r.cb} | Protein ${r.pr} was worked out from the original ingredients. Ask Claude to recalculate if the amounts changed a lot.`:"";
+  const box=sec.querySelector("[data-cards]");
+  const cook=o&&o.cook&&o.cook.slides?o.cook:null;
+  box.innerHTML=cook
+    ?`<p class="ed-note">${cook.by==="claude"?"Written by Claude from your edited recipe."
+        :"Quick version from your edited steps. After you publish, Claude rewrites these properly. It takes a couple of minutes, and the quick version shows until then."}</p><ol class="cardlist">${cook.slides.map(s=>`<li><b>${esc(s.title)}</b>${s.timer?` <span class="tmr">⏱ ${fmtTimer(s.timer)}</span>`:""}<div>${esc(s.text)}</div>${s.uses&&s.uses.length?`<div class="cuse">${s.uses.map(u=>esc(u.replace(/^§/,""))).join(" · ")}</div>`:""}</li>`).join("")}</ol>`
+    :`<p class="ed-note">No step or ingredient edits, so the live page keeps its hand-written cards. Edit the steps or ingredients and the cards are rebuilt automatically, with a timer wherever a time is stated.</p>`;
+}
+const fmtTimer=s=>s>=3600?`${Math.floor(s/3600)} hr${s%3600?` ${Math.round(s%3600/60)} min`:""}`:s%60?`${Math.floor(s/60)}:${String(s%60).padStart(2,"0")}`:`${s/60} min`;
+function collect(sec){
+  const ck=sec.dataset.ck, b=BASE[ck], cur=overrideFor(ck)||{}, o={};
+  if(cur.archived) o.archived=true;
+  const v=f=>{const e=sec.querySelector(`[data-f="${f}"]`);return e?e.value:null;};
+  const t=v("t").trim(); if(t&&t!==b.t) o.t=t;
+  for(const f of ["p","k"]){ const x=v(f); if(x===null) continue; const n=x.trim()===""?null:Math.round(+x);
+    if(!Number.isNaN(n)&&n!==(b[f]==null?null:b[f])) o[f]=n; }
+  const s=v("s").trim(); if(s!==String(b.s==null?"":b.s)) o.s=s;
+  const ing=v("i"), steps=v("st");
+  let ingChanged=ing.replace(/\s+$/,"")!==ingText(b), stChanged=steps.replace(/\s+$/,"")!==stepsText(b);
+  const empty=!ing.trim()||!parseSteps(steps).st.length;
+  sec.querySelector("[data-warn]").textContent=empty?"A recipe needs at least one ingredient and one step, so these boxes aren’t saved until they have one.":"";
+  if(empty){                       // keep whatever was saved before for ingredients and steps
+    ingChanged=stChanged=false;
+    for(const f of ["i","st","sg","cook"]) if(f in cur) o[f]=cur[f];
+  }
+  if(ingChanged||stChanged){
+    o.i=ing.split("\n").map(x=>x.trim()).filter(Boolean);
+    const ps=parseSteps(steps); o.st=ps.st; o.sg=ps.sg; if(o.sg===null&&!b.sg) delete o.sg;
+  }
+  const tip={}; sec.querySelectorAll("[data-tip]").forEach(e=>{ if(e.value.trim()) tip[e.dataset.tip]=e.value.trim(); });
+  if(Object.keys(tip).length) o.tip=tip;
+  if(ingChanged||stChanged){
+    const eff=Object.assign(clone(b),{t:o.t||b.t,i:o.i,st:o.st}); if(o.sg) eff.sg=o.sg; else delete eff.sg;
+    const fresh=makeCook(eff);
+    o.cook=(cur.cook&&cur.cook.src===fresh.src)?{...cur.cook,title:fresh.title}:fresh;   // steps unchanged: keep Claude's cards
+  } else if(o.t&&!o.cook) o.cook={title:o.t};
+  return o;
+}
+const edTimers=new Map();          // one save timer per recipe, so quick edits in two recipes both save
+function saveEd(sec){ edTimers.delete(sec); setOverride(sec.dataset.ck,collect(sec)); paintEd(sec); renderList(); renderWeek(); refreshEdit(); }
+function flushEdits(){ for(const [sec,t] of [...edTimers]){ clearTimeout(t); saveEd(sec); } }
+function onEdInput(e){
+  const sec=e.target.closest(".ed");
+  if(e.target.id==="intro1"||e.target.id==="intro2"){
+    draft[e.target.id]=e.target.value; LS.set("rb-week-draft",draft); schedulePreview(); return;
+  }
+  if(!sec) return;
+  clearTimeout(edTimers.get(sec));
+  edTimers.set(sec,setTimeout(()=>saveEd(sec),350));
+}
+let pvTimer=null;
+function schedulePreview(){ clearTimeout(pvTimer); pvTimer=setTimeout(paintPreview,250); }
+function paintPreview(){
+  const el=document.getElementById("preview");
+  el.innerHTML=week.length?weekHTML():`<p class="empty">The Substack post will show here once you’ve picked recipes.</p>`;
+}
+function refreshEdit(){
+  const n=week.length;
+  document.getElementById("edCount").textContent=n?`(${n})`:"";
+  if(tab!=="edit") return;
+  document.querySelectorAll("#edList .ed").forEach(paintEd);
+  paintPreview(); paintSync();
+}
+function paintSync(){
+  const n=pendingCount();
+  const m=document.getElementById("syncMsg");
+  if(!m) return;
+  m.textContent=syncMsg||(n?`${n} recipe${n===1?" has":"s have"} changes that aren’t on the Start Cooking pages yet`
+                           :ghToken?"All edits are published":"Connect GitHub once so your edits can go live");
+  m.className=n&&!syncMsg?"dirty":"";
+  document.getElementById("publishBtn").disabled=!n||publishing;
+  document.getElementById("publishBtn").textContent=publishing?"Updating…":"Update Cooking cards";
+  const cb=document.getElementById("connectBtn");
+  cb.textContent=ghToken?"✓":"Connect GitHub";
+  cb.classList.toggle("connected",!!ghToken);
+  cb.title=ghToken?"Connected to GitHub. Click to change or disconnect.":"";
+  cb.setAttribute("aria-label",ghToken?"Connected to GitHub":"Connect GitHub");
+  document.getElementById("storeWarn").hidden=STORAGE_OK;
+}
+function setTab(t){
+  flushEdits();
+  tab=t;
+  document.querySelectorAll(".tab").forEach(b=>b.setAttribute("aria-selected",b.dataset.tab===t));
+  document.getElementById("pickView").hidden=t!=="pick";
+  document.getElementById("editView").hidden=t!=="edit";
+  document.getElementById("newView").hidden=t!=="new";
+  document.getElementById("showing").hidden=t!=="pick";
+  document.getElementById("clearFilters").hidden=t!=="pick";
+  if(t==="edit") renderEdit();
+  if(t==="new") renderDrafts();
+  scrollTo(0,0);
+}
+async function exportPost(){
+  flushEdits();
+  await copyWeek();
+  if(pendingCount()){
+    if(ghToken){ const ok=await publish(true);
+      toast(ok?"Copied. Your edits are going live on the Start Cooking pages too.":"Copied. Publishing the edits didn’t work, so try Update Cooking cards again."); }
+    else toast("Copied. Connect GitHub to send your edits to the Start Cooking pages.");
+  }
+}
+
+/* connect dialog */
+let gate=false;
+function openConnect(asGate){ gate=asGate===true; document.getElementById("ghDlg").hidden=false; document.getElementById("ghTok").value=""; document.getElementById("ghErr").textContent="";
+  document.getElementById("ghOff").hidden=!ghToken||gate; document.getElementById("ghCancel").hidden=gate; document.getElementById("ghTok").focus(); }
+function closeConnect(){ if(gate) return; document.getElementById("ghDlg").hidden=true; }
+
+/* ---------------- wiring for the new tab ---------------- */
+document.querySelectorAll(".tab").forEach(b=>b.addEventListener("click",()=>setTab(b.dataset.tab)));
+document.getElementById("showArch").addEventListener("change",e=>{showArchived=e.target.checked;renderList();});
+document.getElementById("editView").addEventListener("input",onEdInput);
+if(typeof window!=="undefined") window.addEventListener("beforeunload",flushEdits);   // closing the tab mid-typing still saves
+document.getElementById("edList").addEventListener("click",e=>{
+  const b=e.target.closest("[data-revert]"); if(!b) return;
+  const sec=b.closest(".ed"), ck=sec.dataset.ck, cur=overrideFor(ck)||{};
+  const keep={}; if(cur.archived) keep.archived=true;
+  setOverride(ck,keep); renderEdit(); render(); toast("Back to the original recipe");
+});
+document.getElementById("publishBtn").addEventListener("click",()=>{flushEdits();publish(false);});
+document.getElementById("exportBtn").addEventListener("click",exportPost);
+document.getElementById("connectBtn").addEventListener("click",openConnect);
+document.getElementById("ghCancel").addEventListener("click",closeConnect);
+document.getElementById("ghOff").addEventListener("click",()=>{closeConnect();disconnect();});
+document.getElementById("ghSave").addEventListener("click",async()=>{
+  const v=document.getElementById("ghTok").value; if(!v.trim()) return;
+  document.getElementById("ghErr").textContent="Checking…";
+  if(await connect(v)){
+    const wasGate=gate; gate=false; closeConnect(); toast("GitHub connected");
+    if(wasGate||!booted) boot(); else{ await fetchRemote(); if(pendingCount()) publish(false); }
+  }
+  else document.getElementById("ghErr").textContent="That key didn’t work. It needs Contents: Read and write on both the recipes and cooking repositories.";
+});
+document.getElementById("ghDlg").addEventListener("click",e=>{if(e.target.id==="ghDlg")closeConnect();});
+
+
+/* ===================================================================== *
+ *  New recipe tab                                                         *
+ *  Baylee writes a recipe -> "Send to Claude" saves it in the private     *
+ *  repo with status "tidying" -> the tidy-recipe workflow puts it in the  *
+ *  house format and saves it back as "review" -> she checks it, answers   *
+ *  or skips Claude's questions, and "Add to planner" adds it to the        *
+ *  library, makes its Start Cooking page and its cards.                   *
+ * ===================================================================== */
+const DRAFT_DIR="data/drafts";
+const CATS=["Breakfast","Lunch","Dinner","Dessert","Drinks & Coffee"];
+const escA=s=>esc(String(s==null?"":s)).replace(/"/g,"&quot;");
+let drafts={};                 // id -> {sha, d}
+let curDraft=null, pollTimer=null, draftsLoaded=false;
+let localDrafts=LS.get("rb-drafts-local",{});    // id -> d, typed but not saved to GitHub yet
+const saveLocalDrafts=()=>LS.set("rb-drafts-local",localDrafts);
+const draftPath=id=>`${DRAFT_DIR}/${id}.json`;
+const STATUS={draft:"Draft",tidying:"With Claude…",review:"Ready to review",approved:"Added"};
+
+async function loadDrafts(){
+  try{
+    const r=await api(`${PRIV}/contents/${DRAFT_DIR}?ref=main&t=${Date.now()}`);
+    const list=r.status===404?[]:r.ok?await r.json():null;
+    if(!list) throw new GhError(r.status);
+    const files=list.filter(f=>f.name.endsWith(".json"));
+    const got=await Promise.all(files.map(f=>ghGet(PRIV,f.path)));
+    drafts={};
+    files.forEach((f,k)=>{ if(got[k].data) drafts[got[k].data.id]={sha:got[k].sha,d:got[k].data}; });
+    for(const [id,d] of Object.entries(localDrafts)){              // typed here and not saved yet
+      if(!drafts[id]) drafts[id]={sha:null,d};
+      else if(drafts[id].d.status===d.status&&(d.updated||"")>(drafts[id].d.updated||"")) drafts[id].d=d;
+      else{ delete localDrafts[id]; }
+    }
+    saveLocalDrafts();
+    draftsLoaded=true;
+  }catch(e){ document.getElementById("drMsg").textContent=ghMessage(e,"load your new recipes"); }
+  renderDrafts(); schedulePoll();
+}
+function sortedDrafts(){
+  const rank={review:0,tidying:1,draft:2,approved:3};
+  return Object.values(drafts).map(x=>x.d).sort((a,b)=>(rank[a.status]-rank[b.status])||String(b.updated).localeCompare(String(a.updated)));
+}
+function renderDrafts(){
+  const n=Object.values(drafts).filter(x=>x.d.status==="review").length;
+  document.getElementById("nrCount").textContent=n?`(${n})`:"";
+  if(tab!=="new") return;
+  const ds=sortedDrafts();
+  document.getElementById("drList").innerHTML=ds.length?ds.map(d=>`
+    <button class="dr${d.id===curDraft?" on":""}" data-dr="${escA(d.id)}">
+      <b>${esc(draftTitle(d))}</b>
+      <span class="st st-${d.status}">${STATUS[d.status]||d.status}${d.status==="draft"&&d.error?" · didn’t work":""}</span>
+    </button>`).join(""):`<p class="empty">${draftsLoaded?"No new recipes yet.":"Loading…"}</p>`;
+  renderDraft();
+}
+const draftTitle=d=>(d.status!=="draft"&&d.claude&&d.claude.recipe&&d.claude.recipe.t)||(d.mine&&d.mine.t)||"Untitled recipe";
+
+/* ---------------- the editor on the right ---------------- */
+function renderDraft(){
+  const host=document.getElementById("drEdit");
+  const x=curDraft&&drafts[curDraft];
+  if(!x){ host.innerHTML=`<div class="empty">Write a recipe the way you normally would. Claude puts it in your usual format, checks every ingredient is used in the steps (and every ingredient the steps use is listed), orders the ingredients, adds the oven preheat and works out the macros. Then you check it and add it to the planner.<br><br><button class="primary" data-act="new">Write a new recipe</button></div>`; return; }
+  const d=x.d;
+  if(d.status==="draft") host.innerHTML=draftForm(d);
+  else if(d.status==="tidying") host.innerHTML=tidyingView(d);
+  else if(d.status==="review") host.innerHTML=reviewForm(d);
+  else host.innerHTML=approvedView(d);
+}
+function draftForm(d){
+  const m=d.mine||{};
+  return `<section class="ed nr" data-mode="draft">
+    ${d.error?`<p class="ed-note warn">Claude couldn’t tidy this one: ${esc(d.error)}. Check the recipe and send it again.</p>`:""}
+    <label class="fld">Title<input data-f="t" value="${escA(m.t)}" placeholder="What’s it called?"></label>
+    <div class="ed-meta">
+      <label class="fld">Meal<select data-f="c">${CATS.map(c=>`<option${(m.c||"Dinner")===c?" selected":""}>${c}</option>`).join("")}</select></label>
+      <label class="fld">Prep (min)<input data-f="p" inputmode="numeric" value="${escA(m.p)}"></label>
+      <label class="fld">Cook (min)<input data-f="k" inputmode="numeric" value="${escA(m.k)}"></label>
+      <label class="fld">Serves<input data-f="s" value="${escA(m.s)}"></label>
+    </div>
+    <label class="fld">TikTok link <small>optional</small><input data-f="u" value="${escA(m.u)}" placeholder="https://www.tiktok.com/@bayleennicole/video/…"></label>
+    <label class="fld">Ingredients <small>one per line · a line ending in “:” starts a section, e.g. <i>For the dressing:</i></small>
+      <textarea data-f="i" rows="8">${esc(m.i)}</textarea></label>
+    <label class="fld">Instructions <small>one step per line (or a blank line between steps)</small>
+      <textarea data-f="st" rows="10">${esc(m.st)}</textarea></label>
+    <label class="fld">Baylee’s Tip <small>optional</small><textarea data-f="tip" rows="2">${esc(m.tip)}</textarea></label>
+    <details class="cards" ${m.paste&&!m.i&&!m.st?"open":""}><summary>Or paste the whole recipe in one go</summary>
+      <label class="fld">Paste it here <small>Claude sorts it into ingredients and steps; you can leave the boxes above empty</small>
+      <textarea data-f="paste" rows="10">${esc(m.paste)}</textarea></label></details>
+    <p class="ed-note warn" data-warn></p>
+    <div class="nr-btns">
+      <button class="ghost" data-act="delete">Delete</button>
+      <span class="spacer"></span>
+      <span class="nr-saved" data-saved>${x2saved(d)}</span>
+      <button class="secondary" data-act="save">Save draft</button>
+      <button class="primary" data-act="send">Send to Claude</button>
+    </div>
+  </section>`;
+}
+const x2saved=d=>localDrafts[d.id]?"Saved on this computer":(drafts[d.id]&&drafts[d.id].sha?"Saved":"");
+function tidyingView(d){
+  const mins=(Date.now()-Date.parse(d.sent||d.updated||0))/6e4;
+  return `<section class="ed nr"><h2 class="nr-h">${esc(draftTitle(d))}</h2>
+    <p>Claude is tidying this recipe. It usually takes a minute or two, and this page updates on its own.</p>
+    ${mins>8?`<p class="ed-note warn">This is taking longer than usual. If it stays like this, the tidy step on GitHub may have stopped (for example if the Claude key in the recipes repository isn’t set). You can bring it back to edit.</p>`:""}
+    <div class="nr-btns"><span class="spacer"></span><button class="secondary" data-act="unsend">Stop and edit</button></div></section>`;
+}
+function reviewForm(d){
+  const c=d.claude||{}, r=c.recipe||{}, m=c.macros||{}, qs=c.questions||[];
+  const tipVal=c.tip!=null?c.tip:((d.mine||{}).tip||"");
+  return `<section class="ed nr" data-mode="review">
+    <div class="ed-head"><span class="tag cat">Claude’s version</span><span class="spacer"></span><span class="ed-state">edit anything before adding it</span></div>
+    ${(c.changes||[]).length?`<div class="nr-box"><b>What Claude changed</b><ul>${c.changes.map(x=>`<li>${esc(x)}</li>`).join("")}</ul></div>`:""}
+    ${qs.length?`<div class="nr-box q"><b>Claude’s questions</b> <small>answer, or tick Skip to leave that part as it is</small>
+      ${qs.map((q,k)=>`<div class="nr-q" data-q="${k}"><div>${esc(q.q)}</div>
+        <div class="nr-qrow"><input data-qa value="${escA(q.a)}" placeholder="Your answer"${q.skip?" disabled":""}>
+        <label class="toggle"><input type="checkbox" data-qs${q.skip?" checked":""}> Skip</label></div></div>`).join("")}</div>`:""}
+    <label class="fld">Title<input data-f="t" value="${escA(r.t)}"></label>
+    <div class="ed-meta">
+      <label class="fld">Meal<select data-f="c">${CATS.map(x=>`<option${(r.c||"Dinner")===x?" selected":""}>${x}</option>`).join("")}</select></label>
+      <label class="fld">Prep (min)<input data-f="p" inputmode="numeric" value="${escA(r.p)}"></label>
+      <label class="fld">Cook (min)<input data-f="k" inputmode="numeric" value="${escA(r.k)}"></label>
+      <label class="fld">Serves<input data-f="s" value="${escA(r.s)}"></label>
+    </div>
+    <label class="fld">Description <small>one line for the Start Cooking page</small><input data-f="d" value="${escA(c.description)}"></label>
+    <label class="fld">TikTok link<input data-f="u" value="${escA(r.u)}"></label>
+    <label class="fld">Ingredients<textarea data-f="i" rows="${Math.min(18,(r.i||[]).length+1)}">${esc(ingText(r))}</textarea></label>
+    <label class="fld">Instructions <small>a blank line between steps · <i>For the dressing:</i> on its own line starts a part</small>
+      <textarea data-f="st" rows="${Math.min(24,Math.ceil(stepsText(r).length/68)+stepsText(r).split("\n").length)}">${esc(stepsText(r))}</textarea></label>
+    <label class="fld">Baylee’s Tip<textarea data-f="tip" rows="2" placeholder="Leave empty to keep the [tip] placeholder">${esc(tipVal)}</textarea></label>
+    <div class="ed-meta">
+      <label class="fld">Fat (g)<input data-f="f" inputmode="numeric" value="${escA(m.f)}"></label>
+      <label class="fld">Carbs (g)<input data-f="cb" inputmode="numeric" value="${escA(m.cb)}"></label>
+      <label class="fld">Protein (g)<input data-f="pr" inputmode="numeric" value="${escA(m.pr)}"></label>
+    </div>
+    <p class="ed-note">Macros per serving, estimated by the calculator${(m.unknown||[]).length?`. It couldn’t match ${m.unknown.map(esc).join(", ")}, so those aren’t counted. Adjust the numbers if you know better`:""}.</p>
+    <details class="cards"><summary>What you wrote</summary><div class="nr-orig">${origHTML(d.mine||{})}</div></details>
+    <label class="fld">Note for Claude <small>optional, used when you send it back</small><textarea data-f="note" rows="2">${esc(d.note)}</textarea></label>
+    <p class="ed-note warn" data-warn></p>
+    <div class="nr-btns">
+      <button class="ghost" data-act="delete">Delete</button>
+      <span class="spacer"></span>
+      <button class="secondary" data-act="again">Send back to Claude</button>
+      <button class="primary" data-act="approve">Add to planner</button>
+    </div>
+  </section>`;
+}
+function origHTML(m){
+  const row=(k,v)=>v?`<p><b>${k}</b><br>${esc(String(v)).replace(/\n/g,"<br>")}</p>`:"";
+  return row("Title",m.t)+row("Meal",m.c)+row("Prep / cook / serves",[m.p,m.k,m.s].filter(Boolean).join(" / "))
+        +row("Ingredients",m.i)+row("Instructions",m.st)+row("Tip",m.tip)+row("Pasted",m.paste)||"<p>Nothing written.</p>";
+}
+function approvedView(d){
+  const ck=d.approved&&d.approved.ck;
+  return `<section class="ed nr"><h2 class="nr-h">${esc(draftTitle(d))}</h2>
+    <p>Added to the planner${d.approved&&d.approved.at?` on ${niceDate(d.approved.at.slice(0,10))}`:""}. You’ll find it in Pick recipes, and you can edit it in Edit &amp; export like any other recipe.</p>
+    ${ck?`<p>Start Cooking page: <a href="${COOK_BASE}${encodeURIComponent(ck)}/" target="_blank" rel="noopener">${COOK_BASE}${esc(ck)}/</a><br><small class="nr-saved">It goes live a minute or two after adding, and Claude writes its cards a couple of minutes later.</small></p>`:""}
+    <div class="nr-btns"><button class="ghost" data-act="delete">Remove from this list</button></div></section>`;
+}
+
+/* ---------------- reading the forms ---------------- */
+const num=v=>{ const t=String(v||"").trim(); if(!t) return null; const n=Math.round(+t); return Number.isNaN(n)?null:n; };
+function readForm(){
+  const sec=document.querySelector("#drEdit .nr"); if(!sec) return null;
+  const v=f=>{const e=sec.querySelector(`[data-f="${f}"]`);return e?e.value:"";};
+  return {sec,v};
+}
+function readMine(){
+  const x=readForm(); if(!x) return null; const {v}=x;
+  return {t:v("t").trim(),c:v("c"),p:v("p").trim(),k:v("k").trim(),s:v("s").trim(),u:v("u").trim(),
+          i:v("i").replace(/\s+$/,""),st:v("st").replace(/\s+$/,""),tip:v("tip").trim(),paste:v("paste").replace(/\s+$/,"")};
+}
+function readReview(){
+  const x=readForm(); if(!x) return null; const {sec,v}=x;
+  const ps=parseSteps(v("st"));
+  const r={t:v("t").trim(),c:v("c"),p:num(v("p")),k:num(v("k")),s:v("s").trim(),u:v("u").trim(),
+           i:v("i").split("\n").map(s=>s.trim()).filter(Boolean),st:ps.st};
+  if(ps.sg) r.sg=ps.sg;
+  const qs=[...sec.querySelectorAll("[data-q]")].map(el=>({a:el.querySelector("[data-qa]").value.trim(),skip:el.querySelector("[data-qs]").checked}));
+  return {r,d:v("d").trim().replace(/\.\s*$/,""),tip:v("tip").trim(),note:v("note").trim(),
+          macros:{f:num(v("f")),cb:num(v("cb")),pr:num(v("pr"))},qs};
+}
+function onDraftInput(e){
+  if(e.target.matches("[data-qs]")){ const a=e.target.closest("[data-q]").querySelector("[data-qa]"); a.disabled=e.target.checked; }
+  const x=curDraft&&drafts[curDraft]; if(!x) return;
+  const d=x.d;
+  if(d.status==="draft"){ d.mine=readMine(); }
+  else if(d.status==="review"){ const rv=readReview(); applyReview(d,rv); }
+  else return;
+  d.updated=new Date().toISOString();
+  localDrafts[d.id]=d; saveLocalDrafts();
+  const s=document.querySelector("#drEdit [data-saved]"); if(s) s.textContent="Saved on this computer";
+  if(e.target.matches('[data-f="t"]')){ const b=document.querySelector(`#drList [data-dr="${CSS.escape(d.id)}"] b`); if(b) b.textContent=draftTitle(d); }
+}
+function applyReview(d,rv){
+  d.claude=d.claude||{};
+  d.claude.recipe=Object.assign({},d.claude.recipe,rv.r);
+  if(!rv.r.sg) delete d.claude.recipe.sg;
+  d.claude.description=rv.d; d.claude.tip=rv.tip; d.note=rv.note;
+  d.claude.macros=Object.assign({},d.claude.macros,rv.macros);
+  (d.claude.questions||[]).forEach((q,k)=>{ const a=rv.qs[k]; if(!a) return;
+    if(a.a) q.a=a.a; else delete q.a; if(a.skip) q.skip=true; else delete q.skip; });
+}
+
+/* ---------------- saving ---------------- */
+async function saveDraft(d,message){
+  const saved=await ghUpdate(PRIV,draftPath(d.id),()=>d,message,{});
+  const {sha}=await ghGet(PRIV,draftPath(d.id));
+  drafts[d.id]={sha,d:saved}; delete localDrafts[d.id]; saveLocalDrafts();
+  return saved;
+}
+function busy(on,label){
+  document.querySelectorAll("#drEdit .nr-btns button").forEach(b=>b.disabled=on);
+  const w=document.querySelector("#drEdit [data-warn]"); if(w) w.textContent=on?(label||""):"";
+}
+function warn(msg){ const w=document.querySelector("#drEdit [data-warn]"); if(w){ w.textContent=msg; w.scrollIntoView({block:"nearest",behavior:"smooth"}); } }
+
+async function act(a){
+  if(a==="new"){
+    const id="r"+Date.now().toString(36), now=new Date().toISOString();
+    const d={id,created:now,updated:now,status:"draft",mine:{c:"Dinner"}};
+    drafts[id]={sha:null,d}; localDrafts[id]=d; saveLocalDrafts(); curDraft=id; renderDrafts();
+    const t=document.querySelector('#drEdit [data-f="t"]'); if(t) t.focus();
+    return;
+  }
+  const x=drafts[curDraft]; if(!x) return; const d=x.d;
+  try{
+    if(a==="save"){
+      d.mine=readMine(); busy(true,"Saving…");
+      await saveDraft(d,`Draft recipe: ${draftTitle(d)}`); toast("Draft saved"); renderDrafts();
+    }
+    else if(a==="send"){
+      const m=d.mine=readMine();
+      const hasParts=m.i.trim()&&m.st.trim();
+      if(!m.paste.trim()&&!hasParts) return warn("Add the ingredients and the instructions (or paste the whole recipe) first.");
+      if(!m.t&&!m.paste.trim()) return warn("Give the recipe a title first.");
+      busy(true,"Sending to Claude…");
+      d.status="tidying"; d.sent=new Date().toISOString(); delete d.error; delete d.claude;
+      await saveDraft(d,`Tidy recipe: ${draftTitle(d)}`); toast("Sent to Claude"); renderDrafts(); schedulePoll();
+    }
+    else if(a==="again"){
+      applyReview(d,readReview());
+      const open=(d.claude.questions||[]).filter(q=>!q.a&&!q.skip);
+      if(!d.note&&!(d.claude.questions||[]).some(q=>q.a||q.skip))
+        return warn("Answer or skip Claude’s questions, or write a note for Claude, so it knows what to change.");
+      busy(true,"Sending back to Claude…");
+      open.forEach(q=>q.skip=true);                   // unanswered = skip
+      d.status="tidying"; d.sent=new Date().toISOString(); delete d.error;
+      await saveDraft(d,`Tidy recipe again: ${draftTitle(d)}`); toast("Sent back to Claude"); renderDrafts(); schedulePoll();
+    }
+    else if(a==="unsend"){
+      busy(true,"…");
+      const cur=(await ghGet(PRIV,draftPath(d.id))).data||d;
+      cur.status=cur.claude&&cur.claude.recipe?"review":"draft";
+      await saveDraft(cur,`Draft recipe: ${draftTitle(cur)}`); renderDrafts();
+    }
+    else if(a==="delete"){
+      if(!confirm(d.status==="approved"?"Remove this from the list? The recipe stays in the planner.":`Delete “${draftTitle(d)}”? This can’t be undone.`)) return;
+      if(x.sha){
+        const {sha}=await ghGet(PRIV,draftPath(d.id));
+        if(sha){ const r=await api(`${PRIV}/contents/${draftPath(d.id)}`,{method:"DELETE",body:JSON.stringify({message:`Remove draft: ${draftTitle(d)}`,sha,branch:"main"})});
+          if(!r.ok) throw new GhError(r.status); }
+      }
+      delete drafts[d.id]; delete localDrafts[d.id]; saveLocalDrafts(); curDraft=null; renderDrafts();
+    }
+    else if(a==="approve") await approve(d);
+  }catch(e){ busy(false); warn(ghMessage(e,"save this")); }
+}
+
+/* ---------------- Add to planner ---------------- */
+const slugify=t=>String(t).toLowerCase().normalize("NFKD").replace(/[̀-ͯ]/g,"").replace(/&/g," and ")
+  .replace(/[’']/g,"").replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,"").slice(0,70).replace(/-+$/,"")||"recipe";
+async function freeSlug(t){
+  const base=slugify(t);
+  for(let k=1;k<50;k++){
+    const ck=k===1?base:`${base}-${k}`;
+    if(BASE[ck]) continue;
+    const r=await api(`${PUB}/contents/${encodeURIComponent(ck)}?ref=main`);
+    if(r.status===404) return ck;
+    if(!r.ok) throw new GhError(r.status);
+  }
+  throw new Error("no free address");
+}
+async function approve(d){
+  const rv=readReview(); applyReview(d,rv);
+  const r=rv.r;
+  if(!r.t) return warn("The recipe needs a title.");
+  if(!r.i.length||!r.st.length) return warn("The recipe needs at least one ingredient and one step.");
+  if(RECIPES.some(x=>x.t.toLowerCase()===r.t.toLowerCase()&&x.draft!==d.id))
+    return warn("There’s already a recipe with this title. Change the title a little so the two can be told apart.");
+  busy(true,"Adding to the planner…");
+  const prior=RECIPES.find(x=>x.draft===d.id);
+  let ck=(d.approved&&d.approved.ck)||(prior&&prior.ck);
+  // 1. the library (private). Safe to repeat: a recipe already added from this draft is updated, not added twice
+  if(!ck) ck=await freeSlug(r.t);
+  let rec;
+  await ghUpdate(PRIV,"data/recipes.json",list=>{
+    const old=list.find(x=>x.draft===d.id);
+    rec=Object.assign(old||{id:Math.max(-1,...list.map(x=>x.id))+1,se:"",nz:false,w:"",v:0,vb:"",vs:"",ck,draft:d.id,n:1,added:todayISO()},
+      {t:r.t,c:r.c,s:r.s||"1",p:r.p,k:r.k,f:rv.macros.f,cb:rv.macros.cb,pr:rv.macros.pr,i:r.i,st:r.st,u:r.u,d:rv.d});
+    if(r.sg) rec.sg=r.sg; else delete rec.sg;
+    ck=rec.ck;
+    if(!old) list.push(rec);
+    return list;
+  },`New recipe: ${r.t}`,[]);
+  // 2. this planner
+  const have=RECIPES.findIndex(x=>x.ck===ck);
+  if(have>-1) RECIPES[have]=clone(rec); else RECIPES.push(clone(rec));
+  BASE[ck]=clone(rec);
+  if(rv.tip){ const o=clone(overrideFor(ck)||{}); o.tip=rec.sg?{[rec.sg[0].l]:rv.tip}:{"":rv.tip}; setOverride(ck,o); }
+  applyEdits(); render();
+  // 3. Start Cooking cards + page (public). Pushing edits.json also starts Claude's card writer
+  await ghUpdate(PUB,EDITS_PATH,data=>{
+    data.recipes=data.recipes||{};
+    const e=pubEntryFor(ck,overrideFor(ck),data.recipes[ck]); data.recipes[ck]=e;
+    data.v=1; data.updated=new Date().toISOString(); return data;
+  },`New recipe: ${r.t}`,{v:1,recipes:{}});
+  const page=await ghGet(PUB,`${ck}/index.html`,true);
+  if(!page.sha){
+    const shell=await ghGet(PUB,"_shell/index.html",true);
+    if(!shell.data) throw new GhError(404);
+    await ghPut(PUB,`${ck}/index.html`,shell.data,null,`Start Cooking page: ${r.t}`);
+  }
+  if(pending[ck]) await publish(true);                 // the tip
+  // 4. the draft
+  d.status="approved"; d.approved={id:rec.id,ck,at:new Date().toISOString()};
+  await saveDraft(d,`Added to planner: ${r.t}`);
+  renderDrafts(); toast(`“${r.t}” is in the planner`);
+}
+
+/* ---------------- waiting for Claude ---------------- */
+function schedulePoll(){
+  clearTimeout(pollTimer);
+  if(!Object.values(drafts).some(x=>x.d.status==="tidying")) return;
+  pollTimer=setTimeout(async()=>{
+    for(const x of Object.values(drafts).filter(x=>x.d.status==="tidying")){
+      try{ const g=await ghGet(PRIV,draftPath(x.d.id));
+        if(g.data&&g.data.status!=="tidying"){ drafts[x.d.id]={sha:g.sha,d:g.data};
+          if(g.data.status==="review") toast(`Claude finished “${draftTitle(g.data)}”`); } }catch(e){}
+    }
+    renderDrafts(); schedulePoll();
+  },12000);
+}
+
+/* ---------------- wiring ---------------- */
+document.getElementById("drList").addEventListener("click",e=>{
+  const b=e.target.closest("[data-dr]"); if(!b) return; curDraft=b.dataset.dr; renderDrafts();
+});
+document.getElementById("newView").addEventListener("click",e=>{ const b=e.target.closest("[data-act]"); if(b) act(b.dataset.act); });
+document.getElementById("drEdit").addEventListener("input",onDraftInput);
+document.getElementById("drEdit").addEventListener("change",onDraftInput);
+
+boot();
+document.addEventListener("visibilitychange",()=>{ if(document.visibilityState==="visible"&&booted&&!pendingCount()) fetchRemote(); });
+</script>
+</body>
+</html>
